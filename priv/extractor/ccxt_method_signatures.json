@@ -1,0 +1,872 @@
+{
+  "ccxt_version": "4.5.34",
+  "generated_at": "2026-02-01T14:01:43.490Z",
+  "method_count": 163,
+  "methods": {
+    "borrowCrossMargin": [
+      "code",
+      "amount"
+    ],
+    "borrowIsolatedMargin": [
+      "symbol",
+      "code",
+      "amount"
+    ],
+    "borrowMargin": [
+      "code",
+      "amount",
+      "symbol"
+    ],
+    "cancelAllOrders": [
+      "symbol"
+    ],
+    "cancelAllOrdersAfter": [
+      "timeout"
+    ],
+    "cancelOrder": [
+      "id",
+      "symbol"
+    ],
+    "cancelOrderWithClientOrderId": [
+      "clientOrderId",
+      "symbol"
+    ],
+    "cancelOrders": [
+      "ids",
+      "symbol"
+    ],
+    "cancelOrdersForSymbols": [
+      "orders"
+    ],
+    "cancelOrdersWithClientOrderIds": [
+      "clientOrderIds",
+      "symbol"
+    ],
+    "cancelUnifiedOrder": [
+      "order"
+    ],
+    "createCcxtTradeId": [
+      "timestamp",
+      "side",
+      "amount",
+      "price",
+      "takerOrMaker"
+    ],
+    "createConvertTrade": [
+      "id",
+      "fromCode",
+      "toCode",
+      "amount"
+    ],
+    "createDepositAddress": [
+      "code"
+    ],
+    "createExpiredOptionMarket": [
+      "symbol"
+    ],
+    "createLimitBuyOrder": [
+      "symbol",
+      "amount",
+      "price"
+    ],
+    "createLimitOrder": [
+      "symbol",
+      "side",
+      "amount",
+      "price"
+    ],
+    "createLimitSellOrder": [
+      "symbol",
+      "amount",
+      "price"
+    ],
+    "createMarketBuyOrder": [
+      "symbol",
+      "amount"
+    ],
+    "createMarketBuyOrderWithCost": [
+      "symbol",
+      "cost"
+    ],
+    "createMarketOrder": [
+      "symbol",
+      "side",
+      "amount",
+      "price"
+    ],
+    "createMarketOrderWithCost": [
+      "symbol",
+      "side",
+      "cost"
+    ],
+    "createMarketSellOrder": [
+      "symbol",
+      "amount"
+    ],
+    "createMarketSellOrderWithCost": [
+      "symbol",
+      "cost"
+    ],
+    "createNetworksByIdObject": [],
+    "createOHLCVObject": [
+      "symbol",
+      "timeframe",
+      "data"
+    ],
+    "createOrder": [
+      "symbol",
+      "type",
+      "side",
+      "amount",
+      "price"
+    ],
+    "createOrderWithTakeProfitAndStopLoss": [
+      "symbol",
+      "type",
+      "side",
+      "amount",
+      "price",
+      "takeProfit",
+      "stopLoss"
+    ],
+    "createOrders": [
+      "orders"
+    ],
+    "createPostOnlyOrder": [
+      "symbol",
+      "type",
+      "side",
+      "amount",
+      "price"
+    ],
+    "createReduceOnlyOrder": [
+      "symbol",
+      "type",
+      "side",
+      "amount",
+      "price"
+    ],
+    "createSafeDictionary": [],
+    "createStopLimitOrder": [
+      "symbol",
+      "side",
+      "amount",
+      "price",
+      "triggerPrice"
+    ],
+    "createStopLossOrder": [
+      "symbol",
+      "type",
+      "side",
+      "amount",
+      "price",
+      "stopLossPrice"
+    ],
+    "createStopMarketOrder": [
+      "symbol",
+      "side",
+      "amount",
+      "triggerPrice"
+    ],
+    "createStopOrder": [
+      "symbol",
+      "type",
+      "side",
+      "amount",
+      "price",
+      "triggerPrice"
+    ],
+    "createSubAccount": [
+      "name"
+    ],
+    "createTakeProfitOrder": [
+      "symbol",
+      "type",
+      "side",
+      "amount",
+      "price",
+      "takeProfitPrice"
+    ],
+    "createTrailingAmountOrder": [
+      "symbol",
+      "type",
+      "side",
+      "amount",
+      "price",
+      "trailingAmount",
+      "trailingTriggerPrice"
+    ],
+    "createTrailingPercentOrder": [
+      "symbol",
+      "type",
+      "side",
+      "amount",
+      "price",
+      "trailingPercent",
+      "trailingTriggerPrice"
+    ],
+    "createTriggerOrder": [
+      "symbol",
+      "type",
+      "side",
+      "amount",
+      "price",
+      "triggerPrice"
+    ],
+    "editLimitBuyOrder": [
+      "id",
+      "symbol",
+      "amount",
+      "price"
+    ],
+    "editLimitOrder": [
+      "id",
+      "symbol",
+      "side",
+      "amount",
+      "price"
+    ],
+    "editLimitSellOrder": [
+      "id",
+      "symbol",
+      "amount",
+      "price"
+    ],
+    "editOrder": [
+      "id",
+      "symbol",
+      "type",
+      "side",
+      "amount",
+      "price"
+    ],
+    "editOrderWithClientOrderId": [
+      "clientOrderId",
+      "symbol",
+      "type",
+      "side",
+      "amount",
+      "price"
+    ],
+    "editOrders": [
+      "orders"
+    ],
+    "fetch": [
+      "url",
+      "method",
+      "headers",
+      "body"
+    ],
+    "fetch2": [
+      "path",
+      "api",
+      "method",
+      "headers",
+      "body",
+      "config"
+    ],
+    "fetchAccounts": [],
+    "fetchAllGreeks": [
+      "symbols"
+    ],
+    "fetchBalance": [],
+    "fetchBidsAsks": [
+      "symbols"
+    ],
+    "fetchBorrowInterest": [
+      "code",
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchBorrowRate": [
+      "code",
+      "amount"
+    ],
+    "fetchCanceledAndClosedOrders": [
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchCanceledOrders": [
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchClosedOrders": [
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchConvertCurrencies": [],
+    "fetchConvertQuote": [
+      "fromCode",
+      "toCode",
+      "amount"
+    ],
+    "fetchConvertTrade": [
+      "id",
+      "code"
+    ],
+    "fetchConvertTradeHistory": [
+      "code",
+      "since",
+      "limit"
+    ],
+    "fetchCrossBorrowRate": [
+      "code"
+    ],
+    "fetchCrossBorrowRates": [],
+    "fetchCurrencies": [],
+    "fetchDepositAddress": [
+      "code"
+    ],
+    "fetchDepositAddresses": [
+      "codes"
+    ],
+    "fetchDepositAddressesByNetwork": [
+      "code"
+    ],
+    "fetchDepositWithdrawFee": [
+      "code"
+    ],
+    "fetchDepositWithdrawFees": [
+      "codes"
+    ],
+    "fetchDeposits": [
+      "code",
+      "since",
+      "limit"
+    ],
+    "fetchDepositsWithdrawals": [
+      "code",
+      "since",
+      "limit"
+    ],
+    "fetchFreeBalance": [],
+    "fetchFundingHistory": [
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchFundingInterval": [
+      "symbol"
+    ],
+    "fetchFundingIntervals": [
+      "symbols"
+    ],
+    "fetchFundingRate": [
+      "symbol"
+    ],
+    "fetchFundingRateHistory": [
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchFundingRates": [
+      "symbols"
+    ],
+    "fetchGreeks": [
+      "symbol"
+    ],
+    "fetchIndexOHLCV": [
+      "symbol",
+      "timeframe",
+      "since",
+      "limit"
+    ],
+    "fetchIsolatedBorrowRate": [
+      "symbol"
+    ],
+    "fetchIsolatedBorrowRates": [],
+    "fetchL2OrderBook": [
+      "symbol",
+      "limit"
+    ],
+    "fetchL3OrderBook": [
+      "symbol",
+      "limit"
+    ],
+    "fetchLastPrices": [
+      "symbols"
+    ],
+    "fetchLedger": [
+      "code",
+      "since",
+      "limit"
+    ],
+    "fetchLedgerEntry": [
+      "id",
+      "code"
+    ],
+    "fetchLeverage": [
+      "symbol"
+    ],
+    "fetchLeverageTiers": [
+      "symbols"
+    ],
+    "fetchLeverages": [
+      "symbols"
+    ],
+    "fetchLiquidations": [
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchLongShortRatio": [
+      "symbol",
+      "timeframe"
+    ],
+    "fetchLongShortRatioHistory": [
+      "symbol",
+      "timeframe",
+      "since",
+      "limit"
+    ],
+    "fetchMarginAdjustmentHistory": [
+      "symbol",
+      "type",
+      "since",
+      "limit"
+    ],
+    "fetchMarginMode": [
+      "symbol"
+    ],
+    "fetchMarginModes": [
+      "symbols"
+    ],
+    "fetchMarkOHLCV": [
+      "symbol",
+      "timeframe",
+      "since",
+      "limit"
+    ],
+    "fetchMarkPrice": [
+      "symbol"
+    ],
+    "fetchMarkPrices": [
+      "symbols"
+    ],
+    "fetchMarketLeverageTiers": [
+      "symbol"
+    ],
+    "fetchMarkets": [],
+    "fetchMyLiquidations": [
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchMyTrades": [
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchOHLCV": [
+      "symbol",
+      "timeframe",
+      "since",
+      "limit"
+    ],
+    "fetchOpenInterest": [
+      "symbol"
+    ],
+    "fetchOpenInterestHistory": [
+      "symbol",
+      "timeframe",
+      "since",
+      "limit"
+    ],
+    "fetchOpenInterests": [
+      "symbols"
+    ],
+    "fetchOpenOrders": [
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchOption": [
+      "symbol"
+    ],
+    "fetchOptionChain": [
+      "code"
+    ],
+    "fetchOrder": [
+      "id",
+      "symbol"
+    ],
+    "fetchOrderBook": [
+      "symbol",
+      "limit"
+    ],
+    "fetchOrderBooks": [
+      "symbols",
+      "limit"
+    ],
+    "fetchOrderStatus": [
+      "id",
+      "symbol"
+    ],
+    "fetchOrderTrades": [
+      "id",
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchOrderWithClientOrderId": [
+      "clientOrderId",
+      "symbol"
+    ],
+    "fetchOrders": [
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchPaginatedCallCursor": [
+      "method",
+      "symbol",
+      "since",
+      "limit",
+      "cursorReceived",
+      "cursorSent",
+      "cursorIncrement",
+      "maxEntriesPerRequest"
+    ],
+    "fetchPaginatedCallDeterministic": [
+      "method",
+      "symbol",
+      "since",
+      "limit",
+      "timeframe",
+      "maxEntriesPerRequest"
+    ],
+    "fetchPaginatedCallDynamic": [
+      "method",
+      "symbol",
+      "since",
+      "limit",
+      "maxEntriesPerRequest",
+      "removeRepeated"
+    ],
+    "fetchPaginatedCallIncremental": [
+      "method",
+      "symbol",
+      "since",
+      "limit",
+      "pageKey",
+      "maxEntriesPerRequest"
+    ],
+    "fetchPartialBalance": [
+      "part"
+    ],
+    "fetchPosition": [
+      "symbol"
+    ],
+    "fetchPositionHistory": [
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchPositionMode": [
+      "symbol"
+    ],
+    "fetchPositions": [
+      "symbols"
+    ],
+    "fetchPositionsForSymbol": [
+      "symbol"
+    ],
+    "fetchPositionsHistory": [
+      "symbols",
+      "since",
+      "limit"
+    ],
+    "fetchPositionsRisk": [
+      "symbols"
+    ],
+    "fetchPremiumIndexOHLCV": [
+      "symbol",
+      "timeframe",
+      "since",
+      "limit"
+    ],
+    "fetchRestOrderBookSafe": [
+      "symbol",
+      "limit"
+    ],
+    "fetchStatus": [],
+    "fetchTicker": [
+      "symbol"
+    ],
+    "fetchTickers": [
+      "symbols"
+    ],
+    "fetchTime": [],
+    "fetchTotalBalance": [],
+    "fetchTrades": [
+      "symbol",
+      "since",
+      "limit"
+    ],
+    "fetchTradingFee": [
+      "symbol"
+    ],
+    "fetchTradingFees": [],
+    "fetchTradingLimits": [
+      "symbols"
+    ],
+    "fetchTransactionFee": [
+      "code"
+    ],
+    "fetchTransactionFees": [
+      "codes"
+    ],
+    "fetchTransactions": [
+      "code",
+      "since",
+      "limit"
+    ],
+    "fetchTransfer": [
+      "id",
+      "code"
+    ],
+    "fetchTransfers": [
+      "code",
+      "since",
+      "limit"
+    ],
+    "fetchUnifiedOrder": [
+      "order"
+    ],
+    "fetchUsedBalance": [],
+    "fetchWebEndpoint": [
+      "method",
+      "endpointMethod",
+      "returnAsJson",
+      "startRegex",
+      "endRegex"
+    ],
+    "fetchWithdrawals": [
+      "code",
+      "since",
+      "limit"
+    ],
+    "repayCrossMargin": [
+      "code",
+      "amount"
+    ],
+    "repayIsolatedMargin": [
+      "symbol",
+      "code",
+      "amount"
+    ],
+    "repayMargin": [
+      "code",
+      "amount",
+      "symbol"
+    ],
+    "setHeaders": [
+      "headers"
+    ],
+    "setLeverage": [
+      "leverage",
+      "symbol"
+    ],
+    "setMargin": [
+      "symbol",
+      "amount"
+    ],
+    "setMarginMode": [
+      "marginMode",
+      "symbol"
+    ],
+    "setMarketsFromExchange": [
+      "sourceExchange"
+    ],
+    "setPositionMode": [
+      "hedged",
+      "symbol"
+    ],
+    "setProxyAgents": [
+      "httpProxy",
+      "httpsProxy",
+      "socksProxy"
+    ],
+    "setTakeProfitAndStopLossParams": [
+      "symbol",
+      "type",
+      "side",
+      "amount",
+      "price",
+      "takeProfit",
+      "stopLoss"
+    ],
+    "transfer": [
+      "code",
+      "amount",
+      "fromAccount",
+      "toAccount"
+    ],
+    "withdraw": [
+      "code",
+      "amount",
+      "address",
+      "tag"
+    ]
+  },
+  "returns": {
+    "fetch": "any",
+    "fetchCurrencies": "Currencies",
+    "fetchMarkets": "Market[]",
+    "fetchAccounts": "Account[]",
+    "fetchTrades": "Trade[]",
+    "fetchDepositAddresses": "DepositAddress[]",
+    "fetchOrderBook": "OrderBook",
+    "fetchMarginMode": "MarginMode",
+    "fetchMarginModes": "MarginModes",
+    "fetchRestOrderBookSafe": "OrderBook",
+    "fetchTime": "Int",
+    "fetchTradingLimits": "{}",
+    "fetchCrossBorrowRates": "CrossBorrowRates",
+    "fetchIsolatedBorrowRates": "IsolatedBorrowRates",
+    "fetchLeverageTiers": "LeverageTiers",
+    "fetchFundingRates": "FundingRates",
+    "fetchFundingIntervals": "FundingRates",
+    "transfer": "TransferEntry",
+    "withdraw": "Transaction",
+    "createDepositAddress": "DepositAddress",
+    "setLeverage": "{}",
+    "fetchLeverage": "Leverage",
+    "fetchLeverages": "Leverages",
+    "setPositionMode": "{}",
+    "setMargin": "MarginModification",
+    "fetchLongShortRatio": "LongShortRatio",
+    "fetchLongShortRatioHistory": "LongShortRatio[]",
+    "fetchMarginAdjustmentHistory": "MarginModification[]",
+    "setMarginMode": "{}",
+    "fetchDepositAddressesByNetwork": "DepositAddress[]",
+    "fetchOpenInterestHistory": "OpenInterest[]",
+    "fetchOpenInterest": "OpenInterest",
+    "fetchOpenInterests": "OpenInterests",
+    "fetchBorrowRate": "{}",
+    "repayCrossMargin": "{}",
+    "repayIsolatedMargin": "{}",
+    "borrowCrossMargin": "{}",
+    "borrowIsolatedMargin": "{}",
+    "borrowMargin": "{}",
+    "repayMargin": "{}",
+    "fetchOHLCV": "OHLCV[]",
+    "fetchWebEndpoint": "any",
+    "fetchL2OrderBook": "any",
+    "fetch2": "any",
+    "editLimitBuyOrder": "Order",
+    "editLimitSellOrder": "Order",
+    "editLimitOrder": "Order",
+    "editOrder": "Order",
+    "editOrderWithClientOrderId": "Order",
+    "fetchPosition": "Position",
+    "fetchPositionsForSymbol": "Position[]",
+    "fetchPositions": "Position[]",
+    "fetchPositionsRisk": "Position[]",
+    "fetchBidsAsks": "Tickers",
+    "fetchBorrowInterest": "BorrowInterest[]",
+    "fetchLedger": "LedgerEntry[]",
+    "fetchLedgerEntry": "LedgerEntry",
+    "fetchBalance": "Balances",
+    "fetchPartialBalance": "Balance",
+    "fetchFreeBalance": "Balance",
+    "fetchUsedBalance": "Balance",
+    "fetchTotalBalance": "Balance",
+    "fetchStatus": "any",
+    "fetchTransactionFee": "{}",
+    "fetchTransactionFees": "{}",
+    "fetchDepositWithdrawFees": "Dictionary<DepositWithdrawFee>",
+    "fetchDepositWithdrawFee": "DepositWithdrawFee",
+    "fetchCrossBorrowRate": "CrossBorrowRate",
+    "fetchIsolatedBorrowRate": "IsolatedBorrowRate",
+    "fetchTicker": "Ticker",
+    "fetchMarkPrice": "Ticker",
+    "fetchTickers": "Tickers",
+    "fetchMarkPrices": "Tickers",
+    "fetchOrderBooks": "OrderBooks",
+    "fetchOrder": "Order",
+    "fetchOrderWithClientOrderId": "Order",
+    "fetchOrderStatus": "string",
+    "fetchUnifiedOrder": "Order",
+    "createOrder": "Order",
+    "createConvertTrade": "Conversion",
+    "fetchConvertTrade": "Conversion",
+    "fetchConvertTradeHistory": "Conversion[]",
+    "fetchPositionMode": "{}",
+    "createTrailingAmountOrder": "Order",
+    "createTrailingPercentOrder": "Order",
+    "createMarketOrderWithCost": "Order",
+    "createMarketBuyOrderWithCost": "Order",
+    "createMarketSellOrderWithCost": "Order",
+    "createTriggerOrder": "Order",
+    "createStopLossOrder": "Order",
+    "createTakeProfitOrder": "Order",
+    "createOrderWithTakeProfitAndStopLoss": "Order",
+    "createOrders": "Order[]",
+    "editOrders": "Order[]",
+    "cancelOrder": "Order",
+    "cancelOrderWithClientOrderId": "Order",
+    "cancelOrders": "Order[]",
+    "cancelOrdersWithClientOrderIds": "Order[]",
+    "cancelAllOrders": "Order[]",
+    "cancelAllOrdersAfter": "{}",
+    "cancelOrdersForSymbols": "Order[]",
+    "cancelUnifiedOrder": "{}",
+    "fetchOrders": "Order[]",
+    "fetchOrderTrades": "Trade[]",
+    "fetchOpenOrders": "Order[]",
+    "fetchClosedOrders": "Order[]",
+    "fetchCanceledOrders": "Order[]",
+    "fetchCanceledAndClosedOrders": "Order[]",
+    "fetchMyTrades": "Trade[]",
+    "fetchMyLiquidations": "Liquidation[]",
+    "fetchLiquidations": "Liquidation[]",
+    "fetchGreeks": "Greeks",
+    "fetchAllGreeks": "Greeks[]",
+    "fetchOptionChain": "OptionChain",
+    "fetchOption": "Option",
+    "fetchConvertQuote": "Conversion",
+    "fetchDepositsWithdrawals": "Transaction[]",
+    "fetchDeposits": "Transaction[]",
+    "fetchWithdrawals": "Transaction[]",
+    "fetchFundingRateHistory": "FundingRateHistory[]",
+    "fetchFundingHistory": "FundingHistory[]",
+    "fetchL3OrderBook": "OrderBook",
+    "fetchDepositAddress": "DepositAddress",
+    "createLimitOrder": "Order",
+    "createMarketOrder": "Order",
+    "createLimitBuyOrder": "Order",
+    "createLimitSellOrder": "Order",
+    "createMarketBuyOrder": "Order",
+    "createMarketSellOrder": "Order",
+    "fetchMarketLeverageTiers": "LeverageTier[]",
+    "createPostOnlyOrder": "Order",
+    "createReduceOnlyOrder": "Order",
+    "createStopOrder": "Order",
+    "createStopLimitOrder": "Order",
+    "createStopMarketOrder": "Order",
+    "createSubAccount": "{}",
+    "fetchLastPrices": "LastPrices",
+    "fetchTradingFees": "TradingFees",
+    "fetchTradingFee": "TradingFeeInterface",
+    "fetchConvertCurrencies": "Currencies",
+    "fetchFundingRate": "FundingRate",
+    "fetchFundingInterval": "FundingRate",
+    "fetchMarkOHLCV": "OHLCV[]",
+    "fetchIndexOHLCV": "OHLCV[]",
+    "fetchPremiumIndexOHLCV": "OHLCV[]",
+    "fetchTransactions": "Transaction[]",
+    "fetchPaginatedCallDynamic": "any",
+    "fetchPaginatedCallDeterministic": "any",
+    "fetchPaginatedCallCursor": "any",
+    "fetchPaginatedCallIncremental": "any",
+    "fetchPositionHistory": "Position[]",
+    "fetchPositionsHistory": "Position[]",
+    "fetchTransfer": "TransferEntry",
+    "fetchTransfers": "TransferEntry[]"
+  }
+}
