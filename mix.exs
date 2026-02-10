@@ -79,7 +79,24 @@ defmodule CcxtClient.MixProject do
         "GitHub" => @source_url,
         "Issues" => "#{@source_url}/issues"
       },
-      files: ["lib", "priv/specs", "mix.exs", "README.md", "CHANGELOG.md", "LICENSE", "VERSION", "priv/extractor/ccxt_exchange_tiers.json", "priv/extractor/ccxt_method_signatures.json", "priv/extractor/ccxt_symbol_formats.json", "priv/extractor/ccxt_exception_names.json", "priv/extractor/ccxt_parse_methods.json", "priv/extractor/ccxt_error_codes.json", "priv/extractor/ccxt_emulated_methods.json", "priv/extractor/ccxt_mapping_analysis.json", "priv/priority_tiers.exs"]
+      files: [
+        "lib",
+        "priv/specs",
+        "mix.exs",
+        "README.md",
+        "CHANGELOG.md",
+        "LICENSE",
+        "VERSION",
+        "priv/extractor/ccxt_exchange_tiers.json",
+        "priv/extractor/ccxt_method_signatures.json",
+        "priv/extractor/ccxt_symbol_formats.json",
+        "priv/extractor/ccxt_exception_names.json",
+        "priv/extractor/ccxt_parse_methods.json",
+        "priv/extractor/ccxt_error_codes.json",
+        "priv/extractor/ccxt_emulated_methods.json",
+        "priv/extractor/ccxt_mapping_analysis.json",
+        "priv/priority_tiers.exs"
+      ]
     ]
   end
 
