@@ -10,6 +10,7 @@ defmodule CCXT.Types.Schema.Currency do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
   @fields []
   @type_spec_str """
   CCXT.Types.CurrencyInterface.t() | nil

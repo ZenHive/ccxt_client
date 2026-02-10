@@ -4,6 +4,7 @@ defmodule CCXT.Signing.CustomTest do
   alias CCXT.Credentials
   alias CCXT.Signing
   alias CCXT.Signing.Custom
+  alias CCXT.Signing.HmacSha256Headers
 
   # Test credentials
   @api_key "test_custom_api_key"
@@ -74,6 +75,42 @@ defmodule CCXT.Signing.CustomTest do
 
       headers_map = Map.new(result.headers)
       assert headers_map["X-Custom-Signed"] == "true"
+    end
+  end
+
+  describe "validate_module/1" do
+    test "accepts module with sign/3" do
+      assert {:ok, HmacSha256Headers} =
+               Custom.validate_module(HmacSha256Headers)
+    end
+
+    test "rejects module without sign/3" do
+      assert {:error, message} = Custom.validate_module(String)
+      assert message =~ "must implement sign/3"
+      assert message =~ "CCXT.Signing.Behaviour"
+    end
+
+    test "rejects non-existent module with load error" do
+      assert {:error, message} = Custom.validate_module(NoSuchModule)
+      assert message =~ "Could not load"
+      assert message =~ "CCXT.Signing.Behaviour"
+    end
+  end
+
+  describe "sign/3 with invalid module" do
+    test "raises ArgumentError for module without sign/3", %{credentials: credentials} do
+      config = %{custom_module: String}
+
+      request = %{
+        method: :get,
+        path: "/test",
+        body: nil,
+        params: %{}
+      }
+
+      assert_raise ArgumentError, ~r/must implement sign\/3/, fn ->
+        Custom.sign(request, credentials, config)
+      end
     end
   end
 

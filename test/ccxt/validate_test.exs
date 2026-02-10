@@ -282,7 +282,149 @@ defmodule CCXT.ValidateTest do
   end
 
   # =============================================================================
-  # Exchange Resolution Tests
+  # WS Symbol Format Variations (Task 5 coverage)
+  # =============================================================================
+
+  describe "ws_symbol/3 - format variations" do
+    test "applies lowercase for exchange with lower case format" do
+      lower_spec = %Spec{
+        id: "htx",
+        name: "HTX",
+        urls: %{api: "https://api.htx.com"},
+        symbol_format: %{separator: "", case: :lower},
+        endpoints: []
+      }
+
+      assert {:ok, ws_sym} = Validate.ws_symbol(lower_spec, "BTC/USDT")
+      # HTX is not in ws_lowercase_exchanges, so case transform comes from denormalize
+      assert is_binary(ws_sym)
+    end
+
+    test "keeps dash separator for Coinbase-style WS symbols" do
+      assert {:ok, "BTC-USDT"} = Validate.ws_symbol(@coinbase_spec, "BTC/USDT")
+    end
+
+    test "rejects invalid symbol for WS just like regular symbol validation" do
+      lower_spec = %Spec{
+        id: "htx",
+        name: "HTX",
+        urls: %{api: "https://api.htx.com"},
+        symbol_format: %{separator: "", case: :lower},
+        endpoints: []
+      }
+
+      assert {:error, message} = Validate.ws_symbol(lower_spec, "BTCUSDT")
+      assert message =~ "Invalid symbol format"
+      assert message =~ "HTX"
+    end
+
+    test "ws_symbol passes market_type through to denormalize" do
+      assert {:ok, _} = Validate.ws_symbol(@coinbase_spec, "BTC/USD:BTC", market_type: :swap)
+    end
+  end
+
+  # =============================================================================
+  # Symbol Format Variations (Task 5 coverage)
+  # =============================================================================
+
+  describe "symbol/3 - symbol format variations" do
+    test "error message mentions 'lower' for lowercase format" do
+      spec = %Spec{
+        id: "htx",
+        name: "HTX",
+        urls: %{api: "https://api.htx.com"},
+        symbol_format: %{separator: "", case: :lower},
+        endpoints: []
+      }
+
+      {:error, message} = Validate.symbol(spec, "invalid")
+      assert message =~ "lower"
+    end
+
+    test "error message mentions 'mixed' for mixed case format" do
+      spec = %Spec{
+        id: "test_mixed",
+        name: "TestMixed",
+        urls: %{api: "https://api.test.com"},
+        symbol_format: %{separator: "", case: :mixed},
+        endpoints: []
+      }
+
+      {:error, message} = Validate.symbol(spec, "invalid")
+      assert message =~ "mixed"
+    end
+
+    test "error message mentions custom separator" do
+      spec = %Spec{
+        id: "test_sep",
+        name: "TestSep",
+        urls: %{api: "https://api.test.com"},
+        symbol_format: %{separator: "_", case: :upper},
+        endpoints: []
+      }
+
+      {:error, message} = Validate.symbol(spec, "invalid")
+      assert message =~ "_"
+    end
+
+    test "nil symbol_format uses defaults (upper case, no separator)" do
+      spec = %Spec{
+        id: "test_nil_fmt",
+        name: "TestNilFmt",
+        urls: %{api: "https://api.test.com"},
+        symbol_format: nil,
+        endpoints: []
+      }
+
+      {:error, message} = Validate.symbol(spec, "invalid")
+      assert message =~ "upper"
+      assert message =~ "no separator"
+    end
+
+    test "unknown case value falls back to 'upper' in error message" do
+      spec = %Spec{
+        id: "test_unknown",
+        name: "TestUnknown",
+        urls: %{api: "https://api.test.com"},
+        symbol_format: %{separator: "", case: :other},
+        endpoints: []
+      }
+
+      {:error, message} = Validate.symbol(spec, "invalid")
+      assert message =~ "upper"
+    end
+  end
+
+  # =============================================================================
+  # Params - String Key Normalization (Task 5 coverage)
+  # =============================================================================
+
+  describe "params/3 - string key normalization" do
+    test "string keys that map to existing atoms are converted" do
+      # "symbol" is an existing atom
+      params = %{"symbol" => "BTC/USDT"}
+      assert {:ok, result} = Validate.params(@binance_spec, :fetch_ticker, params)
+      assert result[:symbol] == "BTC/USDT"
+    end
+
+    test "safe_to_atom keeps unknown string keys as strings" do
+      # Key that won't exist as an atom — exercises the ArgumentError rescue path
+      params = %{
+        "symbol" => "BTC/USDT",
+        "side" => "buy",
+        "type" => "limit",
+        "quantity" => 0.1,
+        "xyzzy_nonexistent_param_abc_12345" => "value"
+      }
+
+      {:ok, result} = Validate.params(@binance_spec, :create_order, params)
+      # The unknown key should remain as a string (not converted to atom)
+      assert result["xyzzy_nonexistent_param_abc_12345"] == "value"
+    end
+  end
+
+  # =============================================================================
+  # Exchange Resolution Tests (expanded for Task 5 coverage)
   # =============================================================================
 
   describe "exchange resolution" do
@@ -293,6 +435,17 @@ defmodule CCXT.ValidateTest do
     test "returns error for non-existent exchange string" do
       assert {:error, message} = Validate.symbol("nonexistent_exchange", "BTC/USDT")
       assert message =~ "Exchange 'nonexistent_exchange' not found"
+    end
+
+    test "returns error for non-existent exchange atom" do
+      assert {:error, message} = Validate.symbol(:nonexistent_exchange_xyz, "BTC/USDT")
+      assert message =~ "not found"
+    end
+
+    test "returns error for atom that is not a CCXT module" do
+      # String module exists but doesn't have __ccxt_spec__/0
+      assert {:error, message} = Validate.symbol(String, "BTC/USDT")
+      assert message =~ "not found"
     end
   end
 end

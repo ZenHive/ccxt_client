@@ -1,5 +1,25 @@
 defmodule CCXT.Types.Position do
-  @moduledoc "Auto-generated from priv/ccxt/ts/src/base/types.ts."
+  @moduledoc """
+  Unified derivatives position data from an exchange.
+
+  Represents an open position in a derivatives market. Side is normalized to
+  atoms (`:long`, `:short`) and margin_mode to (`:cross`, `:isolated`).
+  See `CCXT.Types.Schema.Position` for fields with descriptions.
+
+  ## Helpers
+
+  - `long?/1` - Whether this is a long position
+  - `short?/1` - Whether this is a short position
+  - `profitable?/1` - Whether unrealized PnL is positive
+
+  ## Example
+
+      {:ok, positions} = MyExchange.fetch_positions()
+      position = hd(positions)
+      position.side           # :long
+      position.leverage       # 10
+      Position.profitable?(position)  # true
+  """
 
   use CCXT.Types.Schema.Position
 

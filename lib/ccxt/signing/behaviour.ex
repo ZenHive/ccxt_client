@@ -2,35 +2,80 @@ defmodule CCXT.Signing.Behaviour do
   @moduledoc """
   Behaviour for signing pattern implementations.
 
-  All signing patterns must implement the `sign/3` callback which takes
-  a request, credentials, and pattern-specific config, returning a
-  signed request with appropriate headers/params.
+  ## Public API
 
-  ## Implementing a Pattern
+  This IS the contract for custom signing implementations. Any module that
+  implements `sign/3` can be used as a custom signing pattern via
+  `CCXT.Signing.Custom`.
 
-  To create a new signing pattern:
+  ## Implementing a Custom Signing Pattern
 
-      defmodule CCXT.Signing.MyPattern do
+  1. Create a module that implements this behaviour:
+
+      defmodule MyApp.Signing.MyExchange do
         @behaviour CCXT.Signing.Behaviour
-
-        alias CCXT.Credentials
-        alias CCXT.Signing
 
         @impl true
         def sign(request, credentials, config) do
-          # Implementation...
-          %{url: ..., method: ..., headers: ..., body: ...}
+          timestamp = CCXT.Signing.timestamp_ms()
+          signature = CCXT.Signing.hmac_sha256(
+            request.path <> to_string(timestamp),
+            credentials.secret
+          )
+
+          %{
+            url: request.path,
+            method: request.method,
+            headers: [
+              {"X-API-KEY", credentials.api_key},
+              {"X-TIMESTAMP", to_string(timestamp)},
+              {"X-SIGNATURE", CCXT.Signing.encode_hex(signature)}
+            ],
+            body: request.body
+          }
         end
       end
 
-  ## Type Aliases
+  2. Wire it into a spec:
 
-  This behaviour uses types defined in `CCXT.Signing`:
+      %{
+        id: "my_exchange",
+        name: "My Exchange",
+        urls: %{api: "https://api.myexchange.com"},
+        signing: %{
+          pattern: :custom,
+          custom_module: MyApp.Signing.MyExchange
+        }
+      }
 
-  - `t:CCXT.Signing.request/0` - Input request map
-  - `t:CCXT.Credentials.t/0` - API credentials struct
-  - `t:CCXT.Signing.config/0` - Pattern-specific configuration
-  - `t:CCXT.Signing.signed_request/0` - Output signed request map
+  3. Validate the module (optional but recommended):
+
+      CCXT.Signing.Custom.validate_module(MyApp.Signing.MyExchange)
+      #=> {:ok, MyApp.Signing.MyExchange}
+
+  ## Available Helpers
+
+  `CCXT.Signing` provides crypto and encoding helpers for implementors:
+
+  | Function | Description |
+  |----------|-------------|
+  | `timestamp_ms/0` | Current time in milliseconds |
+  | `timestamp_seconds/0` | Current time in seconds |
+  | `timestamp_iso8601/0` | Current time as ISO 8601 string |
+  | `hmac_sha256/2` | HMAC-SHA256 digest |
+  | `hmac_sha384/2` | HMAC-SHA384 digest |
+  | `hmac_sha512/2` | HMAC-SHA512 digest |
+  | `sha256/1` | SHA256 hash |
+  | `encode_hex/1` | Binary to lowercase hex string |
+  | `encode_base64/1` | Binary to base64 string |
+  | `decode_base64/1` | Base64 string to binary |
+  | `urlencode/1` | Map to sorted URL-encoded query string |
+
+  ## Notes
+
+  - Custom modules should use `@behaviour CCXT.Signing.Behaviour`
+  - The `config` parameter contains the full signing config from the spec
+  - Use `CCXT.Signing.Custom.validate_module/1` to verify a module at runtime
   """
 
   alias CCXT.Credentials

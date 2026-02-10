@@ -1,5 +1,24 @@
 defmodule CCXT.Types.OrderBook do
-  @moduledoc "Auto-generated from priv/ccxt/ts/src/base/types.ts."
+  @moduledoc """
+  Unified order book (market depth) data from an exchange.
+
+  Contains sorted bid and ask price levels, each as `[price, amount]` pairs.
+  Bids are sorted highest-first, asks lowest-first.
+  See `CCXT.Types.Schema.OrderBook` for fields with descriptions.
+
+  ## Helpers
+
+  - `best_bid/1` - Highest bid price
+  - `best_ask/1` - Lowest ask price
+  - `spread/1` - Difference between best ask and best bid
+
+  ## Example
+
+      {:ok, book} = MyExchange.fetch_order_book("BTC/USDT")
+      OrderBook.best_bid(book)  # 49999.0
+      OrderBook.best_ask(book)  # 50001.0
+      OrderBook.spread(book)    # 2.0
+  """
 
   use CCXT.Types.Schema.OrderBook
 

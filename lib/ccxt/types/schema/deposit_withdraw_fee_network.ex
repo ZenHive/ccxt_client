@@ -21,6 +21,8 @@ defmodule CCXT.Types.Schema.DepositWithdrawFeeNetwork do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :fee, optional: true, source: "fee", type: "number()"},
     %{name: :percentage, optional: true, source: "percentage", type: "boolean()"}

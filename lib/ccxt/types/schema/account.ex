@@ -23,6 +23,8 @@ defmodule CCXT.Types.Schema.Account do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :id, optional: false, source: "id", type: "String.t() | nil"},
     %{name: :type, optional: false, source: "type", type: "String.t() | nil"},

@@ -176,6 +176,13 @@ defmodule CCXT.SymbolTest do
     end
   end
 
+  describe "denormalize_ws/3" do
+    test "unknown format falls back to uppercase_no_slash" do
+      assert Symbol.denormalize_ws("BTC/USDT", :unknown_format) == "BTCUSDT"
+      assert Symbol.denormalize_ws("ETH/BTC", :some_other_format) == "ETHBTC"
+    end
+  end
+
   # ============================================================================
   # to_exchange_id/3 and from_exchange_id/3 tests
   # ============================================================================
@@ -196,6 +203,25 @@ defmodule CCXT.SymbolTest do
     test "yymmdd to yyyymmdd" do
       assert Symbol.convert_date("260327", :yymmdd, :yyyymmdd) == "20260327"
       assert Symbol.convert_date("251225", :yymmdd, :yyyymmdd) == "20251225"
+    end
+
+    test "yyyymmdd to yymmdd" do
+      assert Symbol.convert_date("20260327", :yyyymmdd, :yymmdd) == "260327"
+      assert Symbol.convert_date("20251225", :yyyymmdd, :yymmdd) == "251225"
+    end
+
+    test "yyyymmdd to ddmmmyy" do
+      assert Symbol.convert_date("20260327", :yyyymmdd, :ddmmmyy) == "27MAR26"
+      assert Symbol.convert_date("20260109", :yyyymmdd, :ddmmmyy) == "9JAN26"
+    end
+
+    test "ddmmmyy to yyyymmdd" do
+      assert Symbol.convert_date("27MAR26", :ddmmmyy, :yyyymmdd) == "20260327"
+      assert Symbol.convert_date("9JAN26", :ddmmmyy, :yyyymmdd) == "20260109"
+    end
+
+    test "invalid ddmmmyy returns unchanged" do
+      assert Symbol.convert_date("INVALID", :ddmmmyy, :yymmdd) == "INVALID"
     end
 
     test "same format returns unchanged" do
@@ -237,6 +263,14 @@ defmodule CCXT.SymbolTest do
       assert Symbol.to_exchange_id("BTC/USD", @bitstamp_spec) == "btcusd"
       assert Symbol.to_exchange_id("ETH/EUR", @bitstamp_spec) == "etheur"
     end
+
+    test "no_separator_mixed - preserves original case" do
+      spec = %{
+        symbol_patterns: %{spot: %{pattern: :no_separator_mixed, separator: "", case: :mixed}}
+      }
+
+      assert Symbol.to_exchange_id("BTC/USDT", spec) == "BTCUSDT"
+    end
   end
 
   describe "to_exchange_id/3 swap patterns" do
@@ -262,6 +296,16 @@ defmodule CCXT.SymbolTest do
 
     test "suffix_swap - OKX style" do
       assert Symbol.to_exchange_id("BTC/USDT:USDT", @okx_swap_spec) == "BTC-USDT-SWAP"
+    end
+
+    test "suffix_perp - Gate style" do
+      spec = %{
+        symbol_patterns: %{
+          swap: %{pattern: :suffix_perp, separator: "_", case: :upper, suffix: "-PERP"}
+        }
+      }
+
+      assert Symbol.to_exchange_id("BTC/USDT:USDT", spec) == "BTC_USDT-PERP"
     end
   end
 
@@ -307,6 +351,36 @@ defmodule CCXT.SymbolTest do
 
     test "future_ddmmmyy - Bybit style (base+quote-date)" do
       assert Symbol.to_exchange_id("BTC/USDT:USDT-260116", @bybit_future_spec) == "BTCUSDT-16JAN26"
+    end
+
+    test "future_yyyymmdd pattern" do
+      spec = %{
+        symbol_patterns: %{
+          future: %{
+            pattern: :future_yyyymmdd,
+            separator: "_",
+            case: :upper,
+            date_format: :yyyymmdd
+          }
+        }
+      }
+
+      assert Symbol.to_exchange_id("BTC/USDT:USDT-260327", spec) == "BTC_USDT_20260327"
+    end
+
+    test "future_unknown pattern passes expiry through" do
+      spec = %{
+        symbol_patterns: %{
+          future: %{
+            pattern: :future_unknown,
+            separator: "-",
+            case: :upper,
+            date_format: :unknown
+          }
+        }
+      }
+
+      assert Symbol.to_exchange_id("BTC/USD:BTC-260327", spec) == "BTC-USD-260327"
     end
   end
 
@@ -356,6 +430,21 @@ defmodule CCXT.SymbolTest do
       assert Symbol.to_exchange_id("BTC/USDT:USDT-261225-105000-P", @bybit_option_spec) ==
                "BTC-25DEC26-105000-P-USDT"
     end
+
+    test "option_unknown pattern passes expiry through" do
+      spec = %{
+        symbol_patterns: %{
+          option: %{
+            pattern: :option_unknown,
+            separator: "-",
+            case: :upper,
+            date_format: :unknown
+          }
+        }
+      }
+
+      assert Symbol.to_exchange_id("BTC/USD:BTC-260112-84000-C", spec) == "BTC-260112-84000-C"
+    end
   end
 
   describe "from_exchange_id/3 spot patterns" do
@@ -380,6 +469,26 @@ defmodule CCXT.SymbolTest do
     test "dash_upper - Coinbase style" do
       assert Symbol.from_exchange_id("BTC-USD", @coinbase_spec, :spot) == "BTC/USD"
     end
+
+    test "separator split with non-2-part returns id as base with empty quote" do
+      spec = %{
+        symbol_patterns: %{spot: %{pattern: :dash_upper, separator: "-", case: :upper}}
+      }
+
+      # 3-part split can't produce {base, quote} so falls back to id as base with empty quote
+      result = Symbol.from_exchange_id("BTC-USD-EXTRA", spec, :spot)
+      assert result == "BTC-USD-EXTRA/"
+    end
+
+    test "no_separator with unknown quote returns id as base" do
+      spec = %{
+        symbol_patterns: %{spot: %{pattern: :no_separator_upper, separator: "", case: :upper}}
+      }
+
+      # No known quote currency suffix found, so entire id becomes base with empty quote
+      result = Symbol.from_exchange_id("XYZABC", spec, :spot)
+      assert result == "XYZABC/"
+    end
   end
 
   describe "from_exchange_id/3 swap patterns" do
@@ -398,6 +507,32 @@ defmodule CCXT.SymbolTest do
 
     test "suffix_swap - OKX style" do
       assert Symbol.from_exchange_id("BTC-USDT-SWAP", @okx_swap_spec, :swap) == "BTC/USDT:USDT"
+    end
+
+    test "single element after suffix strip defaults to USD quote" do
+      spec = %{
+        symbol_patterns: %{
+          swap: %{pattern: :suffix_perpetual, separator: "-", case: :upper, suffix: "-PERPETUAL"}
+        }
+      }
+
+      # "BTC-PERPETUAL" → strip suffix → "BTC" → split by "-" → ["BTC"] → {BTC, USD}
+      result = Symbol.from_exchange_id("BTC-PERPETUAL", spec, :swap)
+      assert result == "BTC/USD:BTC"
+    end
+
+    test "3+ parts after suffix strip falls back to id with empty quote and settle" do
+      spec = %{
+        symbol_patterns: %{
+          swap: %{pattern: :suffix_swap, separator: "-", case: :upper, suffix: "-SWAP"}
+        }
+      }
+
+      # "A-B-C-SWAP" → strip suffix → "A-B-C" → split by "-" → ["A","B","C"]
+      # 3 parts can't produce {base, quote}, so falls back to full stripped id as base
+      # with empty quote and empty settle
+      result = Symbol.from_exchange_id("A-B-C-SWAP", spec, :swap)
+      assert result == "A-B-C/:"
     end
   end
 
@@ -436,6 +571,54 @@ defmodule CCXT.SymbolTest do
     test "future_ddmmmyy - Bybit style" do
       assert Symbol.from_exchange_id("BTCUSDT-16JAN26", @deribit_future_spec, :future) ==
                "BTC/USDT:USDT-260116"
+    end
+
+    test "future_yymmdd fallback on invalid part count" do
+      spec = %{
+        symbol_patterns: %{
+          future: %{pattern: :future_yymmdd, separator: "-", case: :upper, date_format: :yymmdd}
+        }
+      }
+
+      # 4-part split can't match expected {pair, date} so falls to normalize
+      # which converts "-" separators to "/"
+      result = Symbol.from_exchange_id("A-B-C-D", spec, :future)
+      assert result == "A/B/C/D"
+    end
+
+    test "future_ddmmmyy both-fail fallback on unrecognized format" do
+      spec = %{
+        symbol_patterns: %{
+          future: %{
+            pattern: :future_ddmmmyy,
+            separator: "-",
+            case: :upper,
+            date_format: :ddmmmyy
+          }
+        }
+      }
+
+      # Neither Bybit nor Deribit regex matches → normalize fallback returns unchanged
+      result = Symbol.from_exchange_id("XYZJUNK", spec, :future)
+      assert result == "XYZJUNK"
+    end
+
+    test "future with unknown date_format falls to normalize" do
+      spec = %{
+        symbol_patterns: %{
+          future: %{
+            pattern: :future_unknown,
+            separator: "_",
+            case: :upper,
+            date_format: :custom
+          }
+        }
+      }
+
+      # Unknown date_format triggers the wildcard clause in reverse_future,
+      # which falls back to normalize converting "_" separators to "/"
+      result = Symbol.from_exchange_id("BTC_USD_QUARTER", spec, :future)
+      assert result == "BTC/USD/QUARTER"
     end
   end
 
@@ -484,6 +667,37 @@ defmodule CCXT.SymbolTest do
     test "option_with_settle - Bybit style" do
       assert Symbol.from_exchange_id("BTC-25DEC26-105000-P-USDT", @bybit_option_spec, :option) ==
                "BTC/USDT:USDT-261225-105000-P"
+    end
+
+    test "option_ddmmmyy fallback on invalid format" do
+      result = Symbol.from_exchange_id("INVALID", @deribit_option_spec, :option)
+      assert result == "INVALID"
+    end
+
+    test "option_yymmdd fallback on invalid format" do
+      result = Symbol.from_exchange_id("INVALID", @okx_option_spec, :option)
+      assert result == "INVALID"
+    end
+
+    test "option_with_settle fallback on invalid format" do
+      result = Symbol.from_exchange_id("INVALID", @bybit_option_spec, :option)
+      assert result == "INVALID"
+    end
+
+    test "option unknown pattern returns exchange_id unchanged" do
+      spec = %{
+        symbol_patterns: %{
+          option: %{
+            pattern: :option_custom,
+            separator: "-",
+            case: :upper,
+            date_format: :unknown
+          }
+        }
+      }
+
+      result = Symbol.from_exchange_id("BTC-CUSTOM-OPT", spec, :option)
+      assert result == "BTC-CUSTOM-OPT"
     end
   end
 

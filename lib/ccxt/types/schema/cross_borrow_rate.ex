@@ -25,6 +25,8 @@ defmodule CCXT.Types.Schema.CrossBorrowRate do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :raw, optional: false, source: "info", type: "any()"},
     %{name: :currency, optional: true, source: "currency", type: "String.t() | nil"},

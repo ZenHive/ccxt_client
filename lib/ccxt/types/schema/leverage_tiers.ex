@@ -10,6 +10,7 @@ defmodule CCXT.Types.Schema.LeverageTiers do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
   @fields []
   @type_spec_str """
   %{optional(String.t()) => [CCXT.Types.LeverageTier.t()]}

@@ -10,6 +10,7 @@ defmodule CCXT.Types.Schema.Dict do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
   @fields []
   @type_spec_str """
   %{optional(String.t()) => any()}

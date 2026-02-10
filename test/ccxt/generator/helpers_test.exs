@@ -137,4 +137,138 @@ defmodule CCXT.Generator.HelpersTest do
       assert Helpers.convert_ohlcv_timestamps(%{}, :seconds) == %{}
     end
   end
+
+  # ===========================================================================
+  # Task 23: Coverage gap tests
+  # ===========================================================================
+
+  describe "get_path_param/3" do
+    test "returns value for atom key present in params" do
+      params = %{symbol: "BTCUSDT", limit: 100}
+      assert Helpers.get_path_param(params, :symbol, "symbol") == "BTCUSDT"
+    end
+
+    test "falls back to string key when atom key missing" do
+      params = %{"order_id" => "abc-123"}
+      assert Helpers.get_path_param(params, :order_id, "order_id") == "abc-123"
+    end
+
+    test "returns empty string when neither key present" do
+      params = %{other: "value"}
+      assert Helpers.get_path_param(params, :missing, "missing") == ""
+    end
+
+    test "atom key takes precedence over string key" do
+      params = Map.put(%{symbol: "ATOM_VALUE"}, "symbol", "STRING_VALUE")
+      assert Helpers.get_path_param(params, :symbol, "symbol") == "ATOM_VALUE"
+    end
+
+    test "converts non-string values to string" do
+      params = %{limit: 100}
+      assert Helpers.get_path_param(params, :limit, "limit") == "100"
+    end
+  end
+
+  describe "resolve_generated_placeholders/1" do
+    test "preserves params without <generated> placeholder" do
+      params = %{"symbol" => "BTC", "limit" => 100}
+      result = Helpers.resolve_generated_placeholders(params)
+      assert result == %{"symbol" => "BTC", "limit" => 100}
+    end
+
+    test "replaces end_timestamp <generated> with current timestamp" do
+      params = %{"end_timestamp" => "<generated>", "symbol" => "BTC"}
+      result = Helpers.resolve_generated_placeholders(params)
+
+      assert is_integer(result["end_timestamp"])
+      now_ms = System.system_time(:millisecond)
+      # Should be within 2 seconds of now (generous for CI)
+      assert abs(result["end_timestamp"] - now_ms) < 2000
+      assert result["symbol"] == "BTC"
+    end
+
+    test "replaces start_timestamp <generated> with one-hour-ago timestamp" do
+      params = %{"start_timestamp" => "<generated>"}
+      result = Helpers.resolve_generated_placeholders(params)
+
+      assert is_integer(result["start_timestamp"])
+      one_hour_ago = System.system_time(:millisecond) - 3_600_000
+      # Should be within 1 second of one-hour-ago
+      assert abs(result["start_timestamp"] - one_hour_ago) < 2000
+    end
+
+    test "replaces startTime <generated> with one-hour-ago timestamp" do
+      params = %{"startTime" => "<generated>"}
+      result = Helpers.resolve_generated_placeholders(params)
+
+      assert is_integer(result["startTime"])
+      one_hour_ago = System.system_time(:millisecond) - 3_600_000
+      assert abs(result["startTime"] - one_hour_ago) < 2000
+    end
+
+    test "replaces endTime <generated> with current timestamp" do
+      params = %{"endTime" => "<generated>"}
+      result = Helpers.resolve_generated_placeholders(params)
+
+      assert is_integer(result["endTime"])
+      now_ms = System.system_time(:millisecond)
+      assert abs(result["endTime"] - now_ms) < 2000
+    end
+
+    test "filters out non-timestamp params with <generated> placeholder" do
+      params = %{"nonce" => "<generated>", "symbol" => "BTC"}
+      result = Helpers.resolve_generated_placeholders(params)
+
+      refute Map.has_key?(result, "nonce")
+      assert result["symbol"] == "BTC"
+    end
+
+    test "handles mix of generated and non-generated params" do
+      params = %{
+        "end_timestamp" => "<generated>",
+        "nonce" => "<generated>",
+        "symbol" => "BTC",
+        "limit" => 100
+      }
+
+      result = Helpers.resolve_generated_placeholders(params)
+
+      assert is_integer(result["end_timestamp"])
+      refute Map.has_key?(result, "nonce")
+      assert result["symbol"] == "BTC"
+      assert result["limit"] == 100
+    end
+  end
+
+  describe "denormalize_symbol_param/3" do
+    @binance_spec %CCXT.Spec{
+      id: "binance",
+      name: "Binance",
+      urls: %{api: "https://api.binance.com"},
+      symbol_format: %{separator: "", case: :upper}
+    }
+
+    test "denormalizes symbol when present in params" do
+      params = %{symbol: "BTC/USDT", limit: 100}
+      result = Helpers.denormalize_symbol_param(params, @binance_spec, nil)
+
+      # Binance format: no separator, upper case
+      assert result[:symbol] == "BTCUSDT"
+      assert result[:limit] == 100
+    end
+
+    test "returns params unchanged when symbol is nil" do
+      params = %{limit: 100}
+      result = Helpers.denormalize_symbol_param(params, @binance_spec, nil)
+
+      assert result == %{limit: 100}
+    end
+
+    test "returns params unchanged when symbol is empty string" do
+      params = %{symbol: "", limit: 100}
+      result = Helpers.denormalize_symbol_param(params, @binance_spec, nil)
+
+      assert result == %{symbol: "", limit: 100}
+    end
+  end
 end

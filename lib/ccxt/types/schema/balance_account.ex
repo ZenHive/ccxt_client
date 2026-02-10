@@ -22,6 +22,8 @@ defmodule CCXT.Types.Schema.BalanceAccount do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :free, optional: false, source: "free", type: "String.t() | nil"},
     %{name: :used, optional: false, source: "used", type: "String.t() | nil"},

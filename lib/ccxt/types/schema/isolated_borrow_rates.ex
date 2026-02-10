@@ -10,6 +10,7 @@ defmodule CCXT.Types.Schema.IsolatedBorrowRates do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
   @fields []
   @type_spec_str """
   %{optional(String.t()) => CCXT.Types.IsolatedBorrowRate.t()}

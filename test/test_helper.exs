@@ -16,6 +16,20 @@ ExUnit.configure(exclude: [:integration])
 #     mix test --exclude <tag>        # Run all tests except those with this tag
 #     mix test --only tier1 --only tier2  # Combine tags (OR logic)
 #
+# ## IMPORTANT: --only vs --include Behavior
+#
+# These are NOT equivalent when `exclude: [:integration]` is configured:
+#
+#     --only integration     # Runs ONLY integration tests (~180 tests)
+#                            # Sets: exclude: [:test], include: [integration: true]
+#
+#     --include integration  # Runs ALL tests (~2400+ tests)
+#                            # Just overrides the exclude for :integration tag
+#                            # Non-integration tests still run!
+#
+# The "excluded" count with --only is expected behavior (non-matching tests).
+# The "invalid" count indicates actual problems (setup_all failures, etc).
+#
 # ## Test Type Tags
 #
 # | Tag              | Description                                    | Default |

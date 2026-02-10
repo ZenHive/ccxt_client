@@ -21,6 +21,8 @@ defmodule CCXT.Types.Schema.MarketMarginModes do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :isolated, optional: false, source: "isolated", type: "boolean()"},
     %{name: :cross, optional: false, source: "cross", type: "boolean()"}

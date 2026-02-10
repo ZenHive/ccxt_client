@@ -22,6 +22,8 @@ defmodule CCXT.Types.Schema.CancellationRequest do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :id, optional: false, source: "id", type: "String.t()"},
     %{name: :client_order_id, optional: true, source: "clientOrderId", type: "String.t()"},

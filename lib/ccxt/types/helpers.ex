@@ -119,4 +119,50 @@ defmodule CCXT.Types.Helpers do
   def normalize_margin_mode("isolated"), do: :isolated
   def normalize_margin_mode("cross"), do: :cross
   def normalize_margin_mode(_other), do: nil
+
+  @doc """
+  Normalizes transfer/transaction status to atom.
+
+  Handles pending/ok/failed/canceled statuses used by Transaction,
+  TransferEntry, and LedgerEntry (distinct from order statuses).
+  """
+  @spec normalize_transfer_status(String.t() | atom() | nil) :: atom() | nil
+  def normalize_transfer_status(nil), do: nil
+  def normalize_transfer_status(:pending), do: :pending
+  def normalize_transfer_status(:ok), do: :ok
+  def normalize_transfer_status(:failed), do: :failed
+  def normalize_transfer_status(:canceled), do: :canceled
+  def normalize_transfer_status(:cancelled), do: :canceled
+  def normalize_transfer_status("pending"), do: :pending
+  def normalize_transfer_status("ok"), do: :ok
+  def normalize_transfer_status("failed"), do: :failed
+  def normalize_transfer_status("canceled"), do: :canceled
+  def normalize_transfer_status("cancelled"), do: :canceled
+  def normalize_transfer_status(_other), do: nil
+
+  @doc """
+  Normalizes transaction type to atom.
+
+  Handles deposit/withdrawal types used by Transaction.
+  """
+  @spec normalize_transaction_type(String.t() | atom() | nil) :: atom() | nil
+  def normalize_transaction_type(nil), do: nil
+  def normalize_transaction_type(:deposit), do: :deposit
+  def normalize_transaction_type(:withdrawal), do: :withdrawal
+  def normalize_transaction_type("deposit"), do: :deposit
+  def normalize_transaction_type("withdrawal"), do: :withdrawal
+  def normalize_transaction_type(_other), do: nil
+
+  @doc """
+  Normalizes ledger entry direction to atom.
+
+  Handles in/out directions used by LedgerEntry.
+  """
+  @spec normalize_direction(String.t() | atom() | nil) :: atom() | nil
+  def normalize_direction(nil), do: nil
+  def normalize_direction(:in), do: :in
+  def normalize_direction(:out), do: :out
+  def normalize_direction("in"), do: :in
+  def normalize_direction("out"), do: :out
+  def normalize_direction(_other), do: nil
 end

@@ -27,6 +27,8 @@ defmodule CCXT.Types.Schema.LeverageTier do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :tier, optional: true, source: "tier", type: "number()"},
     %{name: :symbol, optional: true, source: "symbol", type: "String.t() | nil"},

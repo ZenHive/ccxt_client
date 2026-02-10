@@ -68,6 +68,7 @@ defmodule CCXT.HTTP.Client do
   - `[:ccxt, :request, :stop]` - After successful request
     - Measurements: `%{duration: integer()}`
     - Metadata: `%{exchange: atom(), method: atom(), path: String.t(), status: integer()}`
+    - Optional: `rate_limit: %CCXT.HTTP.RateLimitInfo{}` when exchange returns rate limit headers
 
   - `[:ccxt, :request, :exception]` - On error
     - Measurements: `%{duration: integer()}`
@@ -80,6 +81,8 @@ defmodule CCXT.HTTP.Client do
   alias CCXT.Defaults
   alias CCXT.Error
   alias CCXT.HTTP.RateLimiter
+  alias CCXT.HTTP.RateLimitHeaders
+  alias CCXT.HTTP.RateLimitState
   alias CCXT.Signing
   alias CCXT.Spec
 
@@ -197,7 +200,8 @@ defmodule CCXT.HTTP.Client do
 
         case result do
           {:ok, %Req.Response{status: status, headers: headers, body: body}} ->
-            emit_stop(exchange, method, path, status, start_time)
+            rate_limit_info = maybe_parse_rate_limit(exchange, credentials, headers, spec.rate_limits)
+            emit_stop(exchange, method, path, status, start_time, rate_limit_info)
             handle_response(status, headers, body, spec)
 
           {:error, %Req.TransportError{reason: reason}} ->
@@ -842,6 +846,21 @@ defmodule CCXT.HTTP.Client do
   defp build_rate_key(exchange, %Credentials{api_key: api_key}), do: {exchange, api_key}
 
   @doc false
+  # Parses rate limit headers from response and stores in ETS.
+  # Returns the parsed info (for telemetry enrichment) or nil.
+  defp maybe_parse_rate_limit(exchange, credentials, headers, spec_rate_limits) do
+    case RateLimitHeaders.parse(exchange, headers, spec_rate_limits) do
+      {:ok, info} ->
+        rate_key = build_rate_key(exchange, credentials)
+        RateLimitState.update(rate_key, info)
+        info
+
+      :none ->
+        nil
+    end
+  end
+
+  @doc false
   # Logs full request details when debug_request: true is passed.
   # Uses Logger.info (not debug) since this is opt-in and users explicitly want output.
   defp maybe_log_debug_request(false, _exchange, _method, _req_opts, _timeout, _retry), do: :ok
@@ -869,13 +888,22 @@ defmodule CCXT.HTTP.Client do
     )
   end
 
-  defp emit_stop(exchange, method, path, status, start_time) do
+  defp emit_stop(exchange, method, path, status, start_time, rate_limit_info) do
     duration = System.monotonic_time() - start_time
+
+    metadata = %{exchange: exchange, method: method, path: path, status: status}
+
+    metadata =
+      if rate_limit_info do
+        Map.put(metadata, :rate_limit, rate_limit_info)
+      else
+        metadata
+      end
 
     :telemetry.execute(
       [:ccxt, :request, :stop],
       %{duration: duration},
-      %{exchange: exchange, method: method, path: path, status: status}
+      metadata
     )
   end
 

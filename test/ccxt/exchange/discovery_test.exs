@@ -197,6 +197,48 @@ defmodule CCXT.Exchange.DiscoveryTest do
     end
   end
 
+  describe "available_specs/0" do
+    test "returns a sorted list of spec ID strings" do
+      specs = Discovery.available_specs()
+
+      assert is_list(specs)
+      assert specs != []
+      assert Enum.all?(specs, &is_binary/1)
+      assert specs == Enum.sort(specs)
+    end
+
+    test "includes specs for compiled exchanges" do
+      specs = Discovery.available_specs()
+      exchanges = Discovery.all_exchanges()
+
+      for module <- exchanges do
+        spec = module.__ccxt_spec__()
+        assert spec.id in specs, "Expected #{spec.id} to be in available_specs"
+      end
+    end
+
+    test "excludes test_exchange" do
+      specs = Discovery.available_specs()
+      refute "test_exchange" in specs
+    end
+
+    test "has no duplicates" do
+      specs = Discovery.available_specs()
+      assert specs == Enum.uniq(specs)
+    end
+  end
+
+  describe "available_spec?/1" do
+    test "returns true for existing spec" do
+      [first | _] = Discovery.available_specs()
+      assert Discovery.available_spec?(first)
+    end
+
+    test "returns false for nonexistent spec" do
+      refute Discovery.available_spec?("nonexistent_exchange_xyz_999")
+    end
+  end
+
   describe "which_support_ids/1" do
     test "returns exchange IDs instead of modules" do
       ids = Discovery.which_support_ids(:fetch_ticker)

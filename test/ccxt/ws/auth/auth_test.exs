@@ -3,6 +3,8 @@ defmodule CCXT.WS.AuthTest do
 
   alias CCXT.Credentials
   alias CCXT.WS.Auth
+  alias CCXT.WS.Auth.ListenKey
+  alias CCXT.WS.Auth.RestToken
 
   @test_credentials %Credentials{
     api_key: "test_api_key",
@@ -177,6 +179,75 @@ defmodule CCXT.WS.AuthTest do
     end
   end
 
+  describe "listen_key pre_auth/3" do
+    test "selects endpoint by market type" do
+      endpoints = [
+        %{type: :spot, endpoint: :public_post_user_data_stream},
+        %{type: :linear, endpoint: :fapi_private_post_listen_key}
+      ]
+
+      config = %{pre_auth: %{endpoints: endpoints}}
+
+      assert {:ok,
+              %{
+                endpoint: :fapi_private_post_listen_key,
+                market_type: :linear,
+                credentials: @test_credentials
+              }} = ListenKey.pre_auth(@test_credentials, config, market_type: :linear)
+    end
+
+    test "falls back to spot when market type not found" do
+      endpoints = [
+        %{type: :spot, endpoint: :public_post_user_data_stream}
+      ]
+
+      config = %{pre_auth: %{endpoints: endpoints}}
+
+      assert {:ok,
+              %{
+                endpoint: :public_post_user_data_stream,
+                market_type: :inverse,
+                credentials: @test_credentials
+              }} = ListenKey.pre_auth(@test_credentials, config, market_type: :inverse)
+    end
+
+    test "returns error when no endpoints configured" do
+      config = %{pre_auth: %{endpoints: []}}
+
+      assert {:error, {:no_endpoint_for_market_type, :spot}} =
+               ListenKey.pre_auth(@test_credentials, config, [])
+    end
+  end
+
+  describe "listen_key build_auth_message/3 and handle_auth_response/2" do
+    test "returns :no_message and :ok" do
+      assert :no_message = ListenKey.build_auth_message(@test_credentials, %{}, [])
+      assert :ok = ListenKey.handle_auth_response(%{}, %{})
+    end
+  end
+
+  describe "rest_token pre_auth/3" do
+    test "returns endpoint and credentials when configured" do
+      config = %{pre_auth: %{endpoint: :private_post_get_web_sockets_token}}
+
+      assert {:ok, %{endpoint: :private_post_get_web_sockets_token, credentials: @test_credentials}} =
+               RestToken.pre_auth(@test_credentials, config, [])
+    end
+
+    test "returns error when endpoint missing" do
+      config = %{pre_auth: %{}}
+
+      assert {:error, :no_token_endpoint} = RestToken.pre_auth(@test_credentials, config, [])
+    end
+  end
+
+  describe "rest_token build_auth_message/3 and handle_auth_response/2" do
+    test "returns :no_message and :ok" do
+      assert :no_message = RestToken.build_auth_message(@test_credentials, %{}, [])
+      assert :ok = RestToken.handle_auth_response(%{}, %{})
+    end
+  end
+
   describe "build_subscribe_auth/5 - inline_subscribe" do
     test "builds auth data for subscribe message" do
       config = %{pattern: :inline_subscribe}
@@ -223,8 +294,8 @@ defmodule CCXT.WS.AuthTest do
       assert Auth.module_for_pattern(:jsonrpc_linebreak) == CCXT.WS.Auth.JsonrpcLinebreak
       assert Auth.module_for_pattern(:sha384_nonce) == CCXT.WS.Auth.Sha384Nonce
       assert Auth.module_for_pattern(:sha512_newline) == CCXT.WS.Auth.Sha512Newline
-      assert Auth.module_for_pattern(:listen_key) == CCXT.WS.Auth.ListenKey
-      assert Auth.module_for_pattern(:rest_token) == CCXT.WS.Auth.RestToken
+      assert Auth.module_for_pattern(:listen_key) == ListenKey
+      assert Auth.module_for_pattern(:rest_token) == RestToken
       assert Auth.module_for_pattern(:inline_subscribe) == CCXT.WS.Auth.InlineSubscribe
     end
 
@@ -249,6 +320,367 @@ defmodule CCXT.WS.AuthTest do
 
       assert {:error, {:auth_failed, _}} =
                Auth.handle_auth_response(:direct_hmac_expiry, response, %{})
+    end
+  end
+
+  # ===================================================================
+  # Task 24: Per-module handle_auth_response + config variant coverage
+  # ===================================================================
+
+  describe "DirectHmacExpiry - handle_auth_response/2" do
+    alias CCXT.WS.Auth.DirectHmacExpiry
+
+    test "success: true returns :ok" do
+      assert :ok = DirectHmacExpiry.handle_auth_response(%{"success" => true}, %{})
+    end
+
+    test "ret_msg containing error returns auth_failed" do
+      response = %{"ret_msg" => "auth error occurred"}
+
+      assert {:error, {:auth_failed, "auth error occurred"}} =
+               DirectHmacExpiry.handle_auth_response(response, %{})
+    end
+
+    test "catch-all returns auth_failed with full response" do
+      response = %{"success" => false, "code" => "10001"}
+
+      assert {:error, {:auth_failed, ^response}} =
+               DirectHmacExpiry.handle_auth_response(response, %{})
+    end
+  end
+
+  describe "DirectHmacExpiry - base64 encoding option" do
+    alias CCXT.WS.Auth.DirectHmacExpiry
+
+    test "base64 encoding produces base64 signature" do
+      config = %{encoding: :base64, op_field: "op", op_value: "auth"}
+
+      assert {:ok, message} = DirectHmacExpiry.build_auth_message(@test_credentials, config, [])
+
+      [_api_key, _expires, signature] = message["args"]
+      # Verify it's valid base64 (alphanumeric, +, /, = padding)
+      assert signature =~ ~r/^[A-Za-z0-9+\/]+=*$/
+    end
+  end
+
+  describe "IsoPassphrase - handle_auth_response/2" do
+    alias CCXT.WS.Auth.IsoPassphrase
+
+    test "login event with code 0 returns :ok" do
+      response = %{"event" => "login", "code" => "0"}
+      assert :ok = IsoPassphrase.handle_auth_response(response, %{})
+    end
+
+    test "error event returns auth_failed with msg" do
+      response = %{"event" => "error", "msg" => "invalid credentials"}
+
+      assert {:error, {:auth_failed, "invalid credentials"}} =
+               IsoPassphrase.handle_auth_response(response, %{})
+    end
+
+    test "catch-all returns auth_failed with full response" do
+      response = %{"something" => "unexpected"}
+
+      assert {:error, {:auth_failed, ^response}} =
+               IsoPassphrase.handle_auth_response(response, %{})
+    end
+  end
+
+  describe "IsoPassphrase - milliseconds timestamp_unit" do
+    alias CCXT.WS.Auth.IsoPassphrase
+
+    test "milliseconds timestamp produces longer string" do
+      config = %{
+        timestamp_unit: :milliseconds,
+        op_field: "op",
+        op_value: "login"
+      }
+
+      assert {:ok, message} = IsoPassphrase.build_auth_message(@test_credentials, config, [])
+
+      [auth_args] = message["args"]
+      timestamp = auth_args["timestamp"]
+      # Millisecond timestamps are 13+ digits (e.g., 1699999999999)
+      assert String.length(timestamp) >= 13
+    end
+
+    test "default seconds timestamp produces shorter string" do
+      config = %{op_field: "op", op_value: "login"}
+
+      assert {:ok, message} = IsoPassphrase.build_auth_message(@test_credentials, config, [])
+
+      [auth_args] = message["args"]
+      timestamp = auth_args["timestamp"]
+      # Second timestamps are 10 digits (e.g., 1699999999)
+      assert String.length(timestamp) == 10
+    end
+  end
+
+  describe "JsonrpcLinebreak - handle_auth_response/2" do
+    alias CCXT.WS.Auth.JsonrpcLinebreak
+
+    test "access_token in result returns :ok" do
+      response = %{"result" => %{"access_token" => "tok_abc123"}}
+      assert :ok = JsonrpcLinebreak.handle_auth_response(response, %{})
+    end
+
+    test "error field returns auth_failed" do
+      error_detail = %{"code" => 13_004, "message" => "invalid_credentials"}
+      response = %{"error" => error_detail}
+
+      assert {:error, {:auth_failed, ^error_detail}} =
+               JsonrpcLinebreak.handle_auth_response(response, %{})
+    end
+
+    test "catch-all returns auth_failed with full response" do
+      response = %{"unknown" => true}
+
+      assert {:error, {:auth_failed, ^response}} =
+               JsonrpcLinebreak.handle_auth_response(response, %{})
+    end
+  end
+
+  describe "JsonrpcLinebreak - custom opts" do
+    alias CCXT.WS.Auth.JsonrpcLinebreak
+
+    test "custom nonce via opts" do
+      config = %{method_value: "public/auth"}
+
+      assert {:ok, message} =
+               JsonrpcLinebreak.build_auth_message(@test_credentials, config, nonce: "custom_nonce_123")
+
+      assert message["params"]["nonce"] == "custom_nonce_123"
+    end
+
+    test "custom request_id via opts" do
+      config = %{method_value: "public/auth"}
+
+      assert {:ok, message} =
+               JsonrpcLinebreak.build_auth_message(@test_credentials, config, request_id: 42)
+
+      assert message["id"] == 42
+    end
+  end
+
+  describe "Sha384Nonce - handle_auth_response/2" do
+    alias CCXT.WS.Auth.Sha384Nonce
+
+    test "auth event with OK status returns :ok" do
+      response = %{"event" => "auth", "status" => "OK"}
+      assert :ok = Sha384Nonce.handle_auth_response(response, %{})
+    end
+
+    test "auth event with FAILED status returns error with msg" do
+      response = %{"event" => "auth", "status" => "FAILED", "msg" => "bad api key"}
+
+      assert {:error, {:auth_failed, "bad api key"}} =
+               Sha384Nonce.handle_auth_response(response, %{})
+    end
+
+    test "catch-all returns auth_failed with full response" do
+      response = %{"event" => "info", "version" => 2}
+
+      assert {:error, {:auth_failed, ^response}} =
+               Sha384Nonce.handle_auth_response(response, %{})
+    end
+  end
+
+  describe "Sha384Nonce - custom event_value" do
+    alias CCXT.WS.Auth.Sha384Nonce
+
+    test "custom event_value in message" do
+      config = %{event_value: "authenticate"}
+
+      assert {:ok, message} = Sha384Nonce.build_auth_message(@test_credentials, config, [])
+
+      assert message["event"] == "authenticate"
+    end
+  end
+
+  describe "Sha512Newline - handle_auth_response/2" do
+    alias CCXT.WS.Auth.Sha512Newline
+
+    test "api event with success status returns :ok" do
+      response = %{"event" => "api", "result" => %{"status" => "success"}}
+      assert :ok = Sha512Newline.handle_auth_response(response, %{})
+    end
+
+    test "error field returns auth_failed" do
+      response = %{"error" => "invalid_key"}
+
+      assert {:error, {:auth_failed, "invalid_key"}} =
+               Sha512Newline.handle_auth_response(response, %{})
+    end
+
+    test "result without status (fallback) returns :ok" do
+      response = %{"result" => %{"token" => "abc"}}
+      assert :ok = Sha512Newline.handle_auth_response(response, %{})
+    end
+
+    test "no result catch-all returns auth_failed" do
+      response = %{"event" => "unknown"}
+
+      assert {:error, {:auth_failed, ^response}} =
+               Sha512Newline.handle_auth_response(response, %{})
+    end
+  end
+
+  describe "Sha512Newline - custom config" do
+    alias CCXT.WS.Auth.Sha512Newline
+
+    test "custom channel" do
+      config = %{channel: "futures.login"}
+
+      assert {:ok, message} = Sha512Newline.build_auth_message(@test_credentials, config, [])
+
+      assert message["channel"] == "futures.login"
+    end
+
+    test "custom request_id via opts" do
+      config = %{}
+
+      assert {:ok, message} =
+               Sha512Newline.build_auth_message(@test_credentials, config, request_id: "req_42")
+
+      assert message["id"] == "req_42"
+    end
+  end
+
+  describe "InlineSubscribe - build_subscribe_auth/4 variants" do
+    alias CCXT.WS.Auth.InlineSubscribe
+
+    test "multiple symbols" do
+      auth_data =
+        InlineSubscribe.build_subscribe_auth(
+          @test_credentials,
+          %{},
+          "user",
+          ["BTC-USD", "ETH-USD", "SOL-USD"]
+        )
+
+      assert is_map(auth_data)
+      assert auth_data["api_key"] == "test_api_key"
+      assert is_binary(auth_data["timestamp"])
+      assert is_binary(auth_data["signature"])
+    end
+
+    test "empty symbols list" do
+      auth_data = InlineSubscribe.build_subscribe_auth(@test_credentials, %{}, "user", [])
+
+      assert is_map(auth_data)
+      assert auth_data["api_key"] == "test_api_key"
+      assert is_binary(auth_data["signature"])
+    end
+  end
+
+  describe "Auth dispatcher - uncovered branches" do
+    test "unknown pattern in build_auth_message returns error" do
+      assert {:error, {:unknown_pattern, :totally_unknown}} =
+               Auth.build_auth_message(:totally_unknown, @test_credentials, %{}, [])
+    end
+
+    test "htx_variant returns not_implemented" do
+      assert {:error, {:not_implemented, :htx_variant}} =
+               Auth.build_auth_message(:htx_variant, @test_credentials, %{}, [])
+    end
+
+    test "generic_hmac delegates to DirectHmacExpiry" do
+      config = %{op_field: "op", op_value: "auth"}
+
+      assert {:ok, message} = Auth.build_auth_message(:generic_hmac, @test_credentials, config, [])
+
+      assert message["op"] == "auth"
+      assert is_list(message["args"])
+    end
+
+    test "default handler: success true returns :ok" do
+      response = %{"success" => true}
+      assert :ok = Auth.handle_auth_response(:some_unknown_pattern, response, %{})
+    end
+
+    test "default handler: access_token in result returns :ok" do
+      response = %{"result" => %{"access_token" => "token123"}}
+      assert :ok = Auth.handle_auth_response(:some_unknown_pattern, response, %{})
+    end
+
+    test "default handler: failure fallback returns error" do
+      response = %{"nope" => true}
+
+      assert {:error, {:auth_failed, ^response}} =
+               Auth.handle_auth_response(:some_unknown_pattern, response, %{})
+    end
+
+    test "default handler: auth event with OK status returns :ok" do
+      response = %{"event" => "auth", "status" => "OK"}
+      assert :ok = Auth.handle_auth_response(:some_unknown_pattern, response, %{})
+    end
+  end
+
+  describe "pre_auth/4 dispatcher coverage" do
+    test "direct_hmac_expiry pre_auth returns ok" do
+      assert {:ok, %{}} = Auth.pre_auth(:direct_hmac_expiry, @test_credentials, %{}, [])
+    end
+
+    test "iso_passphrase pre_auth returns ok" do
+      assert {:ok, %{}} = Auth.pre_auth(:iso_passphrase, @test_credentials, %{}, [])
+    end
+
+    test "jsonrpc_linebreak pre_auth returns ok" do
+      assert {:ok, %{}} = Auth.pre_auth(:jsonrpc_linebreak, @test_credentials, %{}, [])
+    end
+
+    test "sha384_nonce pre_auth returns ok" do
+      assert {:ok, %{}} = Auth.pre_auth(:sha384_nonce, @test_credentials, %{}, [])
+    end
+
+    test "sha512_newline pre_auth returns ok" do
+      assert {:ok, %{}} = Auth.pre_auth(:sha512_newline, @test_credentials, %{}, [])
+    end
+
+    test "inline_subscribe pre_auth returns ok" do
+      assert {:ok, %{}} = Auth.pre_auth(:inline_subscribe, @test_credentials, %{}, [])
+    end
+
+    test "unknown pattern pre_auth returns ok (catch-all)" do
+      assert {:ok, %{}} = Auth.pre_auth(:some_unknown, @test_credentials, %{}, [])
+    end
+  end
+
+  describe "handle_auth_response/3 dispatcher delegates" do
+    test "iso_passphrase delegates to module" do
+      response = %{"event" => "login", "code" => "0"}
+      assert :ok = Auth.handle_auth_response(:iso_passphrase, response, %{})
+    end
+
+    test "jsonrpc_linebreak delegates to module" do
+      response = %{"result" => %{"access_token" => "tok"}}
+      assert :ok = Auth.handle_auth_response(:jsonrpc_linebreak, response, %{})
+    end
+
+    test "sha384_nonce delegates to module" do
+      response = %{"event" => "auth", "status" => "OK"}
+      assert :ok = Auth.handle_auth_response(:sha384_nonce, response, %{})
+    end
+
+    test "sha512_newline delegates to module" do
+      response = %{"event" => "api", "result" => %{"status" => "success"}}
+      assert :ok = Auth.handle_auth_response(:sha512_newline, response, %{})
+    end
+  end
+
+  describe "InlineSubscribe - pre_auth and auth stubs" do
+    alias CCXT.WS.Auth.InlineSubscribe
+
+    test "pre_auth returns ok" do
+      assert {:ok, %{}} = InlineSubscribe.pre_auth(@test_credentials, %{}, [])
+    end
+
+    test "build_auth_message returns :no_message" do
+      assert :no_message = InlineSubscribe.build_auth_message(@test_credentials, %{}, [])
+    end
+
+    test "handle_auth_response returns :ok" do
+      assert :ok = InlineSubscribe.handle_auth_response(%{}, %{})
     end
   end
 end

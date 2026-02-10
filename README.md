@@ -3,12 +3,33 @@
 Elixir client for 100+ cryptocurrency exchanges. This is a standalone package
 generated from [ccxt_ex](https://github.com/ZenHive/ccxt_ex).
 
+## Status
+
+**This is an early release (v0.x).** Here's what works and what needs testing:
+
+- **Public endpoints** (tickers, orderbooks, trades) work across all 110+ exchanges
+- **All exchanges** compile and pass unit tests with mocked HTTP responses
+- **7 signing patterns** are implemented, covering 95%+ of exchanges
+- **Authenticated endpoints** (trading, balances) have been verified with real API
+  credentials on a small number of exchanges (Deribit, Bybit, and a few others)
+
+The signing implementations are correct to the spec, but most exchanges still need
+real-world validation with actual API credentials. This is where you can help.
+
+**We'd love your help testing.** If you use an exchange we haven't validated yet:
+
+1. Try public endpoints first (`fetch_ticker`, `fetch_order_book`)
+2. Then try authenticated endpoints with testnet/sandbox credentials
+3. [Open an issue](https://github.com/ZenHive/ccxt_client/issues) with what worked and what didn't
+
+Every exchange you test helps the whole community.
+
 ## Installation
 
 ```elixir
 def deps do
   [
-    {:ccxt_client, "~> 0.1.0"}
+    {:ccxt_client, "~> 0.1"}
   ]
 end
 ```
@@ -231,6 +252,50 @@ config :ccxt_client, :circuit_breaker,
 ]
 ```
 
+
+## Selective Compilation
+
+By default, all bundled exchanges are compiled. To compile only a subset:
+
+```elixir
+config :ccxt_client, exchanges: [:binance, :bybit, :okx]
+```
+
+Pass a list of exchange atoms or strings. Unlisted exchanges become stub modules
+(no API functions generated), reducing compile time and binary size.
+
+## Scaffolding Exchange Modules
+
+Generate exchange modules in your application's namespace:
+
+```bash
+mix ccxt.gen binance kraken       # Generate specific exchanges
+mix ccxt.gen --list               # Show available specs with tier info
+mix ccxt.gen --tier1              # Generate all Tier 1 exchanges
+mix ccxt.gen --all                # All available exchanges
+mix ccxt.gen --force              # Overwrite existing files
+mix ccxt.gen --namespace Trading  # Custom module namespace
+```
+
+This creates modules like:
+
+```elixir
+defmodule MyApp.Exchanges.Binance do
+  use CCXT.Generator, spec: "binance"
+end
+```
+
+## Discovering Available Specs
+
+List bundled exchange specs at runtime:
+
+```elixir
+CCXT.Exchange.Discovery.available_specs()
+# => ["binance", "bybit", "deribit", ...]
+
+CCXT.Exchange.Discovery.available_spec?("binance")
+# => true
+```
 
 ## Supported Exchanges
 

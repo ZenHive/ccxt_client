@@ -10,6 +10,7 @@ defmodule CCXT.Types.Schema.OrderSide do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
   @fields []
   @type_spec_str """
   String.t() | nil

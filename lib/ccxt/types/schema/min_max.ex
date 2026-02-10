@@ -21,6 +21,8 @@ defmodule CCXT.Types.Schema.MinMax do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :min, optional: false, source: "min", type: "number() | nil"},
     %{name: :max, optional: false, source: "max", type: "number() | nil"}

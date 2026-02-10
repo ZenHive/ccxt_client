@@ -7,6 +7,7 @@ defmodule CCXT.Generator.Functions.Endpoints do
   """
 
   alias CCXT.Generator.Functions.Docs
+  alias CCXT.Generator.Functions.Parsers
   alias CCXT.Generator.Functions.Typespecs
   alias CCXT.Spec
 
@@ -181,6 +182,10 @@ defmodule CCXT.Generator.Functions.Endpoints do
     default_params_ast = Macro.escape(default_params)
     # Convert response_type for compile-time injection in coercion
     response_type_ast = Macro.escape(response_type)
+    # Look up the parser module attribute name for this response type (e.g., :ccxt_parser_ticker)
+    # Generate AST to reference the attribute at compile time, or nil if no parser exists
+    parser_attr = Parsers.parser_attr_for_type(CCXT.ResponseCoercer.singularize(response_type))
+    parser_ast = if parser_attr, do: {:@, [], [{parser_attr, [], Elixir}]}
     doc = Docs.generate_doc(name, params, auth, spec)
     spec_signature = Typespecs.generate_typespec_signature(name, params, auth, required_params)
     return_type_ast = Typespecs.ok_error_return_type_ast(name)
@@ -241,6 +246,7 @@ defmodule CCXT.Generator.Functions.Endpoints do
               client_opts,
               unquote(response_transformer),
               unquote(response_type_ast),
+              unquote(parser_ast),
               unquote(opts_var)
             )
 

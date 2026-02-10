@@ -23,6 +23,8 @@ defmodule CCXT.Types.Schema.BalanceEntry do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :free, optional: false, source: "free", type: "number() | nil"},
     %{name: :used, optional: false, source: "used", type: "number() | nil"},

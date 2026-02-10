@@ -1,5 +1,23 @@
 defmodule CCXT.Types.Order do
-  @moduledoc "Auto-generated from priv/ccxt/ts/src/base/types.ts."
+  @moduledoc """
+  Unified order data from an exchange.
+
+  Represents an order's full lifecycle including placement, fills, and status.
+  Status is normalized to atoms (`:open`, `:closed`, `:canceled`), and side/type
+  are also normalized. See `CCXT.Types.Schema.Order` for fields with descriptions.
+
+  ## Helpers
+
+  - `open?/1` - Whether the order is still open
+  - `filled?/1` - Whether the order is fully filled (status = :closed)
+  - `fill_percentage/1` - Percentage of the order that has been filled
+
+  ## Example
+
+      {:ok, order} = MyExchange.create_order("BTC/USDT", "limit", "buy", 0.001, 50000.0)
+      order.status       # :open
+      Order.open?(order)  # true
+  """
 
   use CCXT.Types.Schema.Order
 

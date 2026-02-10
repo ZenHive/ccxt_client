@@ -10,6 +10,7 @@ defmodule CCXT.Types.Schema.List do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
   @fields []
   @type_spec_str """
   [any()]

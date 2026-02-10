@@ -29,6 +29,8 @@ defmodule CCXT.Types.Schema.Conversion do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :raw, optional: false, source: "info", type: "any()"},
     %{name: :timestamp, optional: true, source: "timestamp", type: "number()"},

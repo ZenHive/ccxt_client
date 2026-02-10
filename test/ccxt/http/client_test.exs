@@ -1122,6 +1122,203 @@ defmodule CCXT.HTTP.ClientTest do
     end
   end
 
+  # Helper to create a spec with a unique exchange_id to avoid circuit breaker cross-test pollution
+  defp unique_spec do
+    exchange_id = :"client_test_#{System.unique_integer([:positive])}"
+
+    %{
+      @test_spec
+      | exchange_id: exchange_id,
+        id: Atom.to_string(exchange_id),
+        urls: %{api: "http://localhost", sandbox: "http://localhost"}
+    }
+  end
+
+  describe "debug mode exception logging" do
+    import ExUnit.CaptureLog
+
+    test "logs exception details when debug config is true" do
+      Application.put_env(:ccxt_client, :debug, true)
+
+      on_exit(fn ->
+        Application.delete_env(:ccxt_client, :debug)
+      end)
+
+      Req.Test.stub(:debug_exception_stub, fn _conn ->
+        raise "Debug test explosion"
+      end)
+
+      spec = unique_spec()
+
+      log =
+        capture_log(fn ->
+          Client.request(spec, :get, "/test", plug: {Req.Test, :debug_exception_stub})
+        end)
+
+      assert log =~ "CCXT request exception"
+      assert log =~ "/test"
+      assert log =~ "Debug test explosion"
+    end
+
+    test "does not log exception details when debug config is false" do
+      Application.put_env(:ccxt_client, :debug, false)
+
+      on_exit(fn ->
+        Application.delete_env(:ccxt_client, :debug)
+      end)
+
+      Req.Test.stub(:no_debug_exception_stub, fn _conn ->
+        raise "Silent explosion"
+      end)
+
+      spec = unique_spec()
+
+      log =
+        capture_log(fn ->
+          Client.request(spec, :get, "/test", plug: {Req.Test, :no_debug_exception_stub})
+        end)
+
+      refute log =~ "CCXT request exception"
+    end
+  end
+
+  describe "transport error handling" do
+    test "handles Req.TransportError with timeout reason" do
+      Req.Test.stub(:transport_timeout_stub, fn _conn ->
+        raise Req.TransportError, reason: :timeout
+      end)
+
+      spec = unique_spec()
+
+      assert {:error, %Error{type: :network_error, message: message}} =
+               Client.request(spec, :get, "/test", plug: {Req.Test, :transport_timeout_stub})
+
+      assert message =~ "timeout"
+    end
+  end
+
+  describe "JSON decode fallback" do
+    test "passes through list body unchanged" do
+      Req.Test.stub(:list_body_stub, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_content_type("application/json")
+        |> Plug.Conn.send_resp(200, Jason.encode!([%{"key" => "value"}]))
+      end)
+
+      spec = unique_spec()
+
+      assert {:ok, %{status: 200, body: body}} =
+               Client.request(spec, :get, "/test", plug: {Req.Test, :list_body_stub})
+
+      assert is_list(body)
+      assert hd(body)["key"] == "value"
+    end
+
+    test "binary body that is not JSON passes through as-is" do
+      Req.Test.stub(:non_json_binary_stub, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_content_type("text/plain")
+        |> Plug.Conn.send_resp(200, "PLAIN TEXT RESPONSE")
+      end)
+
+      spec = unique_spec()
+
+      assert {:ok, %{status: 200, body: "PLAIN TEXT RESPONSE"}} =
+               Client.request(spec, :get, "/test", plug: {Req.Test, :non_json_binary_stub})
+    end
+  end
+
+  describe "error message edge cases" do
+    test "array-valued message field gets joined" do
+      Req.Test.stub(:array_msg_stub, fn conn ->
+        Req.Test.json(conn, %{
+          "retCode" => 99_999,
+          "retMsg" => ["Error 1", "Error 2"]
+        })
+      end)
+
+      spec = %{
+        unique_spec()
+        | response_error: %{
+            type: :success_code,
+            field: "retCode",
+            success_values: ["0"],
+            code_field: "retCode",
+            message_field: "retMsg"
+          }
+      }
+
+      assert {:error, %Error{message: message}} =
+               Client.request(spec, :get, "/test", plug: {Req.Test, :array_msg_stub})
+
+      assert message == "Error 1, Error 2"
+    end
+
+    test "augment_message does not duplicate when message equals description" do
+      Req.Test.stub(:same_msg_desc_stub, fn conn ->
+        conn
+        |> Plug.Conn.put_status(400)
+        |> Req.Test.json(%{code: 10_001, message: "Balance too low"})
+      end)
+
+      spec = %{unique_spec() | error_codes: @test_spec.error_codes, error_code_details: @test_spec.error_code_details}
+
+      assert {:error, %Error{message: message}} =
+               Client.request(spec, :get, "/test", plug: {Req.Test, :same_msg_desc_stub})
+
+      # Should NOT be "Balance too low (Balance too low)" - no duplication
+      assert message == "Balance too low"
+    end
+
+    test "augment_message uses description when message is Unknown error" do
+      Req.Test.stub(:unknown_msg_stub, fn conn ->
+        conn
+        |> Plug.Conn.put_status(400)
+        |> Req.Test.json(%{code: 10_001})
+      end)
+
+      spec = %{unique_spec() | error_codes: @test_spec.error_codes, error_code_details: @test_spec.error_code_details}
+
+      assert {:error, %Error{message: message}} =
+               Client.request(spec, :get, "/test", plug: {Req.Test, :unknown_msg_stub})
+
+      # When message is "Unknown error", description should replace it entirely
+      assert message == "Balance too low"
+    end
+  end
+
+  describe "retry-after parsing edge cases" do
+    test "non-integer retry-after header results in nil retry_after" do
+      Req.Test.stub(:date_retry_after_stub, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("retry-after", "Thu, 01 Dec 2024 00:00:00 GMT")
+        |> Plug.Conn.put_status(429)
+        |> Req.Test.json(%{message: "Rate limited"})
+      end)
+
+      spec = unique_spec()
+
+      assert {:error, %Error{type: :rate_limited, retry_after: nil}} =
+               Client.request(spec, :get, "/test", plug: {Req.Test, :date_retry_after_stub})
+    end
+  end
+
+  describe "rate key building" do
+    test "public request without credentials returns proper error on 500" do
+      Req.Test.stub(:public_500_stub, fn conn ->
+        conn
+        |> Plug.Conn.put_status(500)
+        |> Req.Test.json(%{error: "Internal error"})
+      end)
+
+      spec = unique_spec()
+
+      # No credentials passed = public request
+      assert {:error, %Error{type: :exchange_error}} =
+               Client.request(spec, :get, "/test", plug: {Req.Test, :public_500_stub})
+    end
+  end
+
   # Task 159: Base client caching
   describe "base client caching" do
     test "reuses base client across requests" do
@@ -1230,6 +1427,187 @@ defmodule CCXT.HTTP.ClientTest do
       {:ok, response} = Client.request(spec, :get, "/test", plug: {Req.Test, :circuit_ok_test})
 
       assert response.body["result"] == "success"
+    end
+  end
+
+  # Task 161: Rate limit header parsing integration
+  describe "rate limit header parsing" do
+    alias CCXT.HTTP.RateLimitInfo
+    alias CCXT.HTTP.RateLimitState
+
+    setup do
+      # Attach telemetry handler for rate limit verification
+      ref = make_ref()
+      parent = self()
+      handler_id = "rate-limit-handler-#{inspect(ref)}"
+
+      :telemetry.attach(
+        handler_id,
+        [:ccxt, :request, :stop],
+        fn _event, _measurements, metadata, _config ->
+          send(parent, {:stop_metadata, metadata})
+        end,
+        nil
+      )
+
+      on_exit(fn -> :telemetry.detach(handler_id) end)
+
+      :ok
+    end
+
+    test "parses Binance weight headers and enriches telemetry" do
+      Req.Test.stub(:binance_rl_stub, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("x-mbx-used-weight-1m", "750")
+        |> Req.Test.json(%{result: "ok"})
+      end)
+
+      spec = %{
+        unique_spec()
+        | rate_limits: %{requests: 1200, period: 60_000}
+      }
+
+      assert {:ok, _} = Client.request(spec, :get, "/test", plug: {Req.Test, :binance_rl_stub})
+
+      assert_receive {:stop_metadata, metadata}
+      assert %RateLimitInfo{} = metadata.rate_limit
+      assert metadata.rate_limit.source == :binance_weight
+      assert metadata.rate_limit.used == 750
+      assert metadata.rate_limit.limit == 1200
+      assert metadata.rate_limit.remaining == 450
+    end
+
+    test "parses Bybit rate limit headers and enriches telemetry" do
+      Req.Test.stub(:bybit_rl_stub, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("x-bapi-limit", "120")
+        |> Plug.Conn.put_resp_header("x-bapi-limit-status", "95")
+        |> Plug.Conn.put_resp_header("x-bapi-limit-reset-timestamp", "1704067200000")
+        |> Req.Test.json(%{result: "ok"})
+      end)
+
+      spec = unique_spec()
+
+      assert {:ok, _} = Client.request(spec, :get, "/test", plug: {Req.Test, :bybit_rl_stub})
+
+      assert_receive {:stop_metadata, metadata}
+      assert %RateLimitInfo{} = metadata.rate_limit
+      assert metadata.rate_limit.source == :bybit_bapi
+      assert metadata.rate_limit.limit == 120
+      assert metadata.rate_limit.remaining == 95
+      assert metadata.rate_limit.used == 25
+    end
+
+    test "parses standard rate limit headers and enriches telemetry" do
+      Req.Test.stub(:standard_rl_stub, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("x-ratelimit-limit", "100")
+        |> Plug.Conn.put_resp_header("x-ratelimit-remaining", "75")
+        |> Plug.Conn.put_resp_header("x-ratelimit-reset", "1704067200")
+        |> Req.Test.json(%{result: "ok"})
+      end)
+
+      spec = unique_spec()
+
+      assert {:ok, _} = Client.request(spec, :get, "/test", plug: {Req.Test, :standard_rl_stub})
+
+      assert_receive {:stop_metadata, metadata}
+      assert %RateLimitInfo{} = metadata.rate_limit
+      assert metadata.rate_limit.source == :standard
+      assert metadata.rate_limit.limit == 100
+      assert metadata.rate_limit.remaining == 75
+    end
+
+    test "stores rate limit info in ETS for public requests" do
+      exchange = :"rl_ets_test_#{System.unique_integer([:positive])}"
+
+      Req.Test.stub(:rl_ets_stub, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("x-mbx-used-weight-1m", "500")
+        |> Req.Test.json(%{result: "ok"})
+      end)
+
+      spec = %{
+        @test_spec
+        | exchange_id: exchange,
+          id: Atom.to_string(exchange),
+          urls: %{api: "http://localhost", sandbox: "http://localhost"},
+          rate_limits: %{requests: 1200}
+      }
+
+      assert {:ok, _} = Client.request(spec, :get, "/test", plug: {Req.Test, :rl_ets_stub})
+
+      # Verify stored in ETS
+      assert %RateLimitInfo{used: 500, limit: 1200} = RateLimitState.status(exchange)
+    end
+
+    test "stores rate limit info in ETS for authenticated requests" do
+      exchange = :"rl_auth_ets_test_#{System.unique_integer([:positive])}"
+
+      Req.Test.stub(:rl_auth_ets_stub, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("x-bapi-limit", "120")
+        |> Plug.Conn.put_resp_header("x-bapi-limit-status", "80")
+        |> Req.Test.json(%{result: "ok"})
+      end)
+
+      spec = %{
+        @test_spec
+        | exchange_id: exchange,
+          id: Atom.to_string(exchange),
+          urls: %{api: "http://localhost", sandbox: "http://localhost"}
+      }
+
+      assert {:ok, _} =
+               Client.request(spec, :get, "/test",
+                 credentials: @test_credentials,
+                 plug: {Req.Test, :rl_auth_ets_stub}
+               )
+
+      # Should be stored under the API key, not :public
+      assert %RateLimitInfo{limit: 120} = RateLimitState.status(exchange, @test_credentials.api_key)
+      # Public should be nil
+      assert nil == RateLimitState.status(exchange)
+    end
+
+    test "does not include rate_limit in telemetry when no rate limit headers present" do
+      Req.Test.stub(:no_rl_headers_stub, fn conn ->
+        Req.Test.json(conn, %{result: "ok"})
+      end)
+
+      spec = unique_spec()
+
+      assert {:ok, _} = Client.request(spec, :get, "/test", plug: {Req.Test, :no_rl_headers_stub})
+
+      assert_receive {:stop_metadata, metadata}
+      refute Map.has_key?(metadata, :rate_limit)
+    end
+
+    test "rate limit parsing works alongside error responses" do
+      Req.Test.stub(:rl_error_stub, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("x-mbx-used-weight-1m", "1199")
+        |> Plug.Conn.put_status(400)
+        |> Req.Test.json(%{code: -1121, msg: "Invalid symbol"})
+      end)
+
+      exchange = :"rl_error_test_#{System.unique_integer([:positive])}"
+
+      spec = %{
+        @test_spec
+        | exchange_id: exchange,
+          id: Atom.to_string(exchange),
+          urls: %{api: "http://localhost", sandbox: "http://localhost"},
+          rate_limits: %{requests: 1200}
+      }
+
+      # Should still return error
+      assert {:error, %Error{}} = Client.request(spec, :get, "/test", plug: {Req.Test, :rl_error_stub})
+
+      # But rate limit info should be stored and in telemetry
+      assert_receive {:stop_metadata, metadata}
+      assert %RateLimitInfo{used: 1199} = metadata.rate_limit
+      assert %RateLimitInfo{used: 1199} = RateLimitState.status(exchange)
     end
   end
 end

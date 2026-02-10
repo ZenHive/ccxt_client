@@ -26,6 +26,15 @@ defmodule CCXT.Spec do
   - `error_codes` - Map of error codes to error types
   - `error_code_details` - Map of error codes to type + description
 
+  ## Spec Authoring
+
+  For writing custom exchange specs (e.g., for ccxt_client), see
+  `docs/spec-authoring-guide.md`. Key points:
+
+  - Current spec format version: 1
+  - Required fields: `:id`, `:name`, `:urls`
+  - Use `CCXT.Spec.current_spec_format_version/0` to query the version
+
   ## Example
 
       %CCXT.Spec{
@@ -53,6 +62,8 @@ defmodule CCXT.Spec do
       }
 
   """
+
+  @current_spec_format_version 1
 
   @type url_value :: String.t() | map()
 
@@ -568,7 +579,9 @@ defmodule CCXT.Spec do
           # Raw API param requirements (keep raw structure)
           api_param_requirements: map() | nil,
           # Error handler source (for debugging/analysis)
-          handle_errors_source: String.t() | nil
+          handle_errors_source: String.t() | nil,
+          # Spec format version for migration support
+          spec_format_version: pos_integer()
         }
 
   @enforce_keys [:id, :name, :urls]
@@ -638,13 +651,25 @@ defmodule CCXT.Spec do
     error_code_details: %{},
     parse_methods: [],
     # Defaults for new fields
-    enable_rate_limit: true
+    enable_rate_limit: true,
+    # Spec format version for migration support
+    spec_format_version: @current_spec_format_version
   ]
+
+  @doc """
+  Returns the current spec format version.
+
+  Used by the extractor to stamp new specs and by `load!/1` to validate
+  that specs aren't from a newer (unsupported) format version.
+  """
+  @spec current_spec_format_version() :: pos_integer()
+  def current_spec_format_version, do: @current_spec_format_version
 
   @doc """
   Loads a spec from a file path.
 
   The file should contain an Elixir term that can be evaluated to a Spec struct.
+  Specs are migrated to the current format version at load time.
 
   Note: This function uses `Code.eval_file/1` which is safe here because paths
   are hardcoded at compile time from the library's own `priv/specs/` directory,
@@ -656,8 +681,8 @@ defmodule CCXT.Spec do
     {spec, _bindings} = Code.eval_file(path)
 
     case spec do
-      %__MODULE__{} = s -> s
-      map when is_map(map) -> from_map(map)
+      %__MODULE__{} = s -> migrate(s)
+      map when is_map(map) -> map |> from_map() |> migrate()
       _ -> raise ArgumentError, "Invalid spec file: #{path}"
     end
   end
@@ -731,7 +756,9 @@ defmodule CCXT.Spec do
       # Raw API param requirements (keep raw structure)
       api_param_requirements: Map.get(map, :api_param_requirements),
       # Error handler source (for debugging/analysis)
-      handle_errors_source: Map.get(map, :handle_errors_source)
+      handle_errors_source: Map.get(map, :handle_errors_source),
+      # Spec format version (defaults to 1 for backward compatibility)
+      spec_format_version: Map.get(map, :spec_format_version, @current_spec_format_version)
     }
   end
 
@@ -811,6 +838,25 @@ defmodule CCXT.Spec do
       {:ok, value} -> value
       :error -> raise ArgumentError, "Missing required field: #{key}"
     end
+  end
+
+  @doc false
+  # Migrates a spec to the current format version.
+  # v1 is the current version - passthrough.
+  # Future versions will chain: v1→v2, v2→v3, etc.
+  @spec migrate(t()) :: t()
+  defp migrate(%__MODULE__{spec_format_version: @current_spec_format_version} = spec), do: spec
+
+  defp migrate(%__MODULE__{spec_format_version: v}) when v > @current_spec_format_version do
+    raise ArgumentError,
+          "Spec format version #{v} is newer than supported version #{@current_spec_format_version}. " <>
+            "Upgrade ccxt_ex to load this spec."
+  end
+
+  defp migrate(%__MODULE__{spec_format_version: v}) do
+    raise ArgumentError,
+          "Invalid spec format version: #{inspect(v)}. " <>
+            "Expected a positive integer <= #{@current_spec_format_version}."
   end
 
   # ===========================================================================

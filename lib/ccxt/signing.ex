@@ -39,6 +39,41 @@ defmodule CCXT.Signing do
         signing_config
       )
 
+  ## Custom Signing Patterns
+
+  For exchanges that don't fit the standard patterns, implement
+  `CCXT.Signing.Behaviour` and use the `:custom` pattern:
+
+      defmodule MyApp.Signing.MyExchange do
+        @behaviour CCXT.Signing.Behaviour
+
+        @impl true
+        def sign(request, credentials, config) do
+          # Use helpers from this module:
+          # timestamp_ms/0, hmac_sha256/2, encode_hex/1, etc.
+          %{url: request.path, method: request.method, headers: [], body: request.body}
+        end
+      end
+
+  See `CCXT.Signing.Behaviour` for the full contract and
+  `CCXT.Signing.Custom` for wiring and validation.
+
+  ### Helpers Available to Implementors
+
+  | Function | Description |
+  |----------|-------------|
+  | `timestamp_ms/0` | Current time in milliseconds |
+  | `timestamp_seconds/0` | Current time in seconds |
+  | `timestamp_iso8601/0` | Current time as ISO 8601 string |
+  | `hmac_sha256/2` | HMAC-SHA256 digest |
+  | `hmac_sha384/2` | HMAC-SHA384 digest |
+  | `hmac_sha512/2` | HMAC-SHA512 digest |
+  | `sha256/1` | SHA256 hash |
+  | `encode_hex/1` | Binary to lowercase hex string |
+  | `encode_base64/1` | Binary to base64 string |
+  | `decode_base64/1` | Base64 string to binary |
+  | `urlencode/1` | Map to sorted URL-encoded query string |
+
   """
 
   alias CCXT.Credentials
@@ -267,7 +302,8 @@ defmodule CCXT.Signing do
   end
 
   @doc false
-  @spec urlencode(map()) :: String.t()
+  @spec urlencode(map() | nil) :: String.t()
+  def urlencode(nil), do: ""
   def urlencode(params) when params == %{}, do: ""
 
   def urlencode(params) do
@@ -277,7 +313,8 @@ defmodule CCXT.Signing do
   end
 
   @doc false
-  @spec urlencode_raw(map()) :: String.t()
+  @spec urlencode_raw(map() | nil) :: String.t()
+  def urlencode_raw(nil), do: ""
   def urlencode_raw(params) when params == %{}, do: ""
 
   def urlencode_raw(params) do

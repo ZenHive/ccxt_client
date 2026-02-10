@@ -4,36 +4,41 @@ defmodule CCXT.Signing.Custom do
 
   Used by: <5% of exchanges that don't fit the standard patterns.
 
-  ## How it works
-
-  Delegates to a user-provided module that implements the `sign/3` callback.
+  The primary contract for custom signing is `CCXT.Signing.Behaviour`. This
+  module delegates to a user-provided module that implements `sign/3`.
 
   ## Configuration
 
       signing: %{
         pattern: :custom,
-        custom_module: MyApp.CustomSigners.GateIO
+        custom_module: MyApp.CustomSigners.MyExchange
       }
 
   ## Custom Module Implementation
 
-  The custom module must implement a `sign/3` function:
+  Custom modules should implement `CCXT.Signing.Behaviour`:
 
-      defmodule MyApp.CustomSigners.GateIO do
-        @behaviour CCXT.Signing.Custom
+      defmodule MyApp.CustomSigners.MyExchange do
+        @behaviour CCXT.Signing.Behaviour
 
         @impl true
         def sign(request, credentials, config) do
-          # Custom signing logic here
           %{
             url: request.path,
             method: request.method,
-            headers: [...],
-            body: ...
+            headers: [{"X-API-KEY", credentials.api_key}],
+            body: request.body
           }
         end
       end
 
+  ## Validation
+
+  Use `validate_module/1` to verify a module at runtime:
+
+      {:ok, _} = CCXT.Signing.Custom.validate_module(MyApp.CustomSigners.MyExchange)
+
+  See `CCXT.Signing.Behaviour` for the full contract and available helpers.
   """
 
   @behaviour CCXT.Signing.Behaviour
@@ -57,16 +62,44 @@ defmodule CCXT.Signing.Custom do
   @callback sign(Signing.request(), Credentials.t(), Signing.config()) :: Signing.signed_request()
 
   @doc """
+  Validates that a module implements the signing contract (`sign/3`).
+
+  Returns `{:ok, module}` if the module exports `sign/3`, or
+  `{:error, reason}` with an actionable message.
+  """
+  @spec validate_module(module()) :: {:ok, module()} | {:error, String.t()}
+  def validate_module(module) when is_atom(module) do
+    case Code.ensure_loaded(module) do
+      {:module, _} ->
+        if function_exported?(module, :sign, 3) do
+          {:ok, module}
+        else
+          {:error, "#{inspect(module)} must implement sign/3 (see CCXT.Signing.Behaviour)"}
+        end
+
+      {:error, reason} ->
+        {:error, "Could not load #{inspect(module)}: #{reason} (see CCXT.Signing.Behaviour)"}
+    end
+  end
+
+  @doc """
   Delegates signing to the custom module specified in config.
 
-  Raises `ArgumentError` if `:custom_module` is not specified in config.
+  Raises `ArgumentError` if `:custom_module` is not specified in config
+  or if the module does not implement `sign/3`.
   """
   @impl true
   @spec sign(Signing.request(), Credentials.t(), Signing.config()) :: Signing.signed_request()
   def sign(request, credentials, config) do
     case Map.fetch(config, :custom_module) do
       {:ok, module} when is_atom(module) ->
-        module.sign(request, credentials, config)
+        case validate_module(module) do
+          {:ok, _} ->
+            module.sign(request, credentials, config)
+
+          {:error, reason} ->
+            raise ArgumentError, reason
+        end
 
       _ ->
         raise ArgumentError, """
@@ -75,7 +108,7 @@ defmodule CCXT.Signing.Custom do
         Example:
             signing: %{
               pattern: :custom,
-              custom_module: MyApp.CustomSigners.GateIO
+              custom_module: MyApp.CustomSigners.MyExchange
             }
         """
     end

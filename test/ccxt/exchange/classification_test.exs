@@ -124,16 +124,17 @@ defmodule CCXT.Exchange.ClassificationTest do
       testnet = Classification.testnet_exchanges()
       certified_pro = Classification.certified_pro_exchanges()
 
-      # In --only mode with non-certified exchange, certified_pro may be empty
-      # Use Enum.empty? to avoid type comparison warning in Elixir 1.20+
       if Enum.empty?(certified_pro) do
-        Logger.info("[skipped] No Certified Pro exchanges (likely --only mode)")
-        :ok
-      else
-        # Testnet should include some certified_pro exchanges
-        certified_pro_with_testnet = Enum.filter(certified_pro, &(&1 in testnet))
-        assert certified_pro_with_testnet != [], "Some certified_pro should have testnet"
+        flunk("""
+        No Certified Pro exchanges available.
+
+        This test requires Certified Pro exchanges to verify testnet overlap.
+        Run: mix ccxt.sync --tier1 --force
+        """)
       end
+
+      certified_pro_with_testnet = Enum.filter(certified_pro, &(&1 in testnet))
+      assert certified_pro_with_testnet != [], "Some certified_pro should have testnet"
     end
 
     test "has_testnet?/1 works correctly" do
@@ -206,6 +207,16 @@ defmodule CCXT.Exchange.ClassificationTest do
 
       assert Classification.get_classification("unknown_xyz") == :unknown
     end
+
+    test "supported?/1 returns correct values" do
+      supported = Classification.supported_exchanges()
+
+      for exchange <- supported do
+        assert Classification.supported?(exchange)
+      end
+
+      refute Classification.supported?("unknown_exchange_xyz")
+    end
   end
 
   describe "atom conversions" do
@@ -244,6 +255,122 @@ defmodule CCXT.Exchange.ClassificationTest do
     end
   end
 
+  describe "priority tiers" do
+    test "tier lists include expected exchanges" do
+      assert "binance" in Classification.tier1_exchanges()
+      assert "kraken" in Classification.tier2_exchanges()
+      assert "bitget" in Classification.tier3_exchanges()
+      assert "hyperliquid" in Classification.dex_exchanges()
+
+      refute "binance" in Classification.tier2_exchanges()
+      refute "kraken" in Classification.tier1_exchanges()
+      refute "bitget" in Classification.tier1_exchanges()
+      refute "hyperliquid" in Classification.tier1_exchanges()
+    end
+
+    test "tier counts match list lengths" do
+      assert Classification.tier1_count() == length(Classification.tier1_exchanges())
+      assert Classification.tier2_count() == length(Classification.tier2_exchanges())
+      assert Classification.tier3_count() == length(Classification.tier3_exchanges())
+      assert Classification.dex_count() == length(Classification.dex_exchanges())
+    end
+
+    test "get_priority_tier returns expected tiers" do
+      assert Classification.get_priority_tier("binance") == :tier1
+      assert Classification.get_priority_tier("kraken") == :tier2
+      assert Classification.get_priority_tier("bitget") == :tier3
+      assert Classification.get_priority_tier("hyperliquid") == :dex
+      assert Classification.get_priority_tier("unknown_exchange_xyz") == :unclassified
+    end
+
+    test "tier predicate helpers return expected values" do
+      assert Classification.tier1?("binance")
+      assert Classification.tier2?("kraken")
+      assert Classification.tier3?("bitget")
+      assert Classification.dex?("hyperliquid")
+
+      refute Classification.tier1?("kraken")
+      refute Classification.tier2?("binance")
+      refute Classification.tier3?("binance")
+      refute Classification.dex?("binance")
+    end
+
+    test "tier intersections are correct" do
+      tier1_with_testnet = Classification.tier1_with_testnet()
+      tier1 = Classification.tier1_exchanges()
+      testnet = Classification.testnet_exchanges()
+
+      for exchange <- tier1_with_testnet do
+        assert exchange in tier1
+        assert exchange in testnet
+      end
+
+      tier1_certified_pro = Classification.tier1_certified_pro()
+      certified_pro = Classification.certified_pro_exchanges()
+
+      for exchange <- tier1_certified_pro do
+        assert exchange in tier1
+        assert exchange in certified_pro
+      end
+
+      pro_with_testnet = Classification.pro_with_testnet()
+      pro_only = Classification.pro_exchanges()
+
+      for exchange <- pro_with_testnet do
+        assert exchange in pro_only
+        assert exchange in testnet
+      end
+    end
+
+    test "exchanges_for_tier matches tier list" do
+      assert Classification.exchanges_for_tier(:tier1) == Classification.tier1_exchanges()
+      assert Classification.exchanges_for_tier(:tier2) == Classification.tier2_exchanges()
+      assert Classification.exchanges_for_tier(:tier3) == Classification.tier3_exchanges()
+      assert Classification.exchanges_for_tier(:dex) == Classification.dex_exchanges()
+    end
+
+    test "tier_display_name returns uppercase labels" do
+      assert Classification.tier_display_name(:tier1) == "TIER 1"
+      assert Classification.tier_display_name(:tier2) == "TIER 2"
+      assert Classification.tier_display_name(:tier3) == "TIER 3"
+      assert Classification.tier_display_name(:dex) == "DEX"
+    end
+
+    test "collect_tier_exchanges aggregates and labels" do
+      opts = [tier1: true, tier2: true]
+
+      {exchanges, label} = Classification.collect_tier_exchanges(opts)
+
+      expected_exchanges =
+        Classification.tier1_exchanges()
+        |> Kernel.++(Classification.tier2_exchanges())
+        |> Enum.uniq()
+        |> Enum.sort()
+
+      assert exchanges == expected_exchanges
+
+      expected_label = Classification.build_tier_label([:tier1, :tier2], length(expected_exchanges))
+      assert label == expected_label
+    end
+
+    test "has_tier_flags?/1 detects tier options" do
+      assert Classification.has_tier_flags?(tier1: true)
+      assert Classification.has_tier_flags?(tier2: true)
+      assert Classification.has_tier_flags?(tier3: true)
+      assert Classification.has_tier_flags?(dex: true)
+
+      refute Classification.has_tier_flags?(all: true)
+      refute Classification.has_tier_flags?([])
+    end
+
+    test "build_tier_label formats tier names and count" do
+      tiers = [:tier1, :tier2, :dex]
+      label = Classification.build_tier_label(tiers, length(tiers))
+
+      assert label == "TIER 1 + TIER 2 + DEX (#{length(tiers)})"
+    end
+  end
+
   describe "sanity checks" do
     @tag :sanity
     test "exchange counts are reasonable" do
@@ -252,24 +379,17 @@ defmodule CCXT.Exchange.ClassificationTest do
 
       all_count = Classification.all_count()
       certified_pro_count = Classification.certified_pro_count()
-      pro_count = Classification.pro_count()
-      supported_count = Classification.supported_count()
 
-      # All exchanges: should be 100+ (CCXT has ~107)
-      # Note: During development with only certified-pro specs, this may be lower
-      if all_count > 20 do
-        assert all_count >= 100, "Expected 100+ exchanges, got #{all_count}"
+      # At least some exchanges must be loaded
+      assert all_count > 0, "No exchanges loaded. Run: mix ccxt.sync --tier1 --force"
+
+      # When full suite is loaded, verify counts are in expected ranges
+      if all_count >= 100 do
         assert certified_pro_count >= 10, "Expected 10+ certified pro, got #{certified_pro_count}"
         assert certified_pro_count <= 30, "Expected <30 certified pro, got #{certified_pro_count}"
+      else
+        Logger.info("[sanity] Only #{all_count} exchanges loaded (< 100), skipping range assertions")
       end
-
-      # Log counts for visibility
-      Logger.info("Classification counts:")
-      Logger.info("  All exchanges: #{all_count}")
-      Logger.info("  Certified Pro: #{certified_pro_count}")
-      Logger.info("  Pro (not certified): #{pro_count}")
-      Logger.info("  Supported: #{supported_count}")
-      Logger.info("  With testnet: #{Classification.testnet_count()}")
     end
   end
 end

@@ -186,6 +186,55 @@ defmodule CCXT.Exchange.Discovery do
   end
 
   @doc """
+  Returns a sorted list of spec IDs available in `priv/specs/`.
+
+  Scans both `curated/` and `extracted/` spec directories and returns unique
+  spec ID strings (filename without extension). Excludes `test_exchange`.
+
+  Works both in development and when used as a dependency via `CCXT.Priv.dir/0`.
+
+  ## Examples
+
+      iex> specs = CCXT.Exchange.Discovery.available_specs()
+      iex> is_list(specs)
+      true
+
+      iex> specs = CCXT.Exchange.Discovery.available_specs()
+      iex> Enum.all?(specs, &is_binary/1)
+      true
+
+  """
+  @spec available_specs() :: [String.t()]
+  def available_specs do
+    priv = CCXT.Priv.dir()
+
+    curated = list_spec_ids(Path.join([priv, "specs", "curated"]))
+    extracted = list_spec_ids(Path.join([priv, "specs", "extracted"]))
+
+    (curated ++ extracted)
+    |> Enum.uniq()
+    |> Enum.reject(&(&1 == "test_exchange"))
+    |> Enum.sort()
+  end
+
+  @doc """
+  Checks whether a spec file exists for the given exchange ID.
+
+  ## Examples
+
+      iex> CCXT.Exchange.Discovery.available_spec?("bybit")
+      true
+
+      iex> CCXT.Exchange.Discovery.available_spec?("nonexistent_xyz")
+      false
+
+  """
+  @spec available_spec?(String.t()) :: boolean()
+  def available_spec?(spec_id) when is_binary(spec_id) do
+    spec_id in available_specs()
+  end
+
+  @doc """
   Returns capability counts across all exchanges.
 
   Useful for understanding which capabilities are widely supported.
@@ -257,6 +306,20 @@ defmodule CCXT.Exchange.Discovery do
   # ===========================================================================
   # Private Helpers
   # ===========================================================================
+
+  @doc false
+  # Scans a directory for .exs files and returns their basenames without extension.
+  @spec list_spec_ids(String.t()) :: [String.t()]
+  defp list_spec_ids(dir) do
+    if File.dir?(dir) do
+      dir
+      |> File.ls!()
+      |> Enum.filter(&String.ends_with?(&1, ".exs"))
+      |> Enum.map(&Path.basename(&1, ".exs"))
+    else
+      []
+    end
+  end
 
   @doc false
   @spec has_capability?(module(), atom()) :: boolean()

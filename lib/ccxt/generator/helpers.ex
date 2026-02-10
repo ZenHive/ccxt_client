@@ -189,15 +189,25 @@ defmodule CCXT.Generator.Helpers do
   Executes HTTP request and transforms/coerces the response.
 
   Handles the common pattern of making an HTTP request, applying response transformation,
-  and coercing to typed structs.
+  and coercing to typed structs. Optionally applies parser mappings to convert
+  exchange-specific field names to unified names before coercion.
   """
-  @spec execute_request(CCXT.Spec.t(), atom(), String.t(), keyword(), term(), term(), keyword()) ::
+  @spec execute_request(
+          CCXT.Spec.t(),
+          atom(),
+          String.t(),
+          keyword(),
+          term(),
+          term(),
+          [{atom(), atom(), [String.t()]}] | nil,
+          keyword()
+        ) ::
           {:ok, term()} | {:error, CCXT.Error.t()}
-  def execute_request(spec, method, path, client_opts, response_transformer, response_type, user_opts) do
+  def execute_request(spec, method, path, client_opts, response_transformer, response_type, parser_mapping, user_opts) do
     case Client.request(spec, method, path, client_opts) do
       {:ok, %{body: body}} ->
         transformed = ResponseTransformer.transform(body, response_transformer)
-        coerced = ResponseCoercer.coerce(transformed, response_type, user_opts)
+        coerced = ResponseCoercer.coerce(transformed, response_type, user_opts, parser_mapping)
         {:ok, coerced}
 
       {:error, _} = error ->

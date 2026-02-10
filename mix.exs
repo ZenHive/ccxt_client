@@ -1,7 +1,7 @@
 defmodule CcxtClient.MixProject do
   use Mix.Project
 
-  @version "1.0.0"
+  @version "0.1.0"
   @source_url "https://github.com/ZenHive/ccxt_client"
 
   def project do
@@ -25,7 +25,7 @@ defmodule CcxtClient.MixProject do
   def application do
     [
       extra_applications: [:logger, :crypto],
-      mod: {CcxtClient.Application, []}
+      mod: {CCXT.Application, []}
     ]
   end
 
@@ -75,14 +75,18 @@ defmodule CcxtClient.MixProject do
   defp package do
     [
       licenses: ["MIT"],
-      links: %{"GitHub" => @source_url}
+      links: %{
+        "GitHub" => @source_url,
+        "Issues" => "#{@source_url}/issues"
+      },
+      files: ["lib", "priv/specs", "mix.exs", "README.md", "CHANGELOG.md", "LICENSE", "VERSION", "priv/extractor/ccxt_exchange_tiers.json", "priv/extractor/ccxt_method_signatures.json", "priv/extractor/ccxt_symbol_formats.json", "priv/extractor/ccxt_exception_names.json", "priv/extractor/ccxt_parse_methods.json", "priv/extractor/ccxt_error_codes.json", "priv/extractor/ccxt_emulated_methods.json", "priv/extractor/ccxt_mapping_analysis.json", "priv/priority_tiers.exs"]
     ]
   end
 
   defp docs do
     [
       main: "readme",
-      extras: ["README.md"]
+      extras: ["README.md", "CHANGELOG.md"]
     ]
   end
 

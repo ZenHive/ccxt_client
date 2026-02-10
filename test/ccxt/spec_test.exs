@@ -86,6 +86,137 @@ defmodule CCXT.SpecTest do
 
       assert Spec.api_url(spec, true) == "https://test.sandbox.com"
     end
+
+    # Sandbox map fallback chain: default → rest → private → public → api
+    test "sandbox map prefers 'default' key" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{
+            api: "https://api.test.com",
+            sandbox: %{
+              "default" => "https://default.sandbox.com",
+              "rest" => "https://rest.sandbox.com"
+            }
+          }
+        })
+
+      assert Spec.api_url(spec, true) == "https://default.sandbox.com"
+    end
+
+    test "sandbox map falls back to 'private' when no default/rest" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{
+            api: "https://api.test.com",
+            sandbox: %{"private" => "https://private.sandbox.com"}
+          }
+        })
+
+      assert Spec.api_url(spec, true) == "https://private.sandbox.com"
+    end
+
+    test "sandbox map falls back to 'public' when no default/rest/private" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{
+            api: "https://api.test.com",
+            sandbox: %{"public" => "https://public.sandbox.com"}
+          }
+        })
+
+      assert Spec.api_url(spec, true) == "https://public.sandbox.com"
+    end
+
+    test "empty sandbox map falls back to production api" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{
+            api: "https://api.test.com",
+            sandbox: %{}
+          }
+        })
+
+      assert Spec.api_url(spec, true) == "https://api.test.com"
+    end
+
+    # String api_section with map sandbox
+    test "string api_section looks up in sandbox map" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{
+            api: "https://api.test.com",
+            sandbox: %{
+              "fapiPrivate" => "https://fapi.sandbox.com",
+              "default" => "https://default.sandbox.com"
+            }
+          }
+        })
+
+      assert Spec.api_url(spec, "fapiPrivate") == "https://fapi.sandbox.com"
+    end
+
+    test "string api_section falls back to 'default' in sandbox map" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{
+            api: "https://api.test.com",
+            sandbox: %{"default" => "https://default.sandbox.com"}
+          }
+        })
+
+      assert Spec.api_url(spec, "fapiPrivate") == "https://default.sandbox.com"
+    end
+
+    test "string api_section returns nil when no match in sandbox map" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{
+            api: "https://api.test.com",
+            sandbox: %{"other" => "https://other.sandbox.com"}
+          }
+        })
+
+      assert Spec.api_url(spec, "fapiPrivate") == nil
+    end
+
+    test "string api_section with string sandbox returns the sandbox URL" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{
+            api: "https://api.test.com",
+            sandbox: "https://sandbox.test.com"
+          }
+        })
+
+      assert Spec.api_url(spec, "fapiPrivate") == "https://sandbox.test.com"
+    end
+
+    test "string api_section with no sandbox returns nil" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{api: "https://api.test.com"}
+        })
+
+      assert Spec.api_url(spec, "fapiPrivate") == nil
+    end
   end
 
   describe "has?/2" do
@@ -243,6 +374,89 @@ defmodule CCXT.SpecTest do
 
     defp validate_spec_structure(other, filename) do
       {:error, filename, "Expected CCXT.Spec struct, got #{inspect(other)}"}
+    end
+  end
+
+  # ===========================================================================
+  # Spec Format Versioning (Phase 2: Stable Contracts)
+  # ===========================================================================
+
+  describe "spec format versioning" do
+    test "from_map/1 defaults spec_format_version to 1 when absent" do
+      spec = Spec.from_map(@valid_spec)
+      assert spec.spec_format_version == 1
+    end
+
+    test "from_map/1 preserves explicit spec_format_version" do
+      spec = Spec.from_map(Map.put(@valid_spec, :spec_format_version, 1))
+      assert spec.spec_format_version == 1
+    end
+
+    test "current_spec_format_version/0 returns 1" do
+      assert Spec.current_spec_format_version() == 1
+    end
+
+    test "load!/1 produces spec_format_version 1 for specs without version field" do
+      # Find any existing spec file to test backward compatibility
+      specs_dir = [__DIR__, "..", "..", "priv", "specs"] |> Path.join() |> Path.expand()
+
+      if File.dir?(specs_dir) do
+        case specs_dir |> File.ls!() |> Enum.filter(&String.ends_with?(&1, ".exs")) do
+          [] ->
+            Logger.info("[skipped] No spec files found for version backward compat test")
+
+          [first | _] ->
+            spec = Spec.load!(Path.join(specs_dir, first))
+            assert spec.spec_format_version == 1
+        end
+      else
+        Logger.info("[skipped] No specs directory for version backward compat test")
+      end
+    end
+
+    test "load!/1 raises for spec with future version" do
+      # Create a temp spec file with a future version
+      tmp_dir = System.tmp_dir!()
+      path = Path.join(tmp_dir, "future_version_spec.exs")
+
+      content = """
+      %{
+        id: "future",
+        name: "Future Exchange",
+        urls: %{api: "https://api.future.com"},
+        spec_format_version: 999
+      }
+      """
+
+      File.write!(path, content)
+
+      assert_raise ArgumentError, ~r/newer than supported/, fn ->
+        Spec.load!(path)
+      end
+
+      File.rm(path)
+    end
+
+    test "load!/1 raises for spec with invalid version" do
+      tmp_dir = System.tmp_dir!()
+      path = Path.join(tmp_dir, "invalid_version_spec.exs")
+
+      content = """
+      %{
+        id: "invalid",
+        name: "Invalid Exchange",
+        urls: %{api: "https://api.invalid.com"},
+        spec_format_version: 0
+      }
+      """
+
+      File.write!(path, content)
+
+      assert_raise ArgumentError, ~r/Invalid spec format version/, fn ->
+        Spec.load!(path)
+      end
+
+      File.rm(path)
     end
   end
 

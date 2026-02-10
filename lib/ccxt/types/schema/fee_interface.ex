@@ -22,6 +22,8 @@ defmodule CCXT.Types.Schema.FeeInterface do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :currency, optional: false, source: "currency", type: "String.t() | nil"},
     %{name: :cost, optional: false, source: "cost", type: "number() | nil"},

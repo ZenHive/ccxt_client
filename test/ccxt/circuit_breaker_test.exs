@@ -198,6 +198,84 @@ defmodule CCXT.CircuitBreakerTest do
       assert config.window_ms == 10_000
       assert config.reset_ms == 15_000
     end
+
+    test "handles keyword list config" do
+      original = Application.get_env(:ccxt_client, :circuit_breaker)
+
+      Application.put_env(:ccxt_client, :circuit_breaker,
+        enabled: true,
+        max_failures: 3,
+        window_ms: 5_000,
+        reset_ms: 8_000
+      )
+
+      on_exit(fn ->
+        if original do
+          Application.put_env(:ccxt_client, :circuit_breaker, original)
+        else
+          Application.delete_env(:ccxt_client, :circuit_breaker)
+        end
+      end)
+
+      config = CircuitBreaker.config()
+
+      assert config.enabled == true
+      assert config.max_failures == 3
+      assert config.window_ms == 5_000
+      assert config.reset_ms == 8_000
+    end
+  end
+
+  describe "reset!/1" do
+    test "raises ArgumentError for nonexistent fuse", %{exchange: exchange} do
+      assert_raise ArgumentError, ~r/No circuit breaker found for/, fn ->
+        CircuitBreaker.reset!(exchange)
+      end
+    end
+
+    test "resets a blown circuit without error", %{exchange: exchange} do
+      CircuitBreaker.check(exchange)
+
+      for _ <- 1..5 do
+        CircuitBreaker.record_failure(exchange)
+      end
+
+      assert CircuitBreaker.status(exchange) == :blown
+      assert CircuitBreaker.reset!(exchange) == :ok
+      assert CircuitBreaker.status(exchange) == :ok
+    end
+  end
+
+  describe "should_melt?/1 catch-all transport errors" do
+    test "returns true for non-standard transport error reasons" do
+      assert CircuitBreaker.should_melt?({:error, %Req.TransportError{reason: :ehostunreach}}) == true
+      assert CircuitBreaker.should_melt?({:error, %Req.TransportError{reason: :enetunreach}}) == true
+    end
+  end
+
+  describe "idempotent check/1" do
+    test "calling check on already-installed fuse is idempotent", %{exchange: exchange} do
+      # First install
+      CircuitBreaker.check(exchange)
+      assert CircuitBreaker.status(exchange) == :ok
+
+      # Record some failures
+      for _ <- 1..3 do
+        CircuitBreaker.record_failure(exchange)
+      end
+
+      assert CircuitBreaker.status(exchange) == :ok
+
+      # Force re-install by calling check again (fuse is already installed, returns :ok path)
+      assert CircuitBreaker.check(exchange) == :ok
+
+      # Can still record failures and eventually blow
+      for _ <- 1..5 do
+        CircuitBreaker.record_failure(exchange)
+      end
+
+      assert CircuitBreaker.status(exchange) == :blown
+    end
   end
 
   describe "exchange isolation" do

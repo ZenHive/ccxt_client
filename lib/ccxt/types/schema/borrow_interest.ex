@@ -28,6 +28,8 @@ defmodule CCXT.Types.Schema.BorrowInterest do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :raw, optional: false, source: "info", type: "any()"},
     %{name: :symbol, optional: true, source: "symbol", type: "String.t() | nil"},

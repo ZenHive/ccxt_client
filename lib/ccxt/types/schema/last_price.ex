@@ -25,6 +25,8 @@ defmodule CCXT.Types.Schema.LastPrice do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :symbol, optional: false, source: "symbol", type: "String.t()"},
     %{name: :timestamp, optional: true, source: "timestamp", type: "number()"},

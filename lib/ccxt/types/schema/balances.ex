@@ -10,6 +10,8 @@ defmodule CCXT.Types.Schema.Balances do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :raw, optional: false, source: "info", type: "any()"},
     %{name: :timestamp, optional: true, source: "timestamp", type: "any()"},

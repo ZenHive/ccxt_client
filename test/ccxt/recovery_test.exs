@@ -11,6 +11,219 @@ defmodule CCXT.RecoveryTest do
     }
   end
 
+  # Mock exchange modules namespaced under test module to prevent cross-file collisions
+  defmodule EmptyOrdersExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts), do: {:ok, []}
+  end
+
+  defmodule TimeFilterExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+
+      {:ok,
+       [
+         %{"id" => "1", "timestamp" => now - 120_000, "symbol" => "BTC/USDT"},
+         %{"id" => "2", "timestamp" => now - 30_000, "symbol" => "BTC/USDT"},
+         %{"id" => "3", "timestamp" => now - 10_000, "symbol" => "BTC/USDT"}
+       ]}
+    end
+  end
+
+  defmodule SideFilterExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+
+      {:ok,
+       [
+         %{"id" => "1", "side" => "buy", "timestamp" => now - 1000},
+         %{"id" => "2", "side" => "sell", "timestamp" => now - 1000},
+         %{"id" => "3", "side" => "buy", "timestamp" => now - 1000}
+       ]}
+    end
+  end
+
+  defmodule AmountFilterExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+
+      {:ok,
+       [
+         %{"id" => "1", "amount" => 1.0, "timestamp" => now - 1000},
+         %{"id" => "2", "amount" => 1.005, "timestamp" => now - 1000},
+         %{"id" => "3", "amount" => 1.02, "timestamp" => now - 1000},
+         %{"id" => "4", "amount" => 0.5, "timestamp" => now - 1000}
+       ]}
+    end
+  end
+
+  defmodule OpenOrdersExchange do
+    @moduledoc false
+    def fetch_open_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+      {:ok, [%{"id" => "open1", "status" => "open", "timestamp" => now - 1000}]}
+    end
+  end
+
+  defmodule ClosedOrdersExchange do
+    @moduledoc false
+    def fetch_closed_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+      {:ok, [%{"id" => "closed1", "status" => "closed", "timestamp" => now - 1000}]}
+    end
+  end
+
+  defmodule CombinedOrdersExchange do
+    @moduledoc false
+    def fetch_open_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+      {:ok, [%{"id" => "open1", "timestamp" => now - 1000}]}
+    end
+
+    def fetch_closed_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+      {:ok, [%{"id" => "closed1", "timestamp" => now - 1000}]}
+    end
+  end
+
+  defmodule ErrorExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts), do: {:error, :network_error}
+  end
+
+  defmodule NoFunctionsExchange do
+    @moduledoc false
+  end
+
+  defmodule DateTimeExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+      {:ok, [%{"id" => "1", "timestamp" => now - 1000}]}
+    end
+  end
+
+  defmodule ClientIdExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+
+      {:ok,
+       [
+         %{"id" => "1", "clientOrderId" => "my-order-123", "timestamp" => now - 1000},
+         %{"id" => "2", "clientOrderId" => "other-order", "timestamp" => now - 1000}
+       ]}
+    end
+  end
+
+  defmodule NoMatchExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+      {:ok, [%{"id" => "1", "clientOrderId" => "other-order", "timestamp" => now - 1000}]}
+    end
+  end
+
+  defmodule SymbolRequiredExchange do
+    @moduledoc false
+  end
+
+  defmodule DirectClientIdExchange do
+    @moduledoc false
+    def fetch_order_by_client_id(_credentials, client_order_id, _symbol) do
+      {:ok, %{"id" => "direct", "clientOrderId" => client_order_id}}
+    end
+  end
+
+  defmodule AltFieldExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+      {:ok, [%{"id" => "1", "client_order_id" => "my-order-123", "timestamp" => now - 1000}]}
+    end
+  end
+
+  defmodule AtomKeyExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+      {:ok, [%{id: "1", clientOrderId: "my-order-123", timestamp: now - 1000}]}
+    end
+  end
+
+  defmodule MissingTimestampExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts) do
+      {:ok, [%{"id" => "1", "side" => "buy"}]}
+    end
+  end
+
+  defmodule MissingAmountExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+
+      {:ok,
+       [
+         %{"id" => "1", "timestamp" => now - 1000},
+         %{"id" => "2", "amount" => 1.0, "timestamp" => now - 1000}
+       ]}
+    end
+  end
+
+  defmodule DateTimeOrderExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts) do
+      {:ok, [%{"id" => "1", "timestamp" => DateTime.add(DateTime.utc_now(), -1, :second)}]}
+    end
+  end
+
+  defmodule ExceptionExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts), do: raise("Boom!")
+  end
+
+  defmodule ThrowExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts), do: throw(:oops)
+  end
+
+  defmodule FetchOrderErrorExchange do
+    @moduledoc false
+    def fetch_order(_credentials, _client_id, _symbol), do: {:error, :not_found}
+
+    def fetch_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+      {:ok, [%{"id" => "1", "clientOrderId" => "target-123", "timestamp" => now - 1000}]}
+    end
+  end
+
+  defmodule RaisingClientIdExchange do
+    @moduledoc false
+    def fetch_order_by_client_id(_credentials, _client_id, _symbol), do: raise("Unexpected error")
+
+    def fetch_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+      {:ok, [%{"id" => "1", "clientOrderId" => "rescue-123", "timestamp" => now - 1000}]}
+    end
+  end
+
+  defmodule AtomSideExchange do
+    @moduledoc false
+    def fetch_orders(_credentials, _symbol, _opts) do
+      now = System.os_time(:millisecond)
+
+      {:ok,
+       [
+         %{id: "1", side: :buy, timestamp: now - 1000},
+         %{id: "2", side: :sell, timestamp: now - 1000}
+       ]}
+    end
+  end
+
   describe "find_recent_orders/3" do
     test "requires symbol option" do
       assert_raise KeyError, ~r/key :symbol not found/, fn ->
@@ -19,13 +232,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "returns empty list when no orders match" do
-      defmodule EmptyOrdersExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          {:ok, []}
-        end
-      end
-
       {:ok, orders} =
         Recovery.find_recent_orders(EmptyOrdersExchange, mock_credentials(), symbol: "BTC/USDT")
 
@@ -34,23 +240,6 @@ defmodule CCXT.RecoveryTest do
 
     test "filters orders by time window" do
       now = System.os_time(:millisecond)
-      old_time = now - 120_000
-      recent_time = now - 30_000
-
-      defmodule TimeFilterExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          now = System.os_time(:millisecond)
-
-          {:ok,
-           [
-             %{"id" => "1", "timestamp" => now - 120_000, "symbol" => "BTC/USDT"},
-             %{"id" => "2", "timestamp" => now - 30_000, "symbol" => "BTC/USDT"},
-             %{"id" => "3", "timestamp" => now - 10_000, "symbol" => "BTC/USDT"}
-           ]}
-        end
-      end
-
       # Only orders in the last 60 seconds
       {:ok, orders} =
         Recovery.find_recent_orders(TimeFilterExchange, mock_credentials(),
@@ -63,20 +252,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "filters orders by side" do
-      defmodule SideFilterExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          now = System.os_time(:millisecond)
-
-          {:ok,
-           [
-             %{"id" => "1", "side" => "buy", "timestamp" => now - 1000},
-             %{"id" => "2", "side" => "sell", "timestamp" => now - 1000},
-             %{"id" => "3", "side" => "buy", "timestamp" => now - 1000}
-           ]}
-        end
-      end
-
       {:ok, buy_orders} =
         Recovery.find_recent_orders(SideFilterExchange, mock_credentials(),
           symbol: "BTC/USDT",
@@ -97,21 +272,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "filters orders by amount tolerance" do
-      defmodule AmountFilterExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          now = System.os_time(:millisecond)
-
-          {:ok,
-           [
-             %{"id" => "1", "amount" => 1.0, "timestamp" => now - 1000},
-             %{"id" => "2", "amount" => 1.005, "timestamp" => now - 1000},
-             %{"id" => "3", "amount" => 1.02, "timestamp" => now - 1000},
-             %{"id" => "4", "amount" => 0.5, "timestamp" => now - 1000}
-           ]}
-        end
-      end
-
       # 1% tolerance around 1.0 = 0.99 to 1.01
       {:ok, orders} =
         Recovery.find_recent_orders(AmountFilterExchange, mock_credentials(),
@@ -125,14 +285,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "fetches open orders only when status is :open" do
-      defmodule OpenOrdersExchange do
-        @moduledoc false
-        def fetch_open_orders(_credentials, _symbol, _opts) do
-          now = System.os_time(:millisecond)
-          {:ok, [%{"id" => "open1", "status" => "open", "timestamp" => now - 1000}]}
-        end
-      end
-
       {:ok, orders} =
         Recovery.find_recent_orders(OpenOrdersExchange, mock_credentials(),
           symbol: "BTC/USDT",
@@ -144,14 +296,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "fetches closed orders only when status is :closed" do
-      defmodule ClosedOrdersExchange do
-        @moduledoc false
-        def fetch_closed_orders(_credentials, _symbol, _opts) do
-          now = System.os_time(:millisecond)
-          {:ok, [%{"id" => "closed1", "status" => "closed", "timestamp" => now - 1000}]}
-        end
-      end
-
       {:ok, orders} =
         Recovery.find_recent_orders(ClosedOrdersExchange, mock_credentials(),
           symbol: "BTC/USDT",
@@ -163,19 +307,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "combines open and closed when fetch_orders not available" do
-      defmodule CombinedOrdersExchange do
-        @moduledoc false
-        def fetch_open_orders(_credentials, _symbol, _opts) do
-          now = System.os_time(:millisecond)
-          {:ok, [%{"id" => "open1", "timestamp" => now - 1000}]}
-        end
-
-        def fetch_closed_orders(_credentials, _symbol, _opts) do
-          now = System.os_time(:millisecond)
-          {:ok, [%{"id" => "closed1", "timestamp" => now - 1000}]}
-        end
-      end
-
       {:ok, orders} =
         Recovery.find_recent_orders(CombinedOrdersExchange, mock_credentials(),
           symbol: "BTC/USDT",
@@ -189,13 +320,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "handles exchange errors gracefully" do
-      defmodule ErrorExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          {:error, :network_error}
-        end
-      end
-
       result =
         Recovery.find_recent_orders(ErrorExchange, mock_credentials(), symbol: "BTC/USDT")
 
@@ -203,11 +327,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "handles function not exported" do
-      defmodule NoFunctionsExchange do
-        # No fetch functions defined
-        @moduledoc false
-      end
-
       result =
         Recovery.find_recent_orders(NoFunctionsExchange, mock_credentials(), symbol: "BTC/USDT")
 
@@ -215,14 +334,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "accepts DateTime for since/until" do
-      defmodule DateTimeExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          now = System.os_time(:millisecond)
-          {:ok, [%{"id" => "1", "timestamp" => now - 1000}]}
-        end
-      end
-
       since = DateTime.add(DateTime.utc_now(), -60, :second)
       until_time = DateTime.utc_now()
 
@@ -239,19 +350,6 @@ defmodule CCXT.RecoveryTest do
 
   describe "find_by_client_id/4" do
     test "finds order by client_order_id in recent orders" do
-      defmodule ClientIdExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          now = System.os_time(:millisecond)
-
-          {:ok,
-           [
-             %{"id" => "1", "clientOrderId" => "my-order-123", "timestamp" => now - 1000},
-             %{"id" => "2", "clientOrderId" => "other-order", "timestamp" => now - 1000}
-           ]}
-        end
-      end
-
       {:ok, order} =
         Recovery.find_by_client_id(ClientIdExchange, mock_credentials(), "my-order-123", symbol: "BTC/USDT")
 
@@ -260,14 +358,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "returns :not_found when client_order_id doesn't exist" do
-      defmodule NoMatchExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          now = System.os_time(:millisecond)
-          {:ok, [%{"id" => "1", "clientOrderId" => "other-order", "timestamp" => now - 1000}]}
-        end
-      end
-
       result =
         Recovery.find_by_client_id(NoMatchExchange, mock_credentials(), "nonexistent", symbol: "BTC/USDT")
 
@@ -275,11 +365,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "returns error when symbol not provided and required" do
-      defmodule SymbolRequiredExchange do
-        # Only has fetch_order which requires symbol
-        @moduledoc false
-      end
-
       result =
         Recovery.find_by_client_id(SymbolRequiredExchange, mock_credentials(), "my-order-123")
 
@@ -287,13 +372,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "uses fetch_order_by_client_id when available" do
-      defmodule DirectClientIdExchange do
-        @moduledoc false
-        def fetch_order_by_client_id(_credentials, client_order_id, _symbol) do
-          {:ok, %{"id" => "direct", "clientOrderId" => client_order_id}}
-        end
-      end
-
       {:ok, order} =
         Recovery.find_by_client_id(
           DirectClientIdExchange,
@@ -306,14 +384,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "handles alternative client_order_id field names" do
-      defmodule AltFieldExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          now = System.os_time(:millisecond)
-          {:ok, [%{"id" => "1", "client_order_id" => "my-order-123", "timestamp" => now - 1000}]}
-        end
-      end
-
       {:ok, order} =
         Recovery.find_by_client_id(AltFieldExchange, mock_credentials(), "my-order-123", symbol: "BTC/USDT")
 
@@ -321,14 +391,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "handles atom keys in orders" do
-      defmodule AtomKeyExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          now = System.os_time(:millisecond)
-          {:ok, [%{id: "1", clientOrderId: "my-order-123", timestamp: now - 1000}]}
-        end
-      end
-
       {:ok, order} =
         Recovery.find_by_client_id(AtomKeyExchange, mock_credentials(), "my-order-123", symbol: "BTC/USDT")
 
@@ -338,13 +400,6 @@ defmodule CCXT.RecoveryTest do
 
   describe "edge cases" do
     test "handles orders with missing timestamp" do
-      defmodule MissingTimestampExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          {:ok, [%{"id" => "1", "side" => "buy"}]}
-        end
-      end
-
       # Orders without timestamp should be filtered out by time filter
       {:ok, orders} =
         Recovery.find_recent_orders(MissingTimestampExchange, mock_credentials(), symbol: "BTC/USDT")
@@ -354,19 +409,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "handles orders with missing amount" do
-      defmodule MissingAmountExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          now = System.os_time(:millisecond)
-
-          {:ok,
-           [
-             %{"id" => "1", "timestamp" => now - 1000},
-             %{"id" => "2", "amount" => 1.0, "timestamp" => now - 1000}
-           ]}
-        end
-      end
-
       {:ok, orders} =
         Recovery.find_recent_orders(MissingAmountExchange, mock_credentials(),
           symbol: "BTC/USDT",
@@ -380,14 +422,6 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "handles DateTime timestamps in orders" do
-      defmodule DateTimeOrderExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          # Use a timestamp slightly in the past to avoid race conditions
-          {:ok, [%{"id" => "1", "timestamp" => DateTime.add(DateTime.utc_now(), -1, :second)}]}
-        end
-      end
-
       {:ok, orders} =
         Recovery.find_recent_orders(DateTimeOrderExchange, mock_credentials(), symbol: "BTC/USDT")
 
@@ -395,17 +429,52 @@ defmodule CCXT.RecoveryTest do
     end
 
     test "handles exceptions in exchange calls" do
-      defmodule ExceptionExchange do
-        @moduledoc false
-        def fetch_orders(_credentials, _symbol, _opts) do
-          raise "Boom!"
-        end
-      end
-
       result =
         Recovery.find_recent_orders(ExceptionExchange, mock_credentials(), symbol: "BTC/USDT")
 
       assert {:error, {:exception, "Boom!"}} = result
+    end
+
+    test "call_if_exported handles throw" do
+      result =
+        Recovery.find_recent_orders(ThrowExchange, mock_credentials(), symbol: "BTC/USDT")
+
+      assert {:error, {:throw, :oops}} = result
+    end
+
+    test "try_fetch_by_client_id falls back when fetch_order returns error" do
+      {:ok, order} =
+        Recovery.find_by_client_id(
+          FetchOrderErrorExchange,
+          mock_credentials(),
+          "target-123",
+          symbol: "BTC/USDT"
+        )
+
+      assert order["clientOrderId"] == "target-123"
+    end
+
+    test "try_fetch_by_client_id rescues exceptions from fetch_order_by_client_id" do
+      {:ok, order} =
+        Recovery.find_by_client_id(
+          RaisingClientIdExchange,
+          mock_credentials(),
+          "rescue-123",
+          symbol: "BTC/USDT"
+        )
+
+      assert order["clientOrderId"] == "rescue-123"
+    end
+
+    test "filter_by_side works with atom side keys" do
+      {:ok, orders} =
+        Recovery.find_recent_orders(AtomSideExchange, mock_credentials(),
+          symbol: "BTC/USDT",
+          side: :buy
+        )
+
+      assert length(orders) == 1
+      assert hd(orders)[:side] == :buy
     end
   end
 end

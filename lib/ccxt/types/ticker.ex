@@ -1,5 +1,17 @@
 defmodule CCXT.Types.Ticker do
-  @moduledoc "Auto-generated from priv/ccxt/ts/src/base/types.ts."
+  @moduledoc """
+  Unified ticker/price data from an exchange.
+
+  Contains the latest price, volume, and 24h change data for a trading pair.
+  See `CCXT.Types.Schema.Ticker` for the full field list with descriptions.
+
+  ## Example
+
+      {:ok, ticker} = MyExchange.fetch_ticker("BTC/USDT")
+      ticker.last        # last traded price
+      ticker.percentage  # 24h price change %
+      ticker.base_volume # 24h volume in base currency
+  """
 
   use CCXT.Types.Schema.Ticker
 

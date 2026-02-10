@@ -23,6 +23,8 @@ defmodule CCXT.Types.Schema.DepositWithdrawFee do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :raw, optional: false, source: "info", type: "any()"},
     %{

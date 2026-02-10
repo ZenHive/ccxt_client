@@ -24,6 +24,8 @@ defmodule CCXT.Types.Schema.DepositAddress do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :raw, optional: false, source: "info", type: "any()"},
     %{name: :currency, optional: false, source: "currency", type: "String.t()"},

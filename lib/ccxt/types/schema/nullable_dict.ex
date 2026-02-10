@@ -10,6 +10,7 @@ defmodule CCXT.Types.Schema.NullableDict do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
   @fields []
   @type_spec_str """
   %{optional(String.t()) => any()} | nil

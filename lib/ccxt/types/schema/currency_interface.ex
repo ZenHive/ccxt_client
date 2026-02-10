@@ -32,6 +32,8 @@ defmodule CCXT.Types.Schema.CurrencyInterface do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :id, optional: false, source: "id", type: "String.t()"},
     %{name: :code, optional: false, source: "code", type: "String.t()"},

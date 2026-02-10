@@ -26,6 +26,8 @@ defmodule CCXT.Types.Schema.FundingHistory do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :raw, optional: false, source: "info", type: "any()"},
     %{name: :symbol, optional: false, source: "symbol", type: "String.t()"},

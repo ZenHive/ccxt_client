@@ -34,6 +34,8 @@ defmodule CCXT.Types.Schema.LedgerEntry do
 
   """
 
+  Module.register_attribute(__MODULE__, :fields, persist: true)
+
   @fields [
     %{name: :raw, optional: false, source: "info", type: "any()"},
     %{name: :id, optional: true, source: "id", type: "String.t() | nil"},

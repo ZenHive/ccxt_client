@@ -249,4 +249,112 @@ defmodule CCXT.TestnetTest do
       assert registered == []
     end
   end
+
+  describe "sandbox_key_from_url/1" do
+    test "nil returns :default" do
+      assert CCXT.Testnet.sandbox_key_from_url(nil) == :default
+    end
+
+    test "spot URL returns :default" do
+      assert CCXT.Testnet.sandbox_key_from_url("https://testnet.binance.vision/api/v3") == :default
+    end
+
+    test "futures URL returns :futures" do
+      assert CCXT.Testnet.sandbox_key_from_url("https://testnet.binancefuture.com/fapi/v1") == :futures
+    end
+
+    test "COIN-M URL returns :coinm" do
+      assert CCXT.Testnet.sandbox_key_from_url("https://testnet.binancefuture.com/dapi/v1") == :coinm
+    end
+  end
+
+  describe "exchanges_with_creds/0" do
+    test "returns unique exchange atoms" do
+      # Register same exchange for multiple sandboxes
+      CCXT.Testnet.register(:binance, :default, api_key: "k", secret: "s")
+      CCXT.Testnet.register(:binance, :futures, api_key: "k2", secret: "s2")
+      CCXT.Testnet.register(:bybit, :default, api_key: "k3", secret: "s3")
+
+      exchanges = CCXT.Testnet.exchanges_with_creds()
+
+      # :binance should appear only once even though it has 2 sandbox keys
+      assert :binance in exchanges
+      assert :bybit in exchanges
+      assert length(exchanges) == 2
+    end
+
+    test "returns empty list when no exchanges registered" do
+      assert CCXT.Testnet.exchanges_with_creds() == []
+    end
+  end
+
+  describe "env_var_prefix/2" do
+    test "default sandbox key" do
+      assert CCXT.Testnet.env_var_prefix(:binance, :default) == "BINANCE_TESTNET"
+    end
+
+    test "futures sandbox key" do
+      assert CCXT.Testnet.env_var_prefix(:binance, :futures) == "BINANCE_FUTURES_TESTNET"
+    end
+
+    test "coinm sandbox key" do
+      assert CCXT.Testnet.env_var_prefix(:binance, :coinm) == "BINANCE_COINM_TESTNET"
+    end
+
+    test "custom sandbox key" do
+      assert CCXT.Testnet.env_var_prefix(:binance, :legacy) == "BINANCE_LEGACY_TESTNET"
+    end
+  end
+
+  describe "multi-sandbox registration" do
+    test "register_from_env with sandbox_key tuple" do
+      System.put_env("BINANCE_FUTURES_TESTNET_API_KEY", "fkey")
+      System.put_env("BINANCE_FUTURES_TESTNET_API_SECRET", "fsecret")
+
+      on_exit(fn ->
+        System.delete_env("BINANCE_FUTURES_TESTNET_API_KEY")
+        System.delete_env("BINANCE_FUTURES_TESTNET_API_SECRET")
+      end)
+
+      assert :ok = CCXT.Testnet.register_from_env(:binance, :futures, testnet: true)
+
+      creds = CCXT.Testnet.creds(:binance, :futures)
+      assert creds.api_key == "fkey"
+      assert creds.secret == "fsecret"
+    end
+
+    test "register_all_from_env with mixed sandbox configs" do
+      System.put_env("MIX_A_TESTNET_API_KEY", "key_a")
+      System.put_env("MIX_A_TESTNET_API_SECRET", "secret_a")
+      System.put_env("MIX_A_FUTURES_TESTNET_API_KEY", "key_af")
+      System.put_env("MIX_A_FUTURES_TESTNET_API_SECRET", "secret_af")
+
+      on_exit(fn ->
+        System.delete_env("MIX_A_TESTNET_API_KEY")
+        System.delete_env("MIX_A_TESTNET_API_SECRET")
+        System.delete_env("MIX_A_FUTURES_TESTNET_API_KEY")
+        System.delete_env("MIX_A_FUTURES_TESTNET_API_SECRET")
+      end)
+
+      configs = [
+        {:mix_a, testnet: true},
+        {:mix_a, :futures, testnet: true},
+        {:mix_b, testnet: true}
+      ]
+
+      registered = CCXT.Testnet.register_all_from_env(configs)
+
+      assert length(registered) == 2
+      assert {:mix_a, :default} in registered
+      assert {:mix_a, :futures} in registered
+    end
+  end
+
+  describe "creds!/2 with sandbox_key" do
+    test "raises with sandbox key in message" do
+      assert_raise ArgumentError, ~r/No credentials registered for binance\/futures/, fn ->
+        CCXT.Testnet.creds!(:binance, :futures)
+      end
+    end
+  end
 end

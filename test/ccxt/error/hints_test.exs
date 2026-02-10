@@ -77,6 +77,25 @@ defmodule CCXT.Error.HintsTest do
       assert Enum.any?(hints, &String.contains?(&1, "error code"))
     end
 
+    test "circuit_open without exchange returns base hints" do
+      hints = Hints.for_type(:circuit_open, [])
+
+      assert Enum.any?(hints, &String.contains?(&1, "auto-reset"))
+      assert Enum.any?(hints, &String.contains?(&1, "status page"))
+      assert Enum.any?(hints, &String.contains?(&1, "reset"))
+      refute Enum.any?(hints, &String.contains?(&1, "Exchange"))
+    end
+
+    test "circuit_open with exchange prepends exchange-specific hint" do
+      hints = Hints.for_type(:circuit_open, exchange: "binance")
+
+      first_hint = hd(hints)
+      assert first_hint =~ "binance"
+      assert first_hint =~ "consecutive failures"
+      # Base hints still present
+      assert Enum.any?(hints, &String.contains?(&1, "auto-reset"))
+    end
+
     test "unknown type returns empty list" do
       hints = Hints.for_type(:unknown_type, [])
       assert hints == []
@@ -128,8 +147,8 @@ defmodule CCXT.Error.HintsTest do
           assert hints != []
           assert Enum.any?(hints, &String.contains?(&1, "accountType"))
         else
-          # Exchange may not have account type requirements
-          assert is_list(hints)
+          # Exchange without account type config returns no hints
+          assert hints == []
         end
       end
 
@@ -193,6 +212,60 @@ defmodule CCXT.Error.HintsTest do
 
     test "returns empty hints for fetch_positions", %{spec: spec} do
       hints = Hints.for_endpoint(spec, :fetch_positions)
+
+      assert hints == []
+    end
+  end
+
+  describe "with derivatives category hint" do
+    setup do
+      spec = %Spec{
+        id: "test_exchange",
+        name: "Test Exchange",
+        classification: :supported,
+        urls: %{api: "https://api.test.com"},
+        signing: %{pattern: :none},
+        endpoints: [],
+        has: %{},
+        options: %{default_sub_type: "linear"}
+      }
+
+      {:ok, spec: spec}
+    end
+
+    test "includes category hint for derivatives methods", %{spec: spec} do
+      hints = Hints.for_endpoint(spec, :fetch_positions)
+
+      assert Enum.any?(hints, &String.contains?(&1, "category"))
+      assert Enum.any?(hints, &String.contains?(&1, "linear"))
+    end
+
+    test "no category hint for non-derivatives methods", %{spec: spec} do
+      hints = Hints.for_endpoint(spec, :fetch_ticker)
+
+      refute Enum.any?(hints, &String.contains?(&1, "category"))
+    end
+  end
+
+  describe "with empty param_mappings" do
+    setup do
+      spec = %Spec{
+        id: "test_exchange",
+        name: "Test Exchange",
+        classification: :supported,
+        urls: %{api: "https://api.test.com"},
+        signing: %{pattern: :none},
+        endpoints: [],
+        has: %{},
+        options: %{},
+        param_mappings: %{}
+      }
+
+      {:ok, spec: spec}
+    end
+
+    test "returns no mapping hints for empty map", %{spec: spec} do
+      hints = Hints.for_endpoint(spec, :fetch_order)
 
       assert hints == []
     end

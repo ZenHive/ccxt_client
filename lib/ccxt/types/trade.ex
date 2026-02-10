@@ -1,5 +1,19 @@
 defmodule CCXT.Types.Trade do
-  @moduledoc "Auto-generated from priv/ccxt/ts/src/base/types.ts."
+  @moduledoc """
+  Unified trade/fill data from an exchange.
+
+  Represents a single trade execution. Side is normalized to atoms (`:buy`, `:sell`)
+  and taker_or_maker to (`:taker`, `:maker`). Cost is auto-computed if missing.
+  See `CCXT.Types.Schema.Trade` for fields with descriptions.
+
+  ## Example
+
+      {:ok, trades} = MyExchange.fetch_trades("BTC/USDT")
+      trade = hd(trades)
+      trade.price  # execution price
+      trade.side   # :buy or :sell
+      trade.cost   # price * amount
+  """
 
   use CCXT.Types.Schema.Trade
 

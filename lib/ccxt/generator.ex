@@ -109,64 +109,116 @@ defmodule CCXT.Generator do
     end
   end
 
+  @doc """
+  Checks if an exchange is enabled based on compile-time config.
+
+  When `config :ccxt_client, exchanges: [...]` is set, only listed exchanges
+  generate full modules. Others get a stub with `@moduledoc false`.
+
+  Default `:all` enables every exchange (backward compatible).
+
+  ## Parameters
+
+  - `spec_id` - Exchange ID string (e.g., "bybit")
+  - `configured` - `:all` or list of exchange IDs (strings or atoms)
+
+  ## Examples
+
+      iex> CCXT.Generator.exchange_enabled?("bybit", :all)
+      true
+
+      iex> CCXT.Generator.exchange_enabled?("bybit", ["bybit", "binance"])
+      true
+
+      iex> CCXT.Generator.exchange_enabled?("kraken", ["bybit", "binance"])
+      false
+
+      iex> CCXT.Generator.exchange_enabled?("bybit", [:bybit, :binance])
+      true
+
+  """
+  @spec exchange_enabled?(String.t(), :all | [String.t() | atom()]) :: boolean()
+  def exchange_enabled?(_spec_id, :all), do: true
+
+  def exchange_enabled?(spec_id, exchanges) when is_list(exchanges) do
+    Enum.any?(exchanges, fn
+      id when is_binary(id) -> id == spec_id
+      id when is_atom(id) -> Atom.to_string(id) == spec_id
+    end)
+  end
+
   @doc false
   @spec __generate__(String.t() | nil, String.t() | nil) :: Macro.t()
   defmacro __generate__(spec_id, spec_path) do
-    # Resolve spec path at compile time
-    resolved_path = SpecLoader.resolve_spec_path(spec_id, spec_path)
+    # Read config at macro expansion time (runs during caller's compilation).
+    # Uses get_env because compile_env can only be called in module body.
+    configured = Application.get_env(:ccxt_client, :exchanges, :all)
 
-    # Load and validate spec at compile time
-    spec = SpecLoader.load_and_validate_spec!(resolved_path)
+    # Check if this exchange is enabled before loading the spec
+    if exchange_enabled?(spec_id, configured) do
+      # Resolve spec path at compile time
+      resolved_path = SpecLoader.resolve_spec_path(spec_id, spec_path)
 
-    # Compute exchange ID atom at compile time (safe - spec IDs come from trusted spec files)
-    # Inject into spec so HTTP.Client never needs String.to_atom at runtime
-    exchange_id_atom = String.to_atom(spec.id)
-    spec_with_atom = %{spec | exchange_id: exchange_id_atom}
+      # Load and validate spec at compile time
+      spec = SpecLoader.load_and_validate_spec!(resolved_path)
 
-    # Generate moduledoc at compile time
-    moduledoc = Functions.generate_moduledoc(spec)
+      # Compute exchange ID atom at compile time (safe - spec IDs come from trusted spec files)
+      # Inject into spec so HTTP.Client never needs String.to_atom at runtime
+      exchange_id_atom = String.to_atom(spec.id)
+      spec_with_atom = %{spec | exchange_id: exchange_id_atom}
 
-    # Generate module contents
-    quote do
-      # Track spec file for recompilation
-      @external_resource unquote(resolved_path)
+      # Generate moduledoc at compile time
+      moduledoc = Functions.generate_moduledoc(spec)
 
-      # Suppress Dialyzer false positives for generated endpoint functions.
-      #
-      # Why this is needed:
-      # - Generated endpoint functions use dynamic patterns from specs
-      # - Dialyzer's type inference sometimes concludes {:ok, ...} matches can never succeed
-      # - This happens because Dialyzer analyzes the generated code statically without
-      #   knowing the runtime behavior of HTTP clients returning different result shapes
-      #
-      # Scope: This suppression applies ONLY to this generated exchange module,
-      # not to the generator itself or other modules. Each exchange module gets
-      # its own suppression because it has its own set of generated functions.
-      #
-      # Trade-off: We accept suppressed warnings in generated endpoint functions
-      # to avoid false positives, while non-generated code (introspection, helpers)
-      # still gets full Dialyzer coverage.
-      #
-      # TODO: Consider using @dialyzer annotations on specific generated function
-      # groups if Dialyzer adds support for dynamic function name annotations.
-      @dialyzer [:no_return, :no_match, :no_contracts]
+      # Generate module contents
+      quote do
+        # Track spec file for recompilation
+        @external_resource unquote(resolved_path)
 
-      @moduledoc unquote(moduledoc)
+        # Suppress Dialyzer false positives for generated endpoint functions.
+        #
+        # Why this is needed:
+        # - Generated endpoint functions use dynamic patterns from specs
+        # - Dialyzer's type inference sometimes concludes {:ok, ...} matches can never succeed
+        # - This happens because Dialyzer analyzes the generated code statically without
+        #   knowing the runtime behavior of HTTP clients returning different result shapes
+        #
+        # Scope: This suppression applies ONLY to this generated exchange module,
+        # not to the generator itself or other modules. Each exchange module gets
+        # its own suppression because it has its own set of generated functions.
+        #
+        # Trade-off: We accept suppressed warnings in generated endpoint functions
+        # to avoid false positives, while non-generated code (introspection, helpers)
+        # still gets full Dialyzer coverage.
+        #
+        # TODO: Consider using @dialyzer annotations on specific generated function
+        # groups if Dialyzer adds support for dynamic function name annotations.
+        @dialyzer [:no_return, :no_match, :no_contracts]
 
-      # Store spec (with pre-computed exchange_id atom) as module attribute
-      @ccxt_spec unquote(Macro.escape(spec_with_atom))
+        @moduledoc unquote(moduledoc)
 
-      # Generate introspection functions
-      unquote(Functions.generate_introspection(spec))
+        # Store spec (with pre-computed exchange_id atom) as module attribute
+        @ccxt_spec unquote(Macro.escape(spec_with_atom))
 
-      # Generate escape hatches
-      unquote(Functions.generate_escape_hatches())
+        # Generate introspection functions
+        unquote(Functions.generate_introspection(spec))
 
-      # Generate endpoint functions
-      unquote(Functions.generate_endpoints(spec))
+        # Generate escape hatches
+        unquote(Functions.generate_escape_hatches())
 
-      # Generate convenience methods (balance partials, etc.)
-      unquote(Functions.generate_convenience_methods(spec))
+        # Generate response parser mappings (before endpoints so @ccxt_parser_* attrs are available)
+        unquote(Functions.generate_parsers(spec))
+
+        # Generate endpoint functions
+        unquote(Functions.generate_endpoints(spec))
+
+        # Generate convenience methods (balance partials, etc.)
+        unquote(Functions.generate_convenience_methods(spec))
+      end
+    else
+      quote do
+        @moduledoc false
+      end
     end
   end
 end
