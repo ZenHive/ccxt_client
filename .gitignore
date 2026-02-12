@@ -24,3 +24,8 @@ ccxt_client-*.tar
 
 # Temporary files
 /tmp/
+
+# Local AI/dev tooling files
+.codex/
+.mcp.json
+AGENTS.md
