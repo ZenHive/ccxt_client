@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- docs: fixed Deribit trades usage in `llms.txt` to call `CCXT.Deribit.fetch_trades/2` (`"BTC-PERPETUAL", nil`) instead of missing `/1`
+- docs: added `BUGS.md` with Tidewave-verified issues:
+  - `CCXT.Deribit.fetch_trades/1` missing
+  - `CCXT.Deribit.WS.watch_balance_subscription/0` building an empty channel (`""`)
+
 ## v0.1.0 — Initial Release
 
 - Elixir client for 110+ cryptocurrency exchanges

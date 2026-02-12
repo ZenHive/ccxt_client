@@ -1,0 +1,350 @@
+# llms.txt: End-User Usage Guide for ccxt_client
+
+Use this guide when assisting end users of `ccxt_client`.
+
+`ccxt_client` is an Elixir package (`:ccxt_client`) that exposes a unified API across 100+ exchanges through modules such as `CCXT.Binance`, `CCXT.Bybit`, and `CCXT.Deribit`.
+
+Important current behavior:
+- REST and WebSocket OHLCV payloads are not fully normalized yet.
+- Exchange-specific payload parsing is currently required for charting (including TradingView).
+
+## 1) Installation and Startup
+```elixir
+# mix.exs
+defp deps do
+  [
+    {:ccxt_client, "~> 0.1"}
+  ]
+end
+```
+
+```bash
+mix deps.get
+mix compile
+iex -S mix
+```
+
+## 2) Public Market Data (No Credentials)
+Use exchange modules directly.
+
+```elixir
+{:ok, ticker} = CCXT.Bybit.fetch_ticker("BTC/USDT")
+{:ok, book} = CCXT.Bybit.fetch_order_book("BTC/USDT")
+{:ok, trades} = CCXT.Deribit.fetch_trades("BTC-PERPETUAL", nil)
+```
+
+If an exchange needs custom API fields, pass them via `params:`:
+
+```elixir
+CCXT.Bybit.fetch_ticker("BTCUSDT", params: %{category: "spot"})
+```
+
+## 3) Private Endpoints (Credentials)
+Create credentials once, then reuse.
+
+```elixir
+creds = CCXT.Credentials.new!(
+  api_key: System.fetch_env!("BYBIT_TESTNET_API_KEY"),
+  secret: System.fetch_env!("BYBIT_TESTNET_API_SECRET"),
+  sandbox: true
+)
+
+{:ok, balance} = CCXT.Bybit.fetch_balance(creds)
+```
+
+Deribit testnet commonly uses `DERIBIT_TESTNET_SECRET_KEY`:
+
+```elixir
+deribit_creds = CCXT.Credentials.new!(
+  api_key: System.fetch_env!("DERIBIT_TESTNET_API_KEY"),
+  secret: System.fetch_env!("DERIBIT_TESTNET_SECRET_KEY"),
+  sandbox: true
+)
+```
+
+Some exchanges also require `password`/passphrase:
+
+```elixir
+creds = CCXT.Credentials.new!(
+  api_key: "...",
+  secret: "...",
+  password: "...",
+  sandbox: true
+)
+```
+
+## 4) Trading Flow Example
+```elixir
+{:ok, order} = CCXT.Bybit.create_order(
+  creds,
+  "BTC/USDT",
+  :limit,
+  :buy,
+  0.001,
+  50_000.0
+)
+
+{:ok, fetched} = CCXT.Bybit.fetch_order(creds, order["id"], "BTC/USDT")
+{:ok, _} = CCXT.Bybit.cancel_order(creds, order["id"], "BTC/USDT")
+```
+
+## 5) Error Handling Pattern
+The library uses `{:ok, result}` / `{:error, reason}` tuples. Many exchange errors are normalized to `%CCXT.Error{}`.
+
+```elixir
+case CCXT.Bybit.create_order(creds, "BTC/USDT", :limit, :buy, 0.001, 50_000.0) do
+  {:ok, order} -> order
+  {:error, %CCXT.Error{type: :rate_limited, retry_after: ms}} -> Process.sleep(ms)
+  {:error, %CCXT.Error{type: :invalid_credentials}} -> :fix_keys
+  {:error, reason} -> {:unexpected_error, reason}
+end
+```
+
+## 6) Discover Exchange Capabilities
+Use introspection helpers before calling advanced endpoints:
+
+```elixir
+CCXT.Bybit.__ccxt_endpoints__()
+CCXT.Bybit.__ccxt_spec__()
+CCXT.Bybit.__ccxt_signing__()
+CCXT.Bybit.__ccxt_classification__()
+```
+
+WebSocket introspection:
+
+```elixir
+CCXT.Bybit.WS.__ccxt_ws_spec__()
+CCXT.Bybit.WS.__ccxt_ws_pattern__()
+CCXT.Bybit.WS.__ccxt_ws_channels__()
+```
+
+## 7) REST Cookbook (Common Tasks)
+Assume `ex = CCXT.Bybit` and `creds` is already created.
+
+```elixir
+# 1) Get one ticker
+{:ok, ticker} = ex.fetch_ticker("BTC/USDT")
+
+# 2) Get many tickers (current safe shape in this build)
+{:ok, tickers} = ex.fetch_tickers(nil)
+
+# 3) Get order book
+{:ok, order_book} = ex.fetch_order_book("BTC/USDT")
+
+# 4) Get recent public trades
+{:ok, trades} = ex.fetch_trades("BTC/USDT")
+
+# 5) Get OHLCV candles (raw exchange-specific shape)
+{:ok, candles_raw} = ex.fetch_ohlcv("BTC/USDT", "1m")
+
+# 6) List markets supported by an exchange
+{:ok, markets} = ex.fetch_markets()
+
+# 7) Get account balance (private)
+{:ok, balance} = ex.fetch_balance(creds)
+
+# 8) List open orders (private)
+{:ok, open_orders} = ex.fetch_open_orders(creds, "BTC/USDT")
+```
+
+If a call fails, first verify symbol format and check supported endpoints:
+
+```elixir
+ex.__ccxt_endpoints__()
+```
+
+## 8) TradingView Charts (REST + WS)
+Use REST for backfill and WebSocket for live updates.
+
+- Backfill: `fetch_ohlcv`
+- Live stream: `watch_ohlcv_subscription` + `CCXT.WS.Client` (public) or `*.WS.Adapter` (private/auth flows)
+
+Target chart bar shape:
+
+```elixir
+[timestamp_ms, open, high, low, close, volume]
+```
+
+Current reality: payloads differ by exchange and must be normalized.
+
+Example normalizers for current REST payloads:
+
+```elixir
+defmodule ChartBars do
+  # Bybit REST: map["result"]["list"] => [[ts, o, h, l, c, v, turnover], ...]
+  def from_bybit_ohlcv(%{"result" => %{"list" => list}}) when is_list(list) do
+    list
+    |> Enum.map(fn [ts, o, h, l, c, v | _] ->
+      [to_i(ts), to_f(o), to_f(h), to_f(l), to_f(c), to_f(v)]
+    end)
+    |> Enum.sort_by(&hd/1)
+  end
+
+  # Deribit REST: map["result"] with parallel arrays
+  def from_deribit_ohlcv(%{
+        "result" => %{
+          "ticks" => ticks,
+          "open" => open,
+          "high" => high,
+          "low" => low,
+          "close" => close,
+          "volume" => volume
+        }
+      }) do
+    ticks
+    |> Enum.with_index()
+    |> Enum.map(fn {ts, i} ->
+      [to_i(ts), to_f(Enum.at(open, i)), to_f(Enum.at(high, i)), to_f(Enum.at(low, i)), to_f(Enum.at(close, i)), to_f(Enum.at(volume, i))]
+    end)
+    |> Enum.sort_by(&hd/1)
+  end
+
+  # WS note:
+  # OHLCV WS message shapes are exchange-specific; inspect first message and map to same 6-tuple bar shape.
+
+  defp to_i(v) when is_integer(v), do: v
+  defp to_i(v) when is_binary(v), do: String.to_integer(v)
+
+  defp to_f(v) when is_float(v), do: v
+  defp to_f(v) when is_integer(v), do: v * 1.0
+  defp to_f(v) when is_binary(v), do: String.to_float(v)
+end
+```
+
+## 9) WebSocket Quickstart (Public Channels)
+Use `CCXT.WS.Client` for simple public streams.
+
+Bybit public OHLCV stream:
+
+```elixir
+spec = CCXT.Bybit.__ccxt_spec__()
+{:ok, client} = CCXT.WS.Client.connect(spec, [:public, :spot], sandbox: true)
+
+{:ok, sub} = CCXT.Bybit.WS.watch_ohlcv_subscription("BTC/USDT", "1m")
+:ok = CCXT.WS.Client.subscribe(client, sub)
+
+receive do
+  {:websocket_message, raw} ->
+    message =
+      case raw do
+        bin when is_binary(bin) -> Jason.decode!(bin)
+        map when is_map(map) -> map
+      end
+
+    message
+after
+  10_000 ->
+    :timeout
+end
+
+:ok = CCXT.WS.Client.unsubscribe(client, sub)
+:ok = CCXT.WS.Client.close(client)
+```
+
+Deribit public OHLCV stream:
+
+```elixir
+spec = CCXT.Deribit.__ccxt_spec__()
+{:ok, client} = CCXT.WS.Client.connect(spec, :public, sandbox: true)
+
+{:ok, sub} = CCXT.Deribit.WS.watch_ohlcv_subscription("BTC-PERPETUAL", "1m")
+:ok = CCXT.WS.Client.subscribe(client, sub)
+```
+
+## 10) WebSocket Advanced Operations
+`CCXT.WS.Client.connect/3` supports:
+- `:handler` custom message handler
+- `:sandbox` testnet URL selection
+- `:timeout` connection timeout
+- `:debug` debug logs
+
+Custom handler example:
+
+```elixir
+handler = fn msg ->
+  IO.inspect(msg, label: "WS")
+  :ok
+end
+
+spec = CCXT.Bybit.__ccxt_spec__()
+{:ok, client} = CCXT.WS.Client.connect(spec, [:public, :spot], sandbox: true, handler: handler)
+```
+
+## 11) Private WebSocket Channels (Authenticated)
+Use exchange adapters for authenticated WS flows (`*.WS.Adapter`) because they provide `authenticate/1`.
+
+Bybit private WS flow:
+
+```elixir
+creds = CCXT.Credentials.new!(
+  api_key: System.fetch_env!("BYBIT_TESTNET_API_KEY"),
+  secret: System.fetch_env!("BYBIT_TESTNET_API_SECRET"),
+  sandbox: true
+)
+
+{:ok, adapter} =
+  CCXT.Bybit.WS.Adapter.start_link(
+    url_path: [:private, :spot, :unified],
+    sandbox: true,
+    credentials: creds
+  )
+
+:ok = CCXT.Bybit.WS.Adapter.authenticate(adapter)
+
+spec = CCXT.Bybit.__ccxt_spec__()
+{:ok, private_url} = CCXT.WS.Helpers.resolve_url(spec, [:private, :spot, :unified], sandbox: true)
+
+{:ok, bal_sub} = CCXT.Bybit.WS.watch_balance_subscription(private_url)
+{:ok, ord_sub} = CCXT.Bybit.WS.watch_orders_subscription(private_url, "BTC/USDT")
+
+:ok = CCXT.Bybit.WS.Adapter.subscribe(adapter, bal_sub)
+:ok = CCXT.Bybit.WS.Adapter.subscribe(adapter, ord_sub)
+```
+
+Deribit private WS flow:
+
+```elixir
+creds = CCXT.Credentials.new!(
+  api_key: System.fetch_env!("DERIBIT_TESTNET_API_KEY"),
+  secret: System.fetch_env!("DERIBIT_TESTNET_SECRET_KEY"),
+  sandbox: true
+)
+
+{:ok, adapter} =
+  CCXT.Deribit.WS.Adapter.start_link(
+    url_path: :public,
+    sandbox: true,
+    credentials: creds
+  )
+
+:ok = CCXT.Deribit.WS.Adapter.authenticate(adapter)
+
+{:ok, bal_sub} = CCXT.Deribit.WS.watch_balance_subscription()
+{:ok, ord_sub} = CCXT.Deribit.WS.watch_orders_subscription("BTC-PERPETUAL")
+
+:ok = CCXT.Deribit.WS.Adapter.subscribe(adapter, bal_sub)
+:ok = CCXT.Deribit.WS.Adapter.subscribe(adapter, ord_sub)
+```
+
+## 12) WS Troubleshooting
+If subscription/auth fails, check:
+- exchange module and WS module (`CCXT.Bybit` vs `CCXT.Bybit.WS`)
+- exact symbol format (`BTC/USDT` vs `BTCUSDT` vs `BTC-PERPETUAL`)
+- `url_path` used in connect/start_link
+- sandbox flag and testnet credential env vars
+- first inbound WS message (raw JSON) and subscribe response
+- whether channel needs auth (`auth_required: true`)
+
+For Bybit private channels, URL routing matters (`watch_balance_subscription/2` and `watch_orders_subscription/3` require the resolved private URL).
+
+## 13) Practical Support Rules for AI Assistants
+When helping users, always ask for:
+- exchange module (`CCXT.<Exchange>`)
+- REST vs WebSocket path
+- exact function call and params
+- symbol format used
+- full error tuple/message
+- `sandbox: true` or production
+- WS `url_path`, subscription map, and first received message
+
+Then return a minimal runnable snippet tailored to that exact exchange and channel type.
