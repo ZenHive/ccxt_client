@@ -24,6 +24,31 @@ mix compile
 iex -S mix
 ```
 
+## 1.1) Selective Compilation (Exchange Whitelist)
+By default, all bundled exchanges are compiled.
+
+To compile only selected exchanges, set:
+
+```elixir
+# config/config.exs
+config :ccxt_client, exchanges: [:binance, :bybit, :okx]
+```
+
+You can pass exchange IDs as atoms or strings. Unlisted exchanges compile as stub modules (no generated API functions), which reduces compile time and binary size.
+
+Quick verification:
+
+```bash
+mix compile
+iex -S mix
+```
+
+```elixir
+function_exported?(CCXT.Binance, :fetch_ticker, 1)
+```
+
+See `README.md` ("Selective Compilation") for broader generation/scaffolding context.
+
 ## 2) Public Market Data (No Credentials)
 Use exchange modules directly.
 
@@ -257,6 +282,8 @@ spec = CCXT.Deribit.__ccxt_spec__()
 - `:sandbox` testnet URL selection
 - `:timeout` connection timeout
 - `:debug` debug logs
+- `:reconnect_on_error` pass-through reconnect behavior for underlying WS client
+- `:restore_subscriptions` pass-through restore behavior for underlying WS client
 
 Custom handler example:
 
@@ -270,7 +297,42 @@ spec = CCXT.Bybit.__ccxt_spec__()
 {:ok, client} = CCXT.WS.Client.connect(spec, [:public, :spot], sandbox: true, handler: handler)
 ```
 
-## 11) Private WebSocket Channels (Authenticated)
+## 11) WebSocket Reconnection Model (Client vs Adapter)
+Use this decision rule:
+
+- `CCXT.WS.Client`: lightweight and stateless wrapper for simple/public streams.
+- `CCXT.<Exchange>.WS.Adapter`: managed GenServer for reconnect + subscription restore + auth re-auth flows.
+
+`CCXT.WS.Client` notes:
+- It forwards `reconnect_on_error` to the underlying websocket client config.
+- It does **not** track subscriptions itself for automatic recovery.
+- If you reconnect manually, call `CCXT.WS.Client.restore_subscriptions/2` with your stored subscriptions.
+
+Manual reconnect pattern with `CCXT.WS.Client`:
+
+```elixir
+spec = CCXT.Bybit.__ccxt_spec__()
+
+{:ok, client} = CCXT.WS.Client.connect(spec, [:public, :spot], sandbox: true)
+{:ok, sub} = CCXT.Bybit.WS.watch_ticker_subscription("BTC/USDT")
+:ok = CCXT.WS.Client.subscribe(client, sub)
+
+# keep your own list for manual restore
+subscriptions = [sub]
+
+# ... if disconnected ...
+{:ok, new_client} = CCXT.WS.Client.connect(spec, [:public, :spot], sandbox: true)
+:ok = CCXT.WS.Client.restore_subscriptions(new_client, subscriptions)
+```
+
+`CCXT.<Exchange>.WS.Adapter` notes:
+- Tracks subscriptions and restores them after reconnect.
+- Uses exponential backoff reconnect attempts internally.
+- If previously authenticated (`authenticate/1` or `mark_authenticated/1`), it re-authenticates after reconnect.
+
+For managed reconnection, prefer adapter processes for long-running or authenticated streams.
+
+## 12) Private WebSocket Channels (Authenticated)
 Use exchange adapters for authenticated WS flows (`*.WS.Adapter`) because they provide `authenticate/1`.
 
 Bybit private WS flow:
@@ -326,7 +388,7 @@ creds = CCXT.Credentials.new!(
 :ok = CCXT.Deribit.WS.Adapter.subscribe(adapter, ord_sub)
 ```
 
-## 12) WS Troubleshooting
+## 13) WS Troubleshooting
 If subscription/auth fails, check:
 - exchange module and WS module (`CCXT.Bybit` vs `CCXT.Bybit.WS`)
 - exact symbol format (`BTC/USDT` vs `BTCUSDT` vs `BTC-PERPETUAL`)
@@ -337,7 +399,12 @@ If subscription/auth fails, check:
 
 For Bybit private channels, URL routing matters (`watch_balance_subscription/2` and `watch_orders_subscription/3` require the resolved private URL).
 
-## 13) Practical Support Rules for AI Assistants
+Reconnection-specific checks:
+- For `CCXT.WS.Client`, verify you are persisting subscriptions and calling `restore_subscriptions/2` after reconnect.
+- For adapters, inspect `Adapter.get_state/1` for `reconnect_attempts`, `authenticated`, and active subscriptions.
+- If reconnect stops, check for max reconnection attempts reached in logs.
+
+## 14) Practical Support Rules for AI Assistants
 When helping users, always ask for:
 - exchange module (`CCXT.<Exchange>`)
 - REST vs WebSocket path

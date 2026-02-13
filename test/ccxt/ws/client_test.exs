@@ -205,6 +205,19 @@ defmodule CCXT.WS.ClientTest do
       assert {:error, {:not_connected, :disconnected}} =
                Client.restore_subscriptions(client, subscriptions)
     end
+
+    test "propagates error for mixed string/list channels when disconnected" do
+      client = disconnected_client()
+
+      subscriptions = [
+        %{channel: "tickers.BTCUSDT"},
+        %{channel: ["order", "stopOrder"]},
+        %{method: :watch_ticker}
+      ]
+
+      assert {:error, {:not_connected, :disconnected}} =
+               Client.restore_subscriptions(client, subscriptions)
+    end
   end
 
   # ===================================================================

@@ -146,3 +146,17 @@ Hand-written pure-function modules for trading analytics and helpers. These live
 | `CCXT.Trading.Helpers.Funding` | Funding rate display formatting |
 | `CCXT.Trading.Helpers.Greeks` | Greeks display formatting |
 | `CCXT.Trading.Helpers.Risk` | Risk metrics display formatting |
+
+## Git Commit Configuration
+
+**Configured**: 2026-02-11
+
+### Commit Message Format
+
+**Format**: conventional-commits
+
+#### Template
+```
+<type>(<scope>): <description>
+```
+**Types**: feat, fix, docs, style, refactor, test, chore

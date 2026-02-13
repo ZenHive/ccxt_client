@@ -136,6 +136,7 @@ defmodule CCXT.WS.HelpersTest do
 
       assert Keyword.get(config, :timeout) == 5000
       assert Keyword.get(config, :reconnect_on_error) == true
+      assert Keyword.get(config, :restore_subscriptions) == true
       assert Keyword.get(config, :heartbeat_config) == %{type: :ping, interval: 18_000}
     end
 
@@ -161,6 +162,20 @@ defmodule CCXT.WS.HelpersTest do
       config = Helpers.build_client_config(ws_config, timeout: 10_000)
 
       assert Keyword.get(config, :timeout) == 10_000
+    end
+
+    test "allows overriding reconnect and restore flags" do
+      ws_config = %{
+        streaming: %{
+          keep_alive: 18_000
+        }
+      }
+
+      config =
+        Helpers.build_client_config(ws_config, reconnect_on_error: false, restore_subscriptions: false)
+
+      assert Keyword.get(config, :reconnect_on_error) == false
+      assert Keyword.get(config, :restore_subscriptions) == false
     end
 
     test "passes through additional options" do
@@ -194,6 +209,8 @@ defmodule CCXT.WS.HelpersTest do
       config = Helpers.build_client_config(ws_config)
 
       assert Keyword.get(config, :timeout) == 5000
+      assert Keyword.get(config, :reconnect_on_error) == true
+      assert Keyword.get(config, :restore_subscriptions) == true
       refute Keyword.has_key?(config, :heartbeat_config)
     end
   end

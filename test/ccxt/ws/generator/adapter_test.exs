@@ -54,6 +54,28 @@ defmodule CCXT.WS.Generator.AdapterTest do
       # AST should be a quote block (tuple with :__block__)
       assert is_tuple(ast)
     end
+
+    @tag :requires_ws_module
+    test "generated AST includes reconnection settings and handlers", context do
+      ws_module = context[:ws_module]
+      rest_module = context[:rest_module]
+
+      if is_nil(ws_module) do
+        flunk("No WS module available - sync exchanges with `mix ccxt.sync --tier1`")
+      end
+
+      ws_config = %{urls: "wss://example.com"}
+      ast = Adapter.generate_adapter(ws_module, rest_module, ws_config)
+      generated = Macro.to_string(ast)
+
+      assert generated =~ "@reconnect_delay_ms"
+      assert generated =~ "@max_reconnect_attempts"
+      assert generated =~ "@max_backoff_ms"
+      assert generated =~ "schedule_reconnect"
+      assert generated =~ "handle_info(:reconnect, state)"
+      assert generated =~ "handle_info(:restore_subscriptions"
+      assert generated =~ "handle_info(:re_authenticate"
+    end
   end
 
   describe "generated Adapter module" do
