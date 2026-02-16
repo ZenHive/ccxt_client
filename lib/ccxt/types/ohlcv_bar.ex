@@ -2,8 +2,8 @@ defmodule CCXT.Types.OHLCVBar do
   @moduledoc """
   Canonical OHLCV bar struct.
 
-  All OHLCV outputs (REST and WS) normalize to this struct by default.
-  Use `normalize: false` to receive raw exchange payloads instead.
+  Canonical OHLCV bar struct used by ccxt_client's normalization layer.
+  In ccxt_ex, REST/WS outputs return raw maps; ccxt_client coerces to this struct.
 
   ## Fields
 
@@ -31,7 +31,7 @@ defmodule CCXT.Types.OHLCVBar do
 
   Expects exactly `[timestamp, open, high, low, close, volume]` where
   timestamp is an integer and OHLCV values are floats or nil.
-  Called internally by `CCXT.OHLCV.normalize/1` after coercion.
+  Called internally after coercion (OHLCV module moved to ccxt_client).
   """
   @spec from_list([integer() | float() | nil]) :: t()
   def from_list([ts, o, h, l, c, v]) when is_integer(ts) do

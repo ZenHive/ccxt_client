@@ -54,7 +54,14 @@ defmodule CCXT.Trading.TradingHelpers.FundingIntegrationTest do
 
   defp parse_float(nil), do: nil
   defp parse_float(""), do: nil
-  defp parse_float(s) when is_binary(s), do: String.to_float(s)
+
+  defp parse_float(s) when is_binary(s) do
+    case Float.parse(s) do
+      {f, _} -> f
+      :error -> nil
+    end
+  end
+
   defp parse_float(n) when is_number(n), do: n * 1.0
 
   defp parse_int(nil), do: nil
@@ -116,12 +123,20 @@ defmodule CCXT.Trading.TradingHelpers.FundingIntegrationTest do
 
           # Positive funding = favorable for shorts
           # Negative funding = favorable for longs
-          if btc_rate.funding_rate > 0 do
-            assert Funding.favorable?(btc_rate, :short) == true
-            assert Funding.favorable?(btc_rate, :long) == false
-          else
-            assert Funding.favorable?(btc_rate, :long) == true
-            assert Funding.favorable?(btc_rate, :short) == false
+          # Zero funding = favorable for neither
+          cond do
+            btc_rate.funding_rate > 0 ->
+              assert Funding.favorable?(btc_rate, :short) == true
+              assert Funding.favorable?(btc_rate, :long) == false
+
+            btc_rate.funding_rate < 0 ->
+              assert Funding.favorable?(btc_rate, :long) == true
+              assert Funding.favorable?(btc_rate, :short) == false
+
+            true ->
+              # Zero rate - neither direction is favorable
+              assert Funding.favorable?(btc_rate, :short) == false
+              assert Funding.favorable?(btc_rate, :long) == false
           end
 
         {:error, reason} ->
