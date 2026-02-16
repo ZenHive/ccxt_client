@@ -1,7 +1,7 @@
 require Logger
 
 ExUnit.start()
-ExUnit.configure(exclude: [:integration])
+# ExUnit.configure(exclude: [:integration])
 
 # =============================================================================
 # Test Tags Reference

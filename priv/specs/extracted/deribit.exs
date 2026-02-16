@@ -67,6 +67,7 @@
         :symbol
       ],
       path: "/private/cancel",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -83,6 +84,7 @@
         :code
       ],
       path: "/private/create_deposit_address",
+      response_transformer: {:extract_path, ["result", "address"]},
       source: :intercepted
     },
     %{
@@ -147,6 +149,7 @@
         :price
       ],
       path: "/private/buy",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -291,6 +294,7 @@
         :price
       ],
       path: "/private/edit",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -303,6 +307,7 @@
       param_mappings: %{},
       params: [],
       path: "/private/get_subaccounts",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -315,6 +320,7 @@
       param_mappings: %{},
       params: [],
       path: "/private/get_account_summaries",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -336,6 +342,7 @@
         :limit
       ],
       path: "/private/get_order_history_by_instrument",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -348,6 +355,7 @@
       param_mappings: %{},
       params: [],
       path: "/public/get_currencies",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -364,6 +372,7 @@
         :code
       ],
       path: "/private/get_current_deposit_address",
+      response_transformer: {:extract_path_unwrap, ["result", "address"]},
       source: :intercepted
     },
     %{
@@ -378,6 +387,7 @@
         :codes
       ],
       path: "/public/get_currencies",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -396,6 +406,7 @@
         :limit
       ],
       path: "/private/get_deposits",
+      response_transformer: {:extract_path, ["result", "data"]},
       source: :intercepted
     },
     %{
@@ -438,6 +449,7 @@
         :limit
       ],
       path: "/public/get_funding_rate_history",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -455,6 +467,7 @@
         :symbol
       ],
       path: "/public/ticker",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -492,6 +505,7 @@
         :limit
       ],
       path: "/public/get_last_settlements_by_instrument",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -524,6 +538,7 @@
         :limit
       ],
       path: "/private/get_settlement_history_by_instrument",
+      response_transformer: {:extract_path, ["result", "settlements"]},
       source: :intercepted
     },
     %{
@@ -545,6 +560,7 @@
         :limit
       ],
       path: "/private/get_user_trades_by_instrument",
+      response_transformer: {:extract_path, ["result", "trades"]},
       source: :intercepted
     },
     %{
@@ -571,6 +587,7 @@
         :limit
       ],
       path: "/public/get_tradingview_chart_data",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -588,6 +605,7 @@
         :symbol
       ],
       path: "/public/get_book_summary_by_instrument",
+      response_transformer: {:extract_path_unwrap, ["result"]},
       source: :intercepted
     },
     %{
@@ -606,6 +624,7 @@
         :limit
       ],
       path: "/private/get_open_orders_by_instrument",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -623,6 +642,7 @@
         :symbol
       ],
       path: "/public/get_book_summary_by_instrument",
+      response_transformer: {:extract_path_unwrap, ["result"]},
       source: :intercepted
     },
     %{
@@ -642,6 +662,7 @@
         :code
       ],
       path: "/public/get_book_summary_by_currency",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -659,6 +680,7 @@
         :symbol
       ],
       path: "/private/get_order_state",
+      response_transformer: {:extract_path_unwrap, ["result"]},
       source: :intercepted
     },
     %{
@@ -677,6 +699,7 @@
         :limit
       ],
       path: "/public/get_order_book",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -696,6 +719,7 @@
         :limit
       ],
       path: "/private/get_user_trades_by_order",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -713,6 +737,7 @@
         :symbol
       ],
       path: "/private/get_position",
+      response_transformer: {:extract_path_unwrap, ["result"]},
       source: :intercepted
     },
     %{
@@ -727,6 +752,7 @@
         :symbols
       ],
       path: "/private/get_positions",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -755,6 +781,7 @@
         :symbol
       ],
       path: "/public/ticker",
+      response_transformer: {:extract_path_unwrap, ["result"]},
       source: :intercepted
     },
     %{
@@ -773,6 +800,7 @@
         :symbols
       ],
       path: "/public/get_book_summary_by_currency",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -785,6 +813,7 @@
       param_mappings: %{},
       params: [],
       path: "/public/get_time",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -792,6 +821,7 @@
       auth: false,
       cost: 1.0,
       default_params: %{
+        "end_timestamp" => "<generated>",
         "include_old" => true
       },
       market_type: :swap,
@@ -808,9 +838,7 @@
         :limit
       ],
       path: "/public/get_last_trades_by_instrument_and_time",
-      required_params: [
-        :since
-      ],
+      response_transformer: {:extract_path, ["result", "trades"]},
       source: :intercepted
     },
     %{
@@ -827,6 +855,7 @@
       param_mappings: %{},
       params: [],
       path: "/private/get_account_summary",
+      response_transformer: {:extract_path, ["result", "fees"]},
       source: :intercepted
     },
     %{
@@ -845,6 +874,7 @@
         :limit
       ],
       path: "/private/get_transfers",
+      response_transformer: {:extract_path, ["result", "data"]},
       source: :intercepted
     },
     %{
@@ -877,6 +907,7 @@
         :limit
       ],
       path: "/private/get_withdrawals",
+      response_transformer: {:extract_path, ["result", "data"]},
       source: :intercepted
     },
     %{
@@ -897,6 +928,7 @@
         :toAccount
       ],
       path: "/private/submit_transfer_to_subaccount",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -4134,24 +4166,18 @@
     },
     channel_templates: %{
       watch_balance: %{
+        channel_name: "user.portfolio",
         market_id_format: :native,
         params: [],
-        pattern: :jsonrpc
+        pattern: :jsonrpc,
+        separator: "."
       },
       watch_bids_asks: %{
+        channel_name: "quote",
         market_id_format: :native,
         params: [],
-        pattern: :jsonrpc
-      },
-      watch_multiple_wrapper: %{
-        market_id_format: :native,
-        params: [
-          %{
-            "default" => nil,
-            "name" => "limit"
-          }
-        ],
-        pattern: :jsonrpc
+        pattern: :jsonrpc,
+        separator: "."
       },
       watch_my_trades: %{
         channel_name: "user",
@@ -4170,6 +4196,7 @@
         separator: "."
       },
       watch_ohlcv: %{
+        channel_name: "chart.trades",
         market_id_format: :native,
         params: [
           %{
@@ -4177,9 +4204,11 @@
             "name" => "limit"
           }
         ],
-        pattern: :jsonrpc
+        pattern: :jsonrpc,
+        separator: "."
       },
       watch_ohlcv_for_symbols: %{
+        channel_name: "chart.trades",
         market_id_format: :native,
         params: [
           %{
@@ -4187,24 +4216,31 @@
             "name" => "limit"
           }
         ],
-        pattern: :jsonrpc
+        pattern: :jsonrpc,
+        separator: "."
       },
       watch_order_book: %{
+        channel_name: "book",
         market_id_format: :native,
         params: [
           %{
             "default" => nil,
             "name" => "limit"
+          },
+          %{
+            "default" => "100ms",
+            "name" => "interval"
           }
         ],
-        pattern: :jsonrpc
+        pattern: :jsonrpc,
+        separator: "."
       },
       watch_order_book_for_symbols: %{
-        channel_name: "100ms",
+        channel_name: "book",
         market_id_format: :native,
         params: [
           %{
-            "default" => nil,
+            "default" => "100ms",
             "name" => "interval"
           },
           %{
@@ -4212,7 +4248,8 @@
             "name" => "limit"
           }
         ],
-        pattern: :jsonrpc
+        pattern: :jsonrpc,
+        separator: "."
       },
       watch_orders: %{
         channel_name: "user",
@@ -4251,6 +4288,7 @@
         separator: "."
       },
       watch_tickers: %{
+        channel_name: "ticker",
         market_id_format: :native,
         params: [
           %{
@@ -4258,28 +4296,40 @@
             "name" => "interval"
           }
         ],
-        pattern: :jsonrpc
+        pattern: :jsonrpc,
+        separator: "."
       },
       watch_trades: %{
+        channel_name: "trades",
         market_id_format: :native,
         params: [
           %{
             "default" => nil,
             "name" => "limit"
+          },
+          %{
+            "default" => "100ms",
+            "name" => "interval"
           }
         ],
-        pattern: :jsonrpc
+        pattern: :jsonrpc,
+        separator: "."
       },
       watch_trades_for_symbols: %{
-        channel_name: "100ms",
+        channel_name: "trades",
         market_id_format: :native,
         params: [
+          %{
+            "default" => "100ms",
+            "name" => "interval"
+          },
           %{
             "default" => nil,
             "name" => "limit"
           }
         ],
-        pattern: :jsonrpc
+        pattern: :jsonrpc,
+        separator: "."
       }
     },
     has: %{
@@ -4396,7 +4446,6 @@
     watch_methods: [
       "watchBalance",
       "watchBidsAsks",
-      "watchMultipleWrapper",
       "watchMyTrades",
       "watchOHLCV",
       "watchOHLCVForSymbols",

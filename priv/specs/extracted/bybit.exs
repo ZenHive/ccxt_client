@@ -71,6 +71,7 @@
         :amount
       ],
       path: "/v5/account/borrow",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -88,6 +89,7 @@
         :symbol
       ],
       path: "/v5/order/cancel-all",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -127,6 +129,7 @@
         :symbol
       ],
       path: "/v5/order/cancel",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -151,6 +154,7 @@
         :symbol
       ],
       path: "/v5/order/cancel-batch",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -174,6 +178,7 @@
         :orders
       ],
       path: "/v5/order/cancel-batch",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -193,6 +198,7 @@
         :amount
       ],
       path: "/v5/asset/exchange/convert-execute",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -309,6 +315,7 @@
         :price
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -628,6 +635,7 @@
         :price
       ],
       path: "/v5/order/amend",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -671,6 +679,7 @@
         :symbols
       ],
       path: "/v5/market/tickers",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -705,6 +714,7 @@
         :limit
       ],
       path: "/v5/order/history",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -779,6 +789,7 @@
       param_mappings: %{},
       params: [],
       path: "/v5/asset/exchange/query-coin-list",
+      response_transformer: {:extract_path, ["result", "coins"]},
       source: :intercepted
     },
     %{
@@ -801,6 +812,7 @@
         :amount
       ],
       path: "/v5/asset/exchange/quote-apply",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -821,6 +833,7 @@
         :code
       ],
       path: "/v5/asset/exchange/convert-result-query",
+      response_transformer: {:extract_path, ["result", "result"]},
       source: :intercepted
     },
     %{
@@ -837,6 +850,7 @@
         :limit
       ],
       path: "/v5/asset/exchange/query-convert-history",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -865,6 +879,7 @@
       param_mappings: %{},
       params: [],
       path: "/v5/asset/coin/query-info",
+      response_transformer: {:extract_path, ["result", "rows"]},
       source: :intercepted
     },
     %{
@@ -897,6 +912,7 @@
         :code
       ],
       path: "/v5/asset/deposit/query-address",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -911,6 +927,7 @@
         :codes
       ],
       path: "/v5/asset/coin/query-info",
+      response_transformer: {:extract_path, ["result", "rows"]},
       source: :intercepted
     },
     %{
@@ -929,6 +946,7 @@
         :limit
       ],
       path: "/v5/asset/deposit/query-record",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -951,6 +969,7 @@
         :limit
       ],
       path: "/v5/execution/list",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -973,6 +992,7 @@
         :limit
       ],
       path: "/v5/market/funding/history",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -992,6 +1012,7 @@
         :symbols
       ],
       path: "/v5/market/tickers",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1010,6 +1031,7 @@
         :symbol
       ],
       path: "/v5/market/tickers",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1075,6 +1097,7 @@
         :limit
       ],
       path: "/v5/account/transaction-log",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1134,6 +1157,7 @@
         :limit
       ],
       path: "/v5/market/account-ratio",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1213,6 +1237,7 @@
         :limit
       ],
       path: "/v5/execution/list",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1229,6 +1254,7 @@
       param_mappings: %{},
       params: [],
       path: "/v5/asset/delivery-record",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1249,6 +1275,7 @@
         :limit
       ],
       path: "/v5/execution/list",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1273,6 +1300,7 @@
         :limit
       ],
       path: "/v5/market/kline",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1293,6 +1321,7 @@
         :symbol
       ],
       path: "/v5/market/open-interest",
+      response_transformer: {:extract_path_unwrap, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1353,6 +1382,7 @@
         :limit
       ],
       path: "/v5/order/realtime",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1371,6 +1401,7 @@
         :symbol
       ],
       path: "/v5/market/tickers",
+      response_transformer: {:extract_path_unwrap, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1390,6 +1421,7 @@
         :code
       ],
       path: "/v5/market/tickers",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1410,6 +1442,7 @@
         :symbol
       ],
       path: "/v5/order/realtime",
+      response_transformer: {:extract_path_unwrap, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1428,6 +1461,7 @@
         :limit
       ],
       path: "/v5/market/orderbook",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -1470,6 +1504,7 @@
         :symbol
       ],
       path: "/v5/position/list",
+      response_transformer: {:extract_path_unwrap, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1490,6 +1525,7 @@
         :symbols
       ],
       path: "/v5/position/list",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1510,6 +1546,7 @@
         :limit
       ],
       path: "/v5/position/closed-pnl",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1551,6 +1588,7 @@
       param_mappings: %{},
       params: [],
       path: "/v5/market/delivery-price",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1568,6 +1606,7 @@
         :symbol
       ],
       path: "/v5/market/tickers",
+      response_transformer: {:extract_path_unwrap, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1585,6 +1624,7 @@
         :symbols
       ],
       path: "/v5/market/tickers",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1616,6 +1656,7 @@
         :limit
       ],
       path: "/v5/market/recent-trade",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1633,6 +1674,7 @@
         :symbol
       ],
       path: "/v5/account/fee-rate",
+      response_transformer: {:extract_path_unwrap, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1645,6 +1687,7 @@
       param_mappings: %{},
       params: [],
       path: "/v5/account/fee-rate",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -1663,6 +1706,7 @@
         :limit
       ],
       path: "/v5/asset/transfer/query-inter-transfer-list",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1680,6 +1724,7 @@
       },
       params: [],
       path: "/v5/market/historical-volatility",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -1698,6 +1743,7 @@
         :limit
       ],
       path: "/v5/asset/withdraw/query-record",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1715,6 +1761,7 @@
         :amount
       ],
       path: "/v5/account/no-convert-repay",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -1819,6 +1866,7 @@
         :tag
       ],
       path: "/v5/asset/withdraw/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     }
   ],
@@ -9755,7 +9803,8 @@
       watch_balance: %{
         market_id_format: :native,
         params: [],
-        pattern: :event_sub,
+        pattern: :topic_based,
+        separator: ".",
         topic_dict: %{
           "spot" => "outboundAccountInfo",
           "unified" => "wallet"
@@ -9780,7 +9829,7 @@
         channel_name: "orderbook",
         market_id_format: :native,
         params: [],
-        pattern: :event_sub,
+        pattern: :topic_based,
         separator: "."
       },
       watch_liquidations: %{
@@ -9792,7 +9841,8 @@
             "name" => "limit"
           }
         ],
-        pattern: :event_sub
+        pattern: :topic_based,
+        separator: "."
       },
       watch_my_trades: %{
         market_id_format: :native,
@@ -9802,7 +9852,8 @@
             "name" => "limit"
           }
         ],
-        pattern: :event_sub,
+        pattern: :topic_based,
+        separator: ".",
         topic_dict: %{
           "spot" => "ticketInfo",
           "unified" => "execution",
@@ -9832,7 +9883,8 @@
             "name" => "limit"
           }
         ],
-        pattern: :event_sub
+        pattern: :topic_based,
+        separator: "."
       },
       watch_ohlcv_for_symbols: %{
         market_id_format: :native,
@@ -9842,9 +9894,11 @@
             "name" => "limit"
           }
         ],
-        pattern: :event_sub
+        pattern: :topic_based,
+        separator: "."
       },
       watch_order_book: %{
+        channel_name: "orderbook",
         market_id_format: :native,
         params: [
           %{
@@ -9852,7 +9906,8 @@
             "name" => "limit"
           }
         ],
-        pattern: :event_sub
+        pattern: :topic_based,
+        separator: "."
       },
       watch_order_book_for_symbols: %{
         channel_name: "orderbook",
@@ -9863,7 +9918,7 @@
             "name" => "limit"
           }
         ],
-        pattern: :event_sub,
+        pattern: :topic_based,
         separator: "."
       },
       watch_orders: %{
@@ -9874,7 +9929,8 @@
             "name" => "limit"
           }
         ],
-        pattern: :event_sub,
+        pattern: :topic_based,
+        separator: ".",
         topic_dict: %{
           "spot" => [
             "order",
@@ -9911,27 +9967,31 @@
             "name" => "limit"
           }
         ],
-        pattern: :event_sub
+        pattern: :topic_based,
+        separator: "."
       },
       watch_ticker: %{
         channel_name: "tickers",
         market_id_format: :native,
         params: [],
-        pattern: :event_sub,
+        pattern: :topic_based,
         separator: "."
       },
       watch_tickers: %{
         channel_name: "tickers",
         market_id_format: :native,
         params: [],
-        pattern: :event_sub
+        pattern: :topic_based,
+        separator: "."
       },
       watch_topics: %{
         market_id_format: :native,
         params: [],
-        pattern: :event_sub
+        pattern: :topic_based,
+        separator: "."
       },
       watch_trades: %{
+        channel_name: "publicTrade",
         market_id_format: :native,
         params: [
           %{
@@ -9939,7 +9999,8 @@
             "name" => "limit"
           }
         ],
-        pattern: :event_sub
+        pattern: :topic_based,
+        separator: "."
       },
       watch_trades_for_symbols: %{
         channel_name: "publicTrade",
@@ -9950,7 +10011,7 @@
             "name" => "limit"
           }
         ],
-        pattern: :event_sub,
+        pattern: :topic_based,
         separator: "."
       }
     },
@@ -10110,12 +10171,13 @@
       keep_alive: 18000
     },
     subscription_config: %{
-      args_field: "topic",
-      args_format: :string,
+      args_field: "args",
+      args_format: :string_list,
       market_id_format: :native,
-      op_field: "event"
+      op_field: "op",
+      separator: "."
     },
-    subscription_pattern: :event_subscribe,
+    subscription_pattern: :op_subscribe,
     test_urls: %{
       "private" => %{
         "contract" => "wss://stream-testnet.{hostname}/v5/private",

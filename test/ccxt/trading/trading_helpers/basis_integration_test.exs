@@ -4,6 +4,8 @@ defmodule CCXT.Trading.TradingHelpers.BasisIntegrationTest do
 
   Uses Bybit to fetch spot and perpetual tickers and verify
   the basis calculation functions work with real market data.
+  Uses `normalize: false` to get raw ticker maps
+  (ResponseTransformer extracts and unwraps the path automatically).
   """
 
   use ExUnit.Case, async: false
@@ -18,18 +20,10 @@ defmodule CCXT.Trading.TradingHelpers.BasisIntegrationTest do
     {:ok, exchange: CCXT.Bybit}
   end
 
-  # Helper to extract last price from raw Bybit ticker response
-  # TODO: Remove when Task 169 (Response Coercion) is complete
-  defp extract_last_price(%{raw: raw}) when is_map(raw) do
-    raw
-    |> get_in(["result", "list"])
-    |> List.first()
-    |> case do
-      %{"lastPrice" => price} when is_binary(price) -> parse_float(price)
-      _ -> nil
-    end
-  end
-
+  # Helper to extract last price from ticker response
+  # ResponseTransformer extracts path and unwraps single items automatically,
+  # so with normalize: false the response IS the ticker map.
+  defp extract_last_price(%{"lastPrice" => price}) when is_binary(price), do: parse_float(price)
   defp extract_last_price(_), do: nil
 
   defp parse_float(s) when is_binary(s) do
@@ -44,8 +38,8 @@ defmodule CCXT.Trading.TradingHelpers.BasisIntegrationTest do
   describe "with real Bybit spot and perp tickers" do
     @tag timeout: 30_000
     test "spot_perp/2 calculates basis from real prices", %{exchange: exchange} do
-      with {:ok, spot_ticker} <- exchange.fetch_ticker("BTC/USDT"),
-           {:ok, perp_ticker} <- exchange.fetch_ticker("BTC/USDT:USDT") do
+      with {:ok, spot_ticker} <- exchange.fetch_ticker("BTC/USDT", normalize: false),
+           {:ok, perp_ticker} <- exchange.fetch_ticker("BTC/USDT:USDT", normalize: false) do
         spot_price = extract_last_price(spot_ticker)
         perp_price = extract_last_price(perp_ticker)
 
@@ -77,8 +71,8 @@ defmodule CCXT.Trading.TradingHelpers.BasisIntegrationTest do
 
     @tag timeout: 30_000
     test "implied_funding/3 calculates implied rate from basis", %{exchange: exchange} do
-      with {:ok, spot_ticker} <- exchange.fetch_ticker("ETH/USDT"),
-           {:ok, perp_ticker} <- exchange.fetch_ticker("ETH/USDT:USDT") do
+      with {:ok, spot_ticker} <- exchange.fetch_ticker("ETH/USDT", normalize: false),
+           {:ok, perp_ticker} <- exchange.fetch_ticker("ETH/USDT:USDT", normalize: false) do
         spot_price = extract_last_price(spot_ticker)
         perp_price = extract_last_price(perp_ticker)
 
@@ -106,8 +100,8 @@ defmodule CCXT.Trading.TradingHelpers.BasisIntegrationTest do
 
     @tag timeout: 30_000
     test "arbitrage_opportunity?/3 detects significant basis", %{exchange: exchange} do
-      with {:ok, spot_ticker} <- exchange.fetch_ticker("BTC/USDT"),
-           {:ok, perp_ticker} <- exchange.fetch_ticker("BTC/USDT:USDT") do
+      with {:ok, spot_ticker} <- exchange.fetch_ticker("BTC/USDT", normalize: false),
+           {:ok, perp_ticker} <- exchange.fetch_ticker("BTC/USDT:USDT", normalize: false) do
         spot_price = extract_last_price(spot_ticker)
         perp_price = extract_last_price(perp_ticker)
 
@@ -137,10 +131,10 @@ defmodule CCXT.Trading.TradingHelpers.BasisIntegrationTest do
     @tag timeout: 30_000
     test "compare/1 ranks exchanges by basis", %{exchange: exchange} do
       # Simulate comparison with same exchange (different symbols)
-      with {:ok, btc_spot} <- exchange.fetch_ticker("BTC/USDT"),
-           {:ok, btc_perp} <- exchange.fetch_ticker("BTC/USDT:USDT"),
-           {:ok, eth_spot} <- exchange.fetch_ticker("ETH/USDT"),
-           {:ok, eth_perp} <- exchange.fetch_ticker("ETH/USDT:USDT") do
+      with {:ok, btc_spot} <- exchange.fetch_ticker("BTC/USDT", normalize: false),
+           {:ok, btc_perp} <- exchange.fetch_ticker("BTC/USDT:USDT", normalize: false),
+           {:ok, eth_spot} <- exchange.fetch_ticker("ETH/USDT", normalize: false),
+           {:ok, eth_perp} <- exchange.fetch_ticker("ETH/USDT:USDT", normalize: false) do
         btc_spot_price = extract_last_price(btc_spot)
         btc_perp_price = extract_last_price(btc_perp)
         eth_spot_price = extract_last_price(eth_spot)
@@ -179,8 +173,8 @@ defmodule CCXT.Trading.TradingHelpers.BasisIntegrationTest do
 
     @tag timeout: 30_000
     test "annualized/3 calculates annualized yield", %{exchange: exchange} do
-      with {:ok, spot_ticker} <- exchange.fetch_ticker("BTC/USDT"),
-           {:ok, perp_ticker} <- exchange.fetch_ticker("BTC/USDT:USDT") do
+      with {:ok, spot_ticker} <- exchange.fetch_ticker("BTC/USDT", normalize: false),
+           {:ok, perp_ticker} <- exchange.fetch_ticker("BTC/USDT:USDT", normalize: false) do
         spot_price = extract_last_price(spot_ticker)
         perp_price = extract_last_price(perp_ticker)
 
@@ -203,7 +197,7 @@ defmodule CCXT.Trading.TradingHelpers.BasisIntegrationTest do
 
     @tag timeout: 30_000
     test "futures_curve/2 builds curve from contracts", %{exchange: exchange} do
-      case exchange.fetch_ticker("BTC/USDT") do
+      case exchange.fetch_ticker("BTC/USDT", normalize: false) do
         {:ok, spot_ticker} ->
           spot_price = extract_last_price(spot_ticker)
 

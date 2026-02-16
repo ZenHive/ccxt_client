@@ -25,6 +25,7 @@ defmodule CCXT.ResponseCoercerTest do
   alias CCXT.Types.LongShortRatio
   alias CCXT.Types.MarginMode
   alias CCXT.Types.MarginModification
+  alias CCXT.Types.MarketInterface
   alias CCXT.Types.OpenInterest
   alias CCXT.Types.Option
   alias CCXT.Types.Order
@@ -43,20 +44,20 @@ defmodule CCXT.ResponseCoercerTest do
     end
   end
 
-  describe "coerce/3 with raw: true" do
+  describe "coerce/3 with normalize: false" do
     test "returns data unchanged for ticker type" do
       data = %{"symbol" => "BTC/USDT", "last" => 50_000.0}
-      assert ResponseCoercer.coerce(data, :ticker, raw: true) == data
+      assert ResponseCoercer.coerce(data, :ticker, normalize: false) == data
     end
 
     test "returns data unchanged for order type" do
       data = %{"id" => "123", "symbol" => "BTC/USDT"}
-      assert ResponseCoercer.coerce(data, :order, raw: true) == data
+      assert ResponseCoercer.coerce(data, :order, normalize: false) == data
     end
 
     test "returns list unchanged for tickers type" do
       data = [%{"symbol" => "BTC/USDT"}, %{"symbol" => "ETH/USDT"}]
-      assert ResponseCoercer.coerce(data, :tickers, raw: true) == data
+      assert ResponseCoercer.coerce(data, :tickers, normalize: false) == data
     end
   end
 
@@ -1144,6 +1145,86 @@ defmodule CCXT.ResponseCoercerTest do
     end
   end
 
+  describe "coerce/3 for :market_interfaces (list)" do
+    test "coerces list of maps to list of MarketInterface structs" do
+      data = [
+        %{
+          "id" => "BTCUSDT",
+          "symbol" => "BTC/USDT",
+          "base" => "BTC",
+          "quote" => "USDT",
+          "type" => "spot",
+          "precision" => %{"amount" => 0.001, "price" => 0.01},
+          "limits" => %{"amount" => %{"min" => 0.001}, "price" => %{"min" => 0.01}}
+        },
+        %{
+          "id" => "ETHUSDT",
+          "symbol" => "ETH/USDT",
+          "base" => "ETH",
+          "quote" => "USDT",
+          "type" => "spot",
+          "precision" => %{"amount" => 0.01, "price" => 0.01},
+          "limits" => %{"amount" => %{"min" => 0.01}, "price" => %{"min" => 0.01}}
+        }
+      ]
+
+      result = ResponseCoercer.coerce(data, :market_interfaces, [])
+
+      assert is_list(result)
+      assert length(result) == 2
+      assert %MarketInterface{symbol: "BTC/USDT"} = Enum.at(result, 0)
+      assert %MarketInterface{symbol: "ETH/USDT"} = Enum.at(result, 1)
+    end
+
+    test "coerced results have precision and limits fields populated" do
+      data = [
+        %{
+          "id" => "BTCUSDT",
+          "symbol" => "BTC/USDT",
+          "precision" => %{"amount" => 0.001, "price" => 0.05},
+          "limits" => %{"amount" => %{"min" => 0.001}, "cost" => %{"min" => 10.0}}
+        }
+      ]
+
+      [market] = ResponseCoercer.coerce(data, :market_interfaces, [])
+
+      assert %MarketInterface{} = market
+      assert market.precision == %{"amount" => 0.001, "price" => 0.05}
+      assert market.limits == %{"amount" => %{"min" => 0.001}, "cost" => %{"min" => 10.0}}
+    end
+
+    test "coerced results accessible via dot syntax" do
+      data = [
+        %{
+          "id" => "BTCUSDT",
+          "symbol" => "BTC/USDT",
+          "base" => "BTC",
+          "quote" => "USDT",
+          "precision" => %{"amount" => 0.001, "price" => 0.01}
+        }
+      ]
+
+      [market] = ResponseCoercer.coerce(data, :market_interfaces, [])
+
+      assert market.symbol == "BTC/USDT"
+      assert market.base == "BTC"
+      assert market.quote == "USDT"
+      assert market.precision == %{"amount" => 0.001, "price" => 0.01}
+    end
+
+    test "normalize: false preserves raw maps (backward compat)" do
+      data = [
+        %{"id" => "BTCUSDT", "symbol" => "BTC/USDT", "precision" => %{"price" => 0.01}}
+      ]
+
+      result = ResponseCoercer.coerce(data, :market_interfaces, normalize: false)
+
+      assert is_list(result)
+      assert [%{"symbol" => "BTC/USDT"}] = result
+      refute match?([%MarketInterface{}], result)
+    end
+  end
+
   describe "coerce/3 with unexpected data types" do
     test "returns nil unchanged" do
       assert ResponseCoercer.coerce(nil, :ticker, []) == nil
@@ -1225,6 +1306,10 @@ defmodule CCXT.ResponseCoercerTest do
 
     test "infers :funding_rate_history from :fetch_funding_rate_history" do
       assert ResponseCoercer.infer_response_type(:fetch_funding_rate_history) == :funding_rate_history
+    end
+
+    test "infers :market_interfaces from :fetch_markets" do
+      assert ResponseCoercer.infer_response_type(:fetch_markets) == :market_interfaces
     end
 
     # New infer_response_type assertions (Task 170)
@@ -1414,6 +1499,8 @@ defmodule CCXT.ResponseCoercerTest do
       assert modules[:last_price] == LastPrice
       assert modules[:long_short_ratio] == LongShortRatio
       assert modules[:leverage_tier] == LeverageTier
+      # New types (Task 178)
+      assert modules[:market_interface] == MarketInterface
     end
   end
 
@@ -1442,6 +1529,8 @@ defmodule CCXT.ResponseCoercerTest do
       assert :funding_histories in types
       assert :long_short_ratios in types
       assert :market_leverage_tiers in types
+      # New (Task 178)
+      assert :market_interfaces in types
     end
   end
 

@@ -3,11 +3,8 @@ defmodule CCXT.Trading.TradingHelpers.FundingIntegrationTest do
   Integration tests for CCXT.Funding module using real exchange data.
 
   Uses Bybit to fetch actual funding rates and verify the funding rate
-  analysis functions work with real data.
-
-  Note: `fetch_funding_rates` returns raw exchange JSON until Task 169
-  (FundingRate Response Coercion) is complete. Tests manually construct
-  FundingRate structs from raw data.
+  analysis functions work with real data. Uses `normalize: false` to get
+  raw funding rate items (ResponseTransformer extracts the path automatically).
   """
 
   use ExUnit.Case, async: false
@@ -28,11 +25,10 @@ defmodule CCXT.Trading.TradingHelpers.FundingIntegrationTest do
 
   # Helper to fetch funding rates for multiple symbols
   # fetch_funding_rates(nil) only returns 1 rate on Bybit, so we fetch individually
-  # TODO: Remove when Task 169 (FundingRate Response Coercion) is complete
   defp fetch_multiple_funding_rates(exchange, symbols) do
     symbols
     |> Enum.map(fn symbol ->
-      case exchange.fetch_funding_rates(symbol) do
+      case exchange.fetch_funding_rates(symbol, normalize: false) do
         {:ok, raw} -> extract_single_funding_rate(raw, symbol)
         {:error, _} -> nil
       end
@@ -40,14 +36,9 @@ defmodule CCXT.Trading.TradingHelpers.FundingIntegrationTest do
     |> Enum.reject(&is_nil/1)
   end
 
-  defp extract_single_funding_rate(raw_response, symbol) when is_map(raw_response) do
-    # fetch_funding_rates returns result.list array with one item
-    case get_in(raw_response, ["result", "list"]) do
-      [item | _] -> parse_bybit_funding_rate(item, symbol)
-      _ -> nil
-    end
-  end
-
+  # ResponseTransformer extracts the path (e.g. ["result", "list"]) automatically,
+  # so with normalize: false the response IS the list of funding rate items.
+  defp extract_single_funding_rate([item | _], symbol), do: parse_bybit_funding_rate(item, symbol)
   defp extract_single_funding_rate(_, _), do: nil
 
   defp parse_bybit_funding_rate(item, symbol_override) do
@@ -116,8 +107,8 @@ defmodule CCXT.Trading.TradingHelpers.FundingIntegrationTest do
 
     @tag timeout: 30_000
     test "favorable?/2 correctly identifies favorable funding", %{exchange: exchange} do
-      case exchange.fetch_funding_rates("BTC/USDT:USDT") do
-        {:ok, raw_response} when is_map(raw_response) ->
+      case exchange.fetch_funding_rates("BTC/USDT:USDT", normalize: false) do
+        {:ok, raw_response} when is_list(raw_response) ->
           btc_rate = extract_single_funding_rate(raw_response, "BTC/USDT:USDT")
 
           assert btc_rate, "Expected to get BTC funding rate"
@@ -140,8 +131,8 @@ defmodule CCXT.Trading.TradingHelpers.FundingIntegrationTest do
 
     @tag timeout: 30_000
     test "annualize/1 converts periodic rate to APR", %{exchange: exchange} do
-      case exchange.fetch_funding_rates("ETH/USDT:USDT") do
-        {:ok, raw_response} when is_map(raw_response) ->
+      case exchange.fetch_funding_rates("ETH/USDT:USDT", normalize: false) do
+        {:ok, raw_response} when is_list(raw_response) ->
           eth_rate = extract_single_funding_rate(raw_response, "ETH/USDT:USDT")
 
           assert eth_rate, "Expected to get ETH funding rate"
@@ -161,8 +152,8 @@ defmodule CCXT.Trading.TradingHelpers.FundingIntegrationTest do
 
     @tag timeout: 30_000
     test "FundingRate struct fields are populated from raw data", %{exchange: exchange} do
-      case exchange.fetch_funding_rates("BTC/USDT:USDT") do
-        {:ok, raw_response} when is_map(raw_response) ->
+      case exchange.fetch_funding_rates("BTC/USDT:USDT", normalize: false) do
+        {:ok, raw_response} when is_list(raw_response) ->
           rate = extract_single_funding_rate(raw_response, "BTC/USDT:USDT")
 
           assert rate, "Expected to get funding rate"

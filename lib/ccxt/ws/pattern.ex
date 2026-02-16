@@ -208,4 +208,67 @@ defmodule CCXT.WS.Pattern do
   @spec maybe_add_part([String.t()], term(), (term() -> String.t())) :: [String.t()]
   def maybe_add_part(parts, nil, _transform), do: parts
   def maybe_add_part(parts, value, transform), do: parts ++ [transform.(value)]
+
+  @doc """
+  Appends template default params (with non-nil defaults) to channel parts.
+
+  Template params are extracted from CCXT watch methods (e.g., `interval` with
+  default `"100ms"` for Deribit's `watchTicker`). Positional params like symbol,
+  timeframe, and limit are already handled by the pattern module and are skipped.
+
+  Runtime params can override defaults. Both atom and string keys are accepted.
+
+  ## Examples
+
+      iex> CCXT.WS.Pattern.apply_template_params(["ticker", "BTC-PERPETUAL"], [%{"default" => "100ms", "name" => "interval"}], %{})
+      ["ticker", "BTC-PERPETUAL", "100ms"]
+
+      iex> CCXT.WS.Pattern.apply_template_params(["ticker", "BTC-PERPETUAL"], [%{"default" => "100ms", "name" => "interval"}], %{"interval" => "raw"})
+      ["ticker", "BTC-PERPETUAL", "raw"]
+
+      iex> CCXT.WS.Pattern.apply_template_params(["ticker"], [], %{})
+      ["ticker"]
+
+  """
+  @spec apply_template_params([String.t()], [map()], map()) :: [String.t()]
+  def apply_template_params(parts, [], _runtime_params), do: parts
+
+  def apply_template_params(parts, template_params, runtime_params) do
+    string_params = stringify_keys(runtime_params)
+
+    Enum.reduce(template_params, parts, fn param, acc ->
+      resolve_template_param(acc, param, string_params)
+    end)
+  end
+
+  @positional_params ~w(symbol timeframe limit)
+
+  @doc false
+  # Resolves a single template param — appends its value if it has a non-nil default
+  # and is not a positional param (those are handled by format_channel directly)
+  defp resolve_template_param(parts, %{"name" => name, "default" => default}, string_params)
+       when default != nil and name not in @positional_params do
+    value =
+      case Map.fetch(string_params, name) do
+        {:ok, v} -> v
+        :error -> default
+      end
+
+    parts ++ [to_string(value)]
+  end
+
+  defp resolve_template_param(parts, _param, _string_params), do: parts
+
+  @doc false
+  # Normalizes map keys to strings — avoids atom conversion from untrusted input.
+  # Non-atom/non-string keys (e.g. integers) are silently dropped.
+  defp stringify_keys(map) when is_map(map) do
+    Enum.reduce(map, %{}, fn
+      {k, v}, acc when is_atom(k) -> Map.put(acc, Atom.to_string(k), v)
+      {k, v}, acc when is_binary(k) -> Map.put(acc, k, v)
+      _, acc -> acc
+    end)
+  end
+
+  defp stringify_keys(_), do: %{}
 end

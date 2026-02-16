@@ -207,8 +207,12 @@ defmodule CCXT.Generator.Helpers do
     case Client.request(spec, method, path, client_opts) do
       {:ok, %{body: body}} ->
         transformed = ResponseTransformer.transform(body, response_transformer)
-        coerced = ResponseCoercer.coerce(transformed, response_type, user_opts, parser_mapping)
-        {:ok, coerced}
+
+        case ResponseCoercer.coerce(transformed, response_type, user_opts, parser_mapping) do
+          {:ok, coerced} -> {:ok, coerced}
+          {:error, _} = error -> error
+          coerced -> {:ok, coerced}
+        end
 
       {:error, _} = error ->
         error

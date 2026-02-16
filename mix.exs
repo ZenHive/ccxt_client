@@ -95,6 +95,7 @@ defmodule CcxtClient.MixProject do
         "priv/extractor/ccxt_error_codes.json",
         "priv/extractor/ccxt_emulated_methods.json",
         "priv/extractor/ccxt_mapping_analysis.json",
+        "priv/extractor/ccxt_ws_handler_mappings.json",
         "priv/priority_tiers.exs"
       ]
     ]

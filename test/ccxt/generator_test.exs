@@ -185,7 +185,7 @@ defmodule CCXT.GeneratorTest do
       end)
 
       assert {:ok, [market | _]} = TestExchange.fetch_markets(plug: {Req.Test, :markets_stub})
-      assert market["id"] == "BTCUSDT"
+      assert market.id == "BTCUSDT"
     end
   end
 

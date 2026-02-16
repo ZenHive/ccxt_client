@@ -188,7 +188,6 @@ defmodule CCXT.Spec do
         }
 
   # WebSocket configuration types (Phase 4)
-  # See docs/ws-generator-architecture.md for full documentation
 
   @typedoc "Flexible WS URL - string or nested map of any depth (Bybit: 3+ levels)"
   @type ws_url_value :: String.t() | map()

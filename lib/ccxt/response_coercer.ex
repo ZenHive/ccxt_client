@@ -12,9 +12,9 @@ defmodule CCXT.ResponseCoercer do
 
       {:ok, %CCXT.Types.Ticker{}} = Exchange.fetch_ticker("BTC/USDT")
 
-  To get raw maps instead (backward compatible), use the `:raw` option:
+  To get raw maps instead, disable normalization:
 
-      {:ok, %{}} = Exchange.fetch_ticker("BTC/USDT", raw: true)
+      {:ok, %{}} = Exchange.fetch_ticker("BTC/USDT", normalize: false)
 
   ## Response Types
 
@@ -24,6 +24,7 @@ defmodule CCXT.ResponseCoercer do
   |----------|---------------|
   | `fetch_ticker` | `CCXT.Types.Ticker` |
   | `fetch_tickers` | `[CCXT.Types.Ticker]` |
+  | `fetch_markets` | `[CCXT.Types.MarketInterface]` |
   | `fetch_order` | `CCXT.Types.Order` |
   | `fetch_orders` | `[CCXT.Types.Order]` |
   | `fetch_balance` | `CCXT.Types.Balance` |
@@ -102,7 +103,8 @@ defmodule CCXT.ResponseCoercer do
     isolated_borrow_rate: CCXT.Types.IsolatedBorrowRate,
     last_price: CCXT.Types.LastPrice,
     long_short_ratio: CCXT.Types.LongShortRatio,
-    leverage_tier: CCXT.Types.LeverageTier
+    leverage_tier: CCXT.Types.LeverageTier,
+    market_interface: CCXT.Types.MarketInterface
   }
 
   # List types return arrays of the singular type.
@@ -127,7 +129,8 @@ defmodule CCXT.ResponseCoercer do
     :accounts,
     :funding_histories,
     :long_short_ratios,
-    :market_leverage_tiers
+    :market_leverage_tiers,
+    :market_interfaces
   ]
 
   # Dict types return %{key => struct} maps (e.g. fetchFundingRates returns %{symbol => FundingRate})
@@ -196,6 +199,9 @@ defmodule CCXT.ResponseCoercer do
           | :leverage_tier
           | :leverage_tiers
           | :market_leverage_tiers
+          | :market_interface
+          | :market_interfaces
+          | :ohlcv
           | nil
 
   @doc """
@@ -205,7 +211,7 @@ defmodule CCXT.ResponseCoercer do
 
   - `data` - The raw response data (map or list of maps)
   - `type` - The response type atom (e.g., `:ticker`, `:orders`)
-  - `opts` - Options keyword list. If `raw: true`, returns data unchanged.
+  - `opts` - Options keyword list. If `normalize: false`, returns data unchanged.
 
   ## Examples
 
@@ -213,7 +219,7 @@ defmodule CCXT.ResponseCoercer do
       iex> CCXT.ResponseCoercer.coerce(data, :ticker, [])
       %CCXT.Types.Ticker{symbol: "BTC/USDT", last: 50000.0, ...}
 
-      iex> CCXT.ResponseCoercer.coerce(data, :ticker, raw: true)
+      iex> CCXT.ResponseCoercer.coerce(data, :ticker, normalize: false)
       %{"symbol" => "BTC/USDT", "last" => 50000.0}
 
       iex> CCXT.ResponseCoercer.coerce(data, nil, [])
@@ -226,10 +232,10 @@ defmodule CCXT.ResponseCoercer do
   def coerce(data, nil, _opts, _parser_mapping), do: data
 
   def coerce(data, type, opts, parser_mapping) do
-    if Keyword.get(opts, :raw, false) do
-      data
-    else
+    if Keyword.get(opts, :normalize, true) do
       coerce_typed(data, type, parser_mapping)
+    else
+      data
     end
   end
 
@@ -239,6 +245,19 @@ defmodule CCXT.ResponseCoercer do
   defp coerce_typed(data, type, parser_mapping) when type in @list_types and is_list(data) do
     singular = singularize(type)
     Enum.map(data, &coerce_single(&1, singular, parser_mapping))
+  end
+
+  # Guard: list-only types that arrive as maps (unexpected shape).
+  # Excludes dual-shape types (in both @list_types and @dict_types/@dict_of_list_types).
+  # Log a warning so the mismatch is visible, then coerce map values individually.
+  @list_only_types @list_types -- (@dict_types ++ @dict_of_list_types)
+  defp coerce_typed(data, type, parser_mapping) when type in @list_only_types and is_map(data) do
+    Logger.warning(
+      "ResponseCoercer: expected list for #{inspect(type)}, got map with #{map_size(data)} entries — coercing values"
+    )
+
+    singular = singularize(type)
+    data |> Map.values() |> Enum.map(&coerce_single(&1, singular, parser_mapping))
   end
 
   defp coerce_typed(data, type, parser_mapping) when is_map(data) and type in @dict_of_list_types do
@@ -270,6 +289,14 @@ defmodule CCXT.ResponseCoercer do
 
         {k, v}
     end)
+  end
+
+  # OHLCV: special path — returns {:ok, _} | {:error, _} tuple (unlike other types).
+  # Must precede the generic is_map guard to avoid shadowing on map payloads.
+  # Handled by execute_request/8 in Generator.Helpers.
+  @doc false
+  defp coerce_typed(data, :ohlcv, _parser_mapping) do
+    CCXT.OHLCV.normalize(data)
   end
 
   defp coerce_typed(data, type, parser_mapping) when is_map(data) do
@@ -321,7 +348,8 @@ defmodule CCXT.ResponseCoercer do
     last_prices: :last_price,
     long_short_ratios: :long_short_ratio,
     leverage_tiers: :leverage_tier,
-    market_leverage_tiers: :leverage_tier
+    market_leverage_tiers: :leverage_tier,
+    market_interfaces: :market_interface
   }
 
   @doc false
@@ -355,6 +383,7 @@ defmodule CCXT.ResponseCoercer do
     # Market data
     fetch_ticker: :ticker,
     fetch_tickers: :tickers,
+    fetch_markets: :market_interfaces,
     fetch_order_book: :order_book,
     fetch_trades: :trades,
     fetch_my_trades: :trades,
@@ -420,7 +449,9 @@ defmodule CCXT.ResponseCoercer do
     fetch_long_short_ratio_history: :long_short_ratios,
     # Leverage tiers
     fetch_leverage_tiers: :leverage_tiers,
-    fetch_market_leverage_tiers: :market_leverage_tiers
+    fetch_market_leverage_tiers: :market_leverage_tiers,
+    # OHLCV
+    fetch_ohlcv: :ohlcv
   }
 
   @spec infer_response_type(atom()) :: response_type()

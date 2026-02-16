@@ -5,7 +5,7 @@ defmodule CCXT.WS.Generator.Adapter do
   The Adapter provides a managed WebSocket connection with:
   - Automatic reconnection with exponential backoff
   - Subscription tracking and restoration
-  - Authentication state tracking (TODO: auth logic deferred to W11)
+  - Authentication state machine (unauthenticated → authenticating → authenticated → expired)
   - Process monitoring
 
   ## Generated Module
@@ -35,6 +35,8 @@ defmodule CCXT.WS.Generator.Adapter do
 
   """
 
+  alias CCXT.Extract.WsHandlerMappings
+
   @reconnect_delay_ms 5_000
   @max_reconnect_attempts 10
   @max_backoff_ms 60_000
@@ -49,8 +51,8 @@ defmodule CCXT.WS.Generator.Adapter do
   - `ws_config` - The WS configuration from spec
 
   """
-  @spec generate_adapter(module(), module(), map()) :: Macro.t()
-  def generate_adapter(ws_module, rest_module, _ws_config) do
+  @spec generate_adapter(module(), module(), map(), String.t()) :: Macro.t()
+  def generate_adapter(ws_module, rest_module, _ws_config, spec_id) do
     moduledoc = generate_adapter_moduledoc(rest_module)
 
     quote do
@@ -60,11 +62,14 @@ defmodule CCXT.WS.Generator.Adapter do
 
       alias CCXT.WS.Auth
       alias CCXT.WS.Client, as: WSClient
+      alias CCXT.WS.Contract
       alias CCXT.WS.Helpers
+      alias CCXT.WS.MessageRouter
+      alias CCXT.WS.Normalizer
 
       require Logger
 
-      unquote(generate_module_attrs())
+      unquote(generate_module_attrs(rest_module, spec_id))
       unquote(generate_types())
       unquote(generate_client_api(ws_module))
       unquote(generate_init_callback(rest_module))
@@ -81,16 +86,26 @@ defmodule CCXT.WS.Generator.Adapter do
   # ===========================================================================
 
   @doc false
-  # Generates module attributes for reconnection timing configuration
-  defp generate_module_attrs do
+  # Generates module attributes for reconnection timing and WS normalization config
+  defp generate_module_attrs(rest_module, spec_id) do
     reconnect_delay = @reconnect_delay_ms
     max_attempts = @max_reconnect_attempts
     max_backoff = @max_backoff_ms
+
+    # Look up envelope pattern at compile time (nil if exchange not in W13 data)
+    envelope = WsHandlerMappings.envelope_pattern(spec_id)
 
     quote do
       @reconnect_delay_ms unquote(reconnect_delay)
       @max_reconnect_attempts unquote(max_attempts)
       @max_backoff_ms unquote(max_backoff)
+      @max_re_auth_attempts 3
+      @re_auth_base_delay_ms 2_000
+
+      # W14: WS normalization config
+      @ws_exchange_id unquote(spec_id)
+      @ws_exchange_module unquote(rest_module)
+      @ws_envelope unquote(Macro.escape(envelope))
     end
   end
 
@@ -105,11 +120,17 @@ defmodule CCXT.WS.Generator.Adapter do
               auth_required: boolean()
             }
 
+      @type auth_state :: :unauthenticated | :authenticating | :authenticated | :expired
+
       @type state :: %{
               client: WSClient.t() | nil,
               monitor_ref: reference() | nil,
-              authenticated: boolean(),
+              auth_state: auth_state(),
               was_authenticated: boolean(),
+              auth_expires_at: integer() | nil,
+              auth_timer_ref: reference() | nil,
+              auth_context: map() | nil,
+              re_auth_attempts: non_neg_integer(),
               subscriptions: [subscription()],
               credentials: map() | nil,
               spec: map(),
@@ -139,6 +160,8 @@ defmodule CCXT.WS.Generator.Adapter do
       - `:url_path` - Path to WS URL in spec (e.g., `[:public, :spot]`)
       - `:credentials` - API credentials map (optional, for authenticated endpoints)
       - `:handler` - Message handler function `fn msg -> ... end`
+      - `:normalize` - Normalize WS payloads to typed structs (default: true)
+      - `:validate` - Validate normalized payloads against W12 contracts (default: false)
       - `:sandbox` - Use testnet URLs (default: false)
       - `:debug` - Enable debug logging (default: false)
 
@@ -224,6 +247,22 @@ defmodule CCXT.WS.Generator.Adapter do
       end
 
       @doc """
+      Returns the current authentication state.
+
+      ## Returns
+
+      - `:unauthenticated` - Not authenticated
+      - `:authenticating` - Authentication in progress
+      - `:authenticated` - Successfully authenticated
+      - `:expired` - Authentication expired (will auto re-auth for WS-native patterns)
+
+      """
+      @spec auth_state(GenServer.server()) :: :unauthenticated | :authenticating | :authenticated | :expired
+      def auth_state(adapter) do
+        GenServer.call(adapter, :auth_state)
+      end
+
+      @doc """
       Returns the current adapter state.
       """
       @spec get_state(GenServer.server()) :: {:ok, map()}
@@ -268,14 +307,20 @@ defmodule CCXT.WS.Generator.Adapter do
         state = %{
           client: nil,
           monitor_ref: nil,
-          authenticated: false,
+          auth_state: :unauthenticated,
           was_authenticated: false,
+          auth_expires_at: nil,
+          auth_timer_ref: nil,
+          auth_context: nil,
+          re_auth_attempts: 0,
           subscriptions: [],
           credentials: Keyword.get(opts, :credentials),
           spec: spec,
           url_path: url_path,
           opts: opts,
           handler: Keyword.get(opts, :handler),
+          normalize: Keyword.get(opts, :normalize, true),
+          validate: Keyword.get(opts, :validate, false),
           reconnect_attempts: 0
         }
 
@@ -336,7 +381,13 @@ defmodule CCXT.WS.Generator.Adapter do
       end
 
       def handle_call(:get_state, _from, state) do
-        {:reply, {:ok, state}, state}
+        # Backward compat: derive authenticated boolean from auth_state
+        compat_state = Map.put(state, :authenticated, state.auth_state == :authenticated)
+        {:reply, {:ok, compat_state}, state}
+      end
+
+      def handle_call(:auth_state, _from, state) do
+        {:reply, state.auth_state, state}
       end
 
       def handle_call(:get_connection_state, _from, %{client: nil} = state) do
@@ -387,63 +438,133 @@ defmodule CCXT.WS.Generator.Adapter do
       @doc false
       defp do_authenticate(config, state) do
         pattern = config[:pattern]
+        market_type = resolve_market_type(state)
+        opts = [market_type: market_type]
 
-        case Auth.build_auth_message(pattern, state.credentials, config, []) do
-          {:ok, message} -> send_auth_message(message, pattern, state)
-          :no_message -> mark_auth_success(state)
-          {:error, _} = error -> {:reply, error, state}
+        # Step 1: Pre-auth (REST token/listen key metadata if needed)
+        case Auth.pre_auth(pattern, state.credentials, config, opts) do
+          {:ok, pre_auth_data} when pre_auth_data == %{} ->
+            # WS-native pattern (no external pre-auth needed)
+            state = %{state | auth_state: :authenticating}
+
+            case Auth.build_auth_message(pattern, state.credentials, config, opts) do
+              {:ok, message} -> send_auth_message(message, pattern, state)
+              :no_message -> mark_auth_success(state, %{pattern: pattern, market_type: market_type})
+              {:error, _} = error -> {:reply, error, %{state | auth_state: :unauthenticated}}
+            end
+
+          {:ok, pre_auth_data} ->
+            # External pre-auth required (listen_key, rest_token).
+            # State stays :authenticating until caller completes via mark_authenticated/1.
+            # If the caller never follows through, a subsequent authenticate/1 call
+            # or disconnect will reset state. No automatic timeout — caller owns the flow.
+            ctx = %{pattern: pattern, market_type: market_type, pre_auth: pre_auth_data}
+
+            state = %{state | auth_state: :authenticating, auth_context: ctx}
+            {:reply, {:error, {:pre_auth_required, pre_auth_data}}, state}
+
+          {:error, _} = error ->
+            {:reply, error, state}
         end
       end
 
       @doc false
       defp send_auth_message(message, pattern, state) do
         case WSClient.send_message(state.client, Jason.encode!(message)) do
-          :ok -> mark_auth_success(state)
-          {:ok, response} -> handle_auth_response(response, pattern, state)
-          {:error, _} = error -> {:reply, error, state}
+          :ok ->
+            mark_auth_success(state, %{pattern: pattern, market_type: resolve_market_type(state)})
+
+          {:ok, response} ->
+            handle_auth_response(response, pattern, state)
+
+          {:error, _} = error ->
+            {:reply, error, %{state | auth_state: :unauthenticated}}
         end
       end
 
       @doc false
       defp handle_auth_response(response, pattern, state) do
         case Auth.handle_auth_response(pattern, response, state) do
-          :ok -> mark_auth_success(state)
-          {:error, _} = error -> {:reply, error, state}
+          :ok ->
+            mark_auth_success(state, %{pattern: pattern, market_type: resolve_market_type(state)})
+
+          {:error, _} = error ->
+            {:reply, error, %{state | auth_state: :unauthenticated}}
         end
       end
 
       @doc false
-      defp mark_auth_success(state) do
-        {:reply, :ok, %{state | authenticated: true, was_authenticated: true}}
+      defp mark_auth_success(state, context) do
+        new_state = %{
+          state
+          | auth_state: :authenticated,
+            was_authenticated: true,
+            auth_context: context,
+            re_auth_attempts: 0
+        }
+
+        {:reply, :ok, new_state}
       end
 
       # For re-authentication (async from handle_info)
       @doc false
       defp do_re_authenticate(config, state) do
         pattern = config[:pattern]
+        market_type = resolve_market_type(state)
+        opts = [market_type: market_type]
 
-        case Auth.build_auth_message(pattern, state.credentials, config, []) do
-          {:ok, message} -> send_re_auth_message(message, pattern, state)
-          :no_message -> {:ok, %{state | authenticated: true}}
-          {:error, _} = error -> error
+        case Auth.pre_auth(pattern, state.credentials, config, opts) do
+          {:ok, pre_auth_data} when pre_auth_data == %{} ->
+            # WS-native: build and send auth message
+            case Auth.build_auth_message(pattern, state.credentials, config, opts) do
+              {:ok, message} -> send_re_auth_message(message, pattern, state)
+              :no_message -> re_auth_success(state, %{pattern: pattern, market_type: market_type})
+              {:error, _} = error -> error
+            end
+
+          {:ok, _pre_auth_data} ->
+            # External pre-auth: can't re-auth automatically
+            {:error, :pre_auth_required}
+
+          {:error, _} = error ->
+            error
         end
       end
 
       @doc false
       defp send_re_auth_message(message, pattern, state) do
         case WSClient.send_message(state.client, Jason.encode!(message)) do
-          :ok -> {:ok, %{state | authenticated: true}}
-          {:ok, response} -> handle_re_auth_response(response, pattern, state)
-          {:error, _} = error -> error
+          :ok ->
+            re_auth_success(state, %{pattern: pattern, market_type: resolve_market_type(state)})
+
+          {:ok, response} ->
+            handle_re_auth_response(response, pattern, state)
+
+          {:error, _} = error ->
+            error
         end
       end
 
       @doc false
       defp handle_re_auth_response(response, pattern, state) do
         case Auth.handle_auth_response(pattern, response, state) do
-          :ok -> {:ok, %{state | authenticated: true}}
-          {:error, _} = error -> error
+          :ok ->
+            re_auth_success(state, %{pattern: pattern, market_type: resolve_market_type(state)})
+
+          {:error, _} = error ->
+            error
         end
+      end
+
+      @doc false
+      defp re_auth_success(state, context) do
+        {:ok,
+         %{
+           state
+           | auth_state: :authenticated,
+             auth_context: context,
+             re_auth_attempts: 0
+         }}
       end
     end
   end
@@ -458,7 +579,7 @@ defmodule CCXT.WS.Generator.Adapter do
 
       @impl true
       def handle_cast(:mark_authenticated, state) do
-        {:noreply, %{state | authenticated: true, was_authenticated: true}}
+        {:noreply, %{state | auth_state: :authenticated, was_authenticated: true, re_auth_attempts: 0}}
       end
     end
   end
@@ -474,7 +595,7 @@ defmodule CCXT.WS.Generator.Adapter do
 
       @impl true
       def handle_info(:connect, state) do
-        connect_opts = Keyword.put(state.opts, :handler, build_handler(state.handler))
+        connect_opts = Keyword.put(state.opts, :handler, build_handler(state.handler, state.normalize, state.validate))
 
         case WSClient.connect(state.spec, state.url_path, connect_opts) do
           {:ok, client} ->
@@ -511,11 +632,16 @@ defmodule CCXT.WS.Generator.Adapter do
       def handle_info({:DOWN, ref, :process, _pid, reason}, %{monitor_ref: ref} = state) do
         Logger.warning("[#{inspect(__MODULE__)}] Client died: #{inspect(reason)}")
 
+        # Cancel auth expiry timer if active
+        if state.auth_timer_ref, do: Process.cancel_timer(state.auth_timer_ref)
+
         new_state = %{
           state
           | client: nil,
             monitor_ref: nil,
-            authenticated: false
+            auth_state: :unauthenticated,
+            auth_timer_ref: nil,
+            auth_expires_at: nil
         }
 
         schedule_reconnect(new_state)
@@ -565,6 +691,8 @@ defmodule CCXT.WS.Generator.Adapter do
             {:noreply, state}
 
           config ->
+            state = %{state | auth_state: :authenticating}
+
             case do_re_authenticate(config, state) do
               {:ok, new_state} ->
                 Logger.debug("[#{inspect(__MODULE__)}] Re-authenticated successfully")
@@ -572,9 +700,18 @@ defmodule CCXT.WS.Generator.Adapter do
 
               {:error, reason} ->
                 Logger.warning("[#{inspect(__MODULE__)}] Re-auth failed: #{inspect(reason)}")
-                {:noreply, state}
+                schedule_re_auth_retry(state)
             end
         end
+      end
+
+      # Auth expiry handler — transitions to :expired, triggers re-auth
+      def handle_info(:auth_expired, state) do
+        Logger.info("[#{inspect(__MODULE__)}] Auth expired, triggering re-authentication")
+
+        new_state = %{state | auth_state: :expired, auth_timer_ref: nil, auth_expires_at: nil}
+        send(self(), :re_authenticate)
+        {:noreply, new_state}
       end
 
       def handle_info(_msg, state) do
@@ -585,6 +722,7 @@ defmodule CCXT.WS.Generator.Adapter do
 
   @doc false
   # Generates private helper functions for reconnection and message handling
+  # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
   defp generate_private_helpers do
     quote do
       # =====================================================================
@@ -600,16 +738,102 @@ defmodule CCXT.WS.Generator.Adapter do
       end
 
       @doc false
-      defp build_handler(nil), do: nil
+      # Schedules a re-auth retry with exponential backoff, or gives up after max attempts
+      defp schedule_re_auth_retry(state) do
+        attempts = state.re_auth_attempts + 1
 
-      defp build_handler(user_handler) when is_function(user_handler, 1) do
-        # Wrap the user handler to handle the message format
+        if attempts > @max_re_auth_attempts do
+          Logger.error("[#{inspect(__MODULE__)}] Max re-auth attempts (#{@max_re_auth_attempts}) reached")
+          {:noreply, %{state | auth_state: :unauthenticated, re_auth_attempts: attempts}}
+        else
+          delay = min(@re_auth_base_delay_ms * :math.pow(2, attempts - 1), @max_backoff_ms)
+          Process.send_after(self(), :re_authenticate, trunc(delay))
+          {:noreply, %{state | auth_state: :unauthenticated, re_auth_attempts: attempts}}
+        end
+      end
+
+      @doc false
+      # Resolves market type from auth_context, url_path derivation, or :spot default
+      defp resolve_market_type(state) do
+        (state.auth_context && state.auth_context[:market_type]) ||
+          derive_market_type_from_url_path(state.url_path) ||
+          :spot
+      end
+
+      @doc false
+      defp derive_market_type_from_url_path(path) when is_list(path) do
+        Enum.find(path, fn
+          t when t in [:spot, :linear, :inverse, :option, :swap, :future, :contract] -> true
+          _ -> false
+        end)
+      end
+
+      defp derive_market_type_from_url_path(_), do: nil
+
+      @doc false
+      defp build_handler(nil, _normalize, _validate), do: nil
+
+      defp build_handler(user_handler, normalize, validate) when is_function(user_handler, 1) do
+        # Wrap the user handler to decode, optionally route+normalize, then deliver
         fn
-          {:message, {:text, data}} -> user_handler.(Jason.decode!(data))
-          {:message, {:binary, data}} -> user_handler.(data)
-          {:message, data} when is_binary(data) -> user_handler.(Jason.decode!(data))
-          {:message, data} when is_map(data) -> user_handler.(data)
-          other -> user_handler.(other)
+          {:message, {:text, data}} ->
+            decoded = Jason.decode!(data)
+            deliver_message(decoded, user_handler, normalize, validate)
+
+          {:message, {:binary, data}} ->
+            user_handler.(data)
+
+          {:message, data} when is_binary(data) ->
+            decoded = Jason.decode!(data)
+            deliver_message(decoded, user_handler, normalize, validate)
+
+          {:message, data} when is_map(data) ->
+            deliver_message(data, user_handler, normalize, validate)
+
+          other ->
+            user_handler.(other)
+        end
+      end
+
+      @doc false
+      # Routes and normalizes a decoded message, then delivers to user handler
+      defp deliver_message(decoded, user_handler, false, _validate) do
+        user_handler.({:raw, decoded})
+      end
+
+      defp deliver_message(decoded, user_handler, true, validate) do
+        case MessageRouter.route(decoded, @ws_envelope, @ws_exchange_id) do
+          {:routed, family, payload} ->
+            case Normalizer.normalize(family, payload, @ws_exchange_module) do
+              {:ok, normalized} ->
+                maybe_validate(family, normalized, validate)
+                user_handler.({family, normalized})
+
+              {:error, _reason} ->
+                # Normalization failed, deliver raw with family tag
+                user_handler.({family, payload})
+            end
+
+          {:system, _msg} ->
+            user_handler.({:system, decoded})
+
+          {:unknown, _msg} ->
+            user_handler.({:raw, decoded})
+        end
+      end
+
+      @doc false
+      # Validates normalized payload against W12 contract when validate: true.
+      # Warn-only: data is always delivered regardless of validation result.
+      defp maybe_validate(_family, _normalized, false), do: :ok
+
+      defp maybe_validate(family, normalized, true) do
+        case Contract.validate(family, normalized) do
+          {:ok, _} ->
+            :ok
+
+          {:error, violations} ->
+            Logger.warning("[WS.Adapter] Contract violation for #{family}: #{inspect(violations)}")
         end
       end
     end

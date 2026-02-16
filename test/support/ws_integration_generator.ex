@@ -310,8 +310,8 @@ defmodule CCXT.Test.WSIntegrationGenerator do
           assert {:ok, sub} = @ws_module.watch_trades_subscription(test_symbol(@exchange_id))
           message = subscribe_and_receive!(@adapter_module, adapter, sub, 60_000)
 
-          assert is_map(message), "Expected map message, got: #{inspect(message)}"
-          Logger.info("Received trades message: #{inspect(Map.keys(message))}")
+          assert is_list(message), "Expected list of trades, got: #{inspect(message)}"
+          Logger.info("Received trades message: #{length(message)} trade(s)")
 
           close_adapter(adapter)
         end

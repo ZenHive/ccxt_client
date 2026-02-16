@@ -5,11 +5,15 @@ Use this file for requested enhancements only.
 - Confirmed defects/regressions belong in `BUGS.md`.
 - Completed changes move to `CHANGELOG.md`.
 
+> **Upstream tracking:** Features requiring generator/spec changes are tracked in
+> [ccxt_ex/ROADMAP.md](../ccxt_ex/ROADMAP.md). Fixes flow downstream via
+> `mix ccxt.sync --output --force`.
+
 ## Open Requests
 
 ### 1) WebSocket Reconnection Hardening and Documentation
 
-Status: Pending  
+Status: In Progress
 Score: [D:5/B:9 -> Priority:1.8] (High ROI)  
 Area: WebSocket (`CCXT.WS.Client`, `CCXT.<Exchange>.WS.Adapter`, docs)
 
@@ -19,15 +23,22 @@ Document and harden WebSocket reconnection behavior for both public and authenti
 Success criteria:
 - [ ] `llms.txt` has a dedicated reconnection section with client vs adapter decision rules.
 - [ ] `README.md` contains a short reconnection guide and points to `llms.txt`.
-- [ ] WS helper/client tests explicitly validate reconnect configuration and restoration behavior.
-- [ ] Adapter tests cover generated reconnection-related contract surface.
+- [x] WS helper/client tests explicitly validate reconnect configuration and restoration behavior.
+- [x] Adapter tests cover generated reconnection-related contract surface.
 - [ ] If tests expose generator/spec defects, create a `ccxt_ex` follow-up item with repro details.
+
+Progress notes:
+- 2026-02-13: Reconnection tests backported to ccxt_ex and verified via `--output --force` rebuild.
+  Tests cover: `restore_subscriptions` config, `reconnect_on_error` flags, mixed channel types,
+  adapter AST reconnection handlers (`@reconnect_delay_ms`, `schedule_reconnect`, `handle_info(:reconnect, ...)`).
 
 ccxt_ex escalation trigger:
 - If reconnect behavior fails due generated spec/template mismatch, create a follow-up task in `ccxt_ex` with:
   - failing test name
   - expected vs actual behavior
   - suspected generator/spec area
+
+**ccxt_ex:** Tracked as Task 171 (WS Auth State Tracking + Reconnection Docs) [D:5/B:8 -> 1.6]
 
 ### 2) Normalized Symbol Precision/Tick Metadata for Streaming Consumers
 
@@ -48,3 +59,5 @@ Success criteria:
 Notes:
 - Motivation came from a live TradingView/lightweight-charts integration where chart `priceFormat` should be symbol-aware.
 - Today, streaming ticker payloads do not carry precision metadata, so consumers need a stable companion metadata API.
+
+**ccxt_ex:** Tracked as Task 178 (Normalized Market Precision Metadata) [D:4/B:8 -> 2.0]

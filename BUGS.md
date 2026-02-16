@@ -65,6 +65,7 @@ Returns:
 
 - Function exists, but channel is empty (`""`), which is likely invalid for real Deribit private balance subscriptions.
 - Most likely a `ccxt_ex` WS extraction/template issue propagated into generated `ccxt_client` code.
+- **ccxt_ex:** Tracked as Task 177 (WS Channel Template Param Application) [D:3/B:9 -> 3.0]
 
 ## 3) Deribit WS Ticker Subscription Omits Required Interval Suffix
 
@@ -103,3 +104,4 @@ Returns a subscription channel without interval suffix:
 - Current generated Deribit ticker channel template includes an `interval` param with default `100ms`, but it is not applied in generated channel output for `watch_ticker_subscription/1`.
 - This causes downstream apps to appear connected but receive no live ticker updates unless they manually append the interval suffix.
 - Long-term fix path tracked in `FEATURE_REQ.md` item #2: normalized symbol precision/tick metadata for streaming consumers.
+- **ccxt_ex:** Tracked as Task 177 (WS Channel Template Param Application) [D:3/B:9 -> 3.0]

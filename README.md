@@ -47,23 +47,6 @@ credentials = CCXT.Credentials.new(api_key: "...", secret: "...")
 {:ok, balance} = CCXT.Binance.fetch_balance(credentials)
 ```
 
-## WebSocket Reconnection
-
-Use this rule of thumb:
-
-- `CCXT.WS.Client`: lightweight client for simple/public flows.
-- `CCXT.<Exchange>.WS.Adapter`: managed process for long-running streams, automatic reconnection, subscription restoration, and auth re-authentication.
-
-For manual reconnect flows with `CCXT.WS.Client`, persist subscriptions and call:
-
-```elixir
-:ok = CCXT.WS.Client.restore_subscriptions(reconnected_client, subscriptions)
-```
-
-For authenticated or durable streams, prefer `*.WS.Adapter` and call `authenticate/1` after start. The adapter tracks auth state and subscriptions for reconnect recovery.
-
-See `llms.txt` for full runnable reconnection examples and troubleshooting guidance.
-
 ## Configuration
 
 Configure the client via application config (:ccxt_client).

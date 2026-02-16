@@ -3,10 +3,8 @@ defmodule CCXT.Trading.TradingHelpers.OptionsIntegrationTest do
   Integration tests for CCXT.Options module using real exchange data.
 
   Uses Deribit to fetch actual option chain data and verify
-  the options analytics functions work with real data.
-
-  Note: `fetch_option_chain` returns raw exchange JSON until Task 169
-  (Response Coercion) is complete. Tests manually construct Option structs.
+  the options analytics functions work with real data. Uses `normalize: false`
+  to get raw option items (ResponseTransformer extracts the path automatically).
   """
 
   use ExUnit.Case, async: false
@@ -23,12 +21,11 @@ defmodule CCXT.Trading.TradingHelpers.OptionsIntegrationTest do
     {:ok, exchange: CCXT.Deribit}
   end
 
-  # Helper to extract option chain from raw Deribit response
-  # TODO: Remove when Task 169 (Response Coercion) is complete
-  defp extract_option_chain(raw_response) when is_map(raw_response) do
-    raw_response
-    |> Map.get("result", [])
-    |> Map.new(fn item ->
+  # Helper to build option chain map from response
+  # ResponseTransformer extracts the path (e.g. ["result"]) automatically,
+  # so with normalize: false the response IS the list of option items.
+  defp extract_option_chain(response) when is_list(response) do
+    Map.new(response, fn item ->
       symbol = item["instrument_name"]
 
       option = %Option{
@@ -51,7 +48,7 @@ defmodule CCXT.Trading.TradingHelpers.OptionsIntegrationTest do
   describe "with real Deribit option chain" do
     @tag timeout: 60_000
     test "oi_by_strike/1 aggregates open interest by strike", %{exchange: exchange} do
-      case exchange.fetch_option_chain("BTC") do
+      case exchange.fetch_option_chain("BTC", normalize: false) do
         {:ok, raw_response} ->
           chain = extract_option_chain(raw_response)
 
@@ -76,7 +73,7 @@ defmodule CCXT.Trading.TradingHelpers.OptionsIntegrationTest do
 
     @tag timeout: 60_000
     test "put_call_ratio/1 calculates ratio from real data", %{exchange: exchange} do
-      case exchange.fetch_option_chain("BTC") do
+      case exchange.fetch_option_chain("BTC", normalize: false) do
         {:ok, raw_response} ->
           chain = extract_option_chain(raw_response)
 
@@ -99,7 +96,7 @@ defmodule CCXT.Trading.TradingHelpers.OptionsIntegrationTest do
 
     @tag timeout: 60_000
     test "max_pain/1 finds the max pain strike", %{exchange: exchange} do
-      case exchange.fetch_option_chain("BTC") do
+      case exchange.fetch_option_chain("BTC", normalize: false) do
         {:ok, raw_response} ->
           chain = extract_option_chain(raw_response)
 
@@ -122,7 +119,7 @@ defmodule CCXT.Trading.TradingHelpers.OptionsIntegrationTest do
 
     @tag timeout: 60_000
     test "DeribitParser.parse_option/1 parses real symbols", %{exchange: exchange} do
-      case exchange.fetch_option_chain("BTC") do
+      case exchange.fetch_option_chain("BTC", normalize: false) do
         {:ok, raw_response} ->
           chain = extract_option_chain(raw_response)
 
@@ -157,7 +154,7 @@ defmodule CCXT.Trading.TradingHelpers.OptionsIntegrationTest do
 
     @tag timeout: 60_000
     test "oi_by_expiry/1 aggregates by expiry date", %{exchange: exchange} do
-      case exchange.fetch_option_chain("BTC") do
+      case exchange.fetch_option_chain("BTC", normalize: false) do
         {:ok, raw_response} ->
           chain = extract_option_chain(raw_response)
 
@@ -181,7 +178,7 @@ defmodule CCXT.Trading.TradingHelpers.OptionsIntegrationTest do
 
     @tag timeout: 60_000
     test "largest_positions/2 returns top N positions", %{exchange: exchange} do
-      case exchange.fetch_option_chain("BTC") do
+      case exchange.fetch_option_chain("BTC", normalize: false) do
         {:ok, raw_response} ->
           chain = extract_option_chain(raw_response)
 
@@ -203,7 +200,7 @@ defmodule CCXT.Trading.TradingHelpers.OptionsIntegrationTest do
 
     @tag timeout: 60_000
     test "Option struct fields are populated from real data", %{exchange: exchange} do
-      case exchange.fetch_option_chain("BTC") do
+      case exchange.fetch_option_chain("BTC", normalize: false) do
         {:ok, raw_response} ->
           chain = extract_option_chain(raw_response)
 

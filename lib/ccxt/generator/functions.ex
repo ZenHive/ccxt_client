@@ -422,6 +422,7 @@ defmodule CCXT.Generator.Functions do
     certified = spec.certified
     pro = spec.pro
     dex = spec.dex
+    precision_mode = get_in(spec.symbol_formats || %{}, [:precision_mode])
 
     quote do
       @doc "Returns raw CCXT API endpoint structure"
@@ -483,6 +484,10 @@ defmodule CCXT.Generator.Functions do
       @doc "Returns whether exchange is a DEX"
       @spec __ccxt_dex__() :: boolean() | nil
       def __ccxt_dex__, do: unquote(dex)
+
+      @doc "Returns the exchange precision mode (0=DECIMALS, 1=SIGNIFICANT_DIGITS, 4=TICK_SIZE)"
+      @spec __ccxt_precision_mode__() :: non_neg_integer() | nil
+      def __ccxt_precision_mode__, do: unquote(precision_mode)
     end
   end
 

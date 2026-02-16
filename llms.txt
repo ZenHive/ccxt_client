@@ -5,8 +5,8 @@ Use this guide when assisting end users of `ccxt_client`.
 `ccxt_client` is an Elixir package (`:ccxt_client`) that exposes a unified API across 100+ exchanges through modules such as `CCXT.Binance`, `CCXT.Bybit`, and `CCXT.Deribit`.
 
 Important current behavior:
-- REST and WebSocket OHLCV payloads are not fully normalized yet.
-- Exchange-specific payload parsing is currently required for charting (including TradingView).
+- All data families (Ticker, Trade, OrderBook, Balance, Order, Position, OHLCV, Market) return normalized structs by default.
+- Pass `normalize: false` to receive raw exchange payloads instead.
 
 ## 1) Installation and Startup
 ```elixir
@@ -109,8 +109,8 @@ creds = CCXT.Credentials.new!(
   50_000.0
 )
 
-{:ok, fetched} = CCXT.Bybit.fetch_order(creds, order["id"], "BTC/USDT")
-{:ok, _} = CCXT.Bybit.cancel_order(creds, order["id"], "BTC/USDT")
+{:ok, fetched} = CCXT.Bybit.fetch_order(creds, order.id, "BTC/USDT")
+{:ok, _} = CCXT.Bybit.cancel_order(creds, order.id, "BTC/USDT")
 ```
 
 ## 5) Error Handling Pattern
@@ -133,6 +133,7 @@ CCXT.Bybit.__ccxt_endpoints__()
 CCXT.Bybit.__ccxt_spec__()
 CCXT.Bybit.__ccxt_signing__()
 CCXT.Bybit.__ccxt_classification__()
+CCXT.Bybit.__ccxt_precision_mode__()
 ```
 
 WebSocket introspection:
@@ -159,8 +160,8 @@ Assume `ex = CCXT.Bybit` and `creds` is already created.
 # 4) Get recent public trades
 {:ok, trades} = ex.fetch_trades("BTC/USDT")
 
-# 5) Get OHLCV candles (raw exchange-specific shape)
-{:ok, candles_raw} = ex.fetch_ohlcv("BTC/USDT", "1m")
+# 5) Get OHLCV candles (normalized %OHLCVBar{} structs)
+{:ok, bars} = ex.fetch_ohlcv("BTC/USDT", "1m")
 
 # 6) List markets supported by an exchange
 {:ok, markets} = ex.fetch_markets()
@@ -178,65 +179,89 @@ If a call fails, first verify symbol format and check supported endpoints:
 ex.__ccxt_endpoints__()
 ```
 
-## 8) TradingView Charts (REST + WS)
+## 8) Market Precision Metadata
+`fetch_markets` returns `[%CCXT.Types.MarketInterface{}]` by default. Each struct includes `precision` and `limits` maps.
+
+Use `CCXT.MarketPrecision` to normalize precision data across exchanges:
+
+```elixir
+alias CCXT.MarketPrecision
+
+{:ok, markets} = CCXT.Bybit.fetch_markets()
+precision_mode = CCXT.Bybit.__ccxt_precision_mode__()
+
+# Build precision map for all symbols
+precision_map = MarketPrecision.from_markets(markets, precision_mode)
+mp = precision_map["BTC/USDT"]
+
+mp.price_increment   #=> 0.01
+mp.price_precision   #=> 2
+mp.amount_increment  #=> 0.001
+mp.amount_precision  #=> 3
+mp.price_min         #=> 0.05
+mp.amount_min        #=> 0.001
+mp.cost_min          #=> 10.0
+```
+
+### Precision Modes
+Exchanges report precision differently. `MarketPrecision` normalizes across all modes:
+
+| Mode | Value | `precision["price"]` means |
+|------|-------|---------------------------|
+| TICK_SIZE | 4 | Minimum price increment (e.g., `0.05`) |
+| DECIMALS | 0 | Number of decimal places (e.g., `2`) |
+| SIGNIFICANT_DIGITS | 1 | Not supported (returns error) |
+
+Use `__ccxt_precision_mode__/0` to get the exchange's mode.
+
+### TradingView Price Format
+For chart libraries that need precision config:
+
+```elixir
+MarketPrecision.tradingview_price_format(mp)
+#=> %{type: "price", precision: 2, minMove: 0.01}
+```
+
+### Raw Markets (Backward Compat)
+If you previously accessed markets as raw maps (`market["symbol"]`), pass `normalize: false`:
+
+```elixir
+{:ok, raw_markets} = CCXT.Bybit.fetch_markets(normalize: false)
+raw_markets |> hd() |> Map.get("symbol")
+```
+
+## 9) TradingView Charts (REST + WS)
 Use REST for backfill and WebSocket for live updates.
 
-- Backfill: `fetch_ohlcv`
+- Backfill: `fetch_ohlcv` returns `{:ok, [%CCXT.Types.OHLCVBar{}]}`
 - Live stream: `watch_ohlcv_subscription` + `CCXT.WS.Client` (public) or `*.WS.Adapter` (private/auth flows)
 
-Target chart bar shape:
+OHLCV data is automatically normalized to `%OHLCVBar{}` structs with named fields, sorted ascending by timestamp, and string values coerced to numbers. No exchange-specific normalizers needed.
 
 ```elixir
-[timestamp_ms, open, high, low, close, volume]
+alias CCXT.Types.OHLCVBar
+
+# REST backfill — already normalized
+{:ok, bars} = CCXT.Bybit.fetch_ohlcv("BTC/USDT", "1m")
+# => [%OHLCVBar{timestamp: 1704153600000, open: 42000.0, high: 42500.0, ...}, ...]
+
+# Convert to TradingView format (timestamps in seconds, atom-keyed maps)
+tv_bars = CCXT.OHLCV.to_tradingview(bars)
+# => [%{time: 1704153600, open: 42000.0, high: 42500.0, ...}, ...]
+
+# Convert to Lightweight Charts format (same as TradingView)
+lw_bars = CCXT.OHLCV.to_lightweight_charts(bars)
+
+# Custom adapter for SciChart or other libraries
+sci_bars = CCXT.OHLCV.to_adapter(bars, fn bar ->
+  {bar.timestamp, bar.open, bar.high, bar.low, bar.close}
+end)
+
+# Raw exchange payloads (skip normalization)
+{:ok, raw} = CCXT.Bybit.fetch_ohlcv("BTC/USDT", "1m", normalize: false)
 ```
 
-Current reality: payloads differ by exchange and must be normalized.
-
-Example normalizers for current REST payloads:
-
-```elixir
-defmodule ChartBars do
-  # Bybit REST: map["result"]["list"] => [[ts, o, h, l, c, v, turnover], ...]
-  def from_bybit_ohlcv(%{"result" => %{"list" => list}}) when is_list(list) do
-    list
-    |> Enum.map(fn [ts, o, h, l, c, v | _] ->
-      [to_i(ts), to_f(o), to_f(h), to_f(l), to_f(c), to_f(v)]
-    end)
-    |> Enum.sort_by(&hd/1)
-  end
-
-  # Deribit REST: map["result"] with parallel arrays
-  def from_deribit_ohlcv(%{
-        "result" => %{
-          "ticks" => ticks,
-          "open" => open,
-          "high" => high,
-          "low" => low,
-          "close" => close,
-          "volume" => volume
-        }
-      }) do
-    ticks
-    |> Enum.with_index()
-    |> Enum.map(fn {ts, i} ->
-      [to_i(ts), to_f(Enum.at(open, i)), to_f(Enum.at(high, i)), to_f(Enum.at(low, i)), to_f(Enum.at(close, i)), to_f(Enum.at(volume, i))]
-    end)
-    |> Enum.sort_by(&hd/1)
-  end
-
-  # WS note:
-  # OHLCV WS message shapes are exchange-specific; inspect first message and map to same 6-tuple bar shape.
-
-  defp to_i(v) when is_integer(v), do: v
-  defp to_i(v) when is_binary(v), do: String.to_integer(v)
-
-  defp to_f(v) when is_float(v), do: v
-  defp to_f(v) when is_integer(v), do: v * 1.0
-  defp to_f(v) when is_binary(v), do: String.to_float(v)
-end
-```
-
-## 9) WebSocket Quickstart (Public Channels)
+## 10) WebSocket Quickstart (Public Channels)
 Use `CCXT.WS.Client` for simple public streams.
 
 Bybit public OHLCV stream:
@@ -276,7 +301,7 @@ spec = CCXT.Deribit.__ccxt_spec__()
 :ok = CCXT.WS.Client.subscribe(client, sub)
 ```
 
-## 10) WebSocket Advanced Operations
+## 11) WebSocket Advanced Operations
 `CCXT.WS.Client.connect/3` supports:
 - `:handler` custom message handler
 - `:sandbox` testnet URL selection
@@ -297,7 +322,7 @@ spec = CCXT.Bybit.__ccxt_spec__()
 {:ok, client} = CCXT.WS.Client.connect(spec, [:public, :spot], sandbox: true, handler: handler)
 ```
 
-## 11) WebSocket Reconnection Model (Client vs Adapter)
+## 12) WebSocket Reconnection Model (Client vs Adapter)
 Use this decision rule:
 
 - `CCXT.WS.Client`: lightweight and stateless wrapper for simple/public streams.
@@ -328,14 +353,53 @@ subscriptions = [sub]
 `CCXT.<Exchange>.WS.Adapter` notes:
 - Tracks subscriptions and restores them after reconnect.
 - Uses exponential backoff reconnect attempts internally.
-- If previously authenticated (`authenticate/1` or `mark_authenticated/1`), it re-authenticates after reconnect.
+- Tracks auth state (`:unauthenticated`, `:authenticating`, `:authenticated`, `:expired`).
+- If previously authenticated, it re-authenticates after reconnect with retry (up to 3 attempts with exponential backoff).
+- Query auth state with `Adapter.auth_state/1`.
 
 For managed reconnection, prefer adapter processes for long-running or authenticated streams.
 
-## 12) Private WebSocket Channels (Authenticated)
+## 13) Private WebSocket Channels (Authenticated)
 Use exchange adapters for authenticated WS flows (`*.WS.Adapter`) because they provide `authenticate/1`.
 
-Bybit private WS flow:
+### Auth State Machine
+The adapter tracks authentication through these states:
+
+| State | Meaning |
+|-------|---------|
+| `:unauthenticated` | Not authenticated (initial state, or after disconnect) |
+| `:authenticating` | Auth message sent, waiting for response |
+| `:authenticated` | Successfully authenticated |
+| `:expired` | Auth token expired (handler prepared, scheduling requires exchange-specific TTL data) |
+
+Query auth state at any time:
+
+```elixir
+CCXT.Bybit.WS.Adapter.auth_state(adapter)
+#=> :authenticated
+```
+
+### Pre-Auth Patterns (Listen Key / REST Token)
+Some exchanges (e.g., Binance) require a REST call to obtain a listen key or token before WS auth. The adapter signals this:
+
+```elixir
+case CCXT.Binance.WS.Adapter.authenticate(adapter) do
+  :ok ->
+    # WS-native auth succeeded (e.g., HMAC signing)
+    :ready
+
+  {:error, {:pre_auth_required, metadata}} ->
+    # Caller must complete auth via REST, then:
+    # 1. Make the REST call described by metadata
+    # 2. Call Adapter.mark_authenticated(adapter) when done
+    :needs_rest_auth
+
+  {:error, reason} ->
+    {:auth_failed, reason}
+end
+```
+
+### Bybit Private WS Flow
 
 ```elixir
 creds = CCXT.Credentials.new!(
@@ -363,7 +427,7 @@ spec = CCXT.Bybit.__ccxt_spec__()
 :ok = CCXT.Bybit.WS.Adapter.subscribe(adapter, ord_sub)
 ```
 
-Deribit private WS flow:
+### Deribit Private WS Flow
 
 ```elixir
 creds = CCXT.Credentials.new!(
@@ -388,7 +452,7 @@ creds = CCXT.Credentials.new!(
 :ok = CCXT.Deribit.WS.Adapter.subscribe(adapter, ord_sub)
 ```
 
-## 13) WS Troubleshooting
+## 14) WS Troubleshooting
 If subscription/auth fails, check:
 - exchange module and WS module (`CCXT.Bybit` vs `CCXT.Bybit.WS`)
 - exact symbol format (`BTC/USDT` vs `BTCUSDT` vs `BTC-PERPETUAL`)
@@ -401,10 +465,16 @@ For Bybit private channels, URL routing matters (`watch_balance_subscription/2` 
 
 Reconnection-specific checks:
 - For `CCXT.WS.Client`, verify you are persisting subscriptions and calling `restore_subscriptions/2` after reconnect.
-- For adapters, inspect `Adapter.get_state/1` for `reconnect_attempts`, `authenticated`, and active subscriptions.
+- For adapters, inspect `Adapter.get_state/1` for `auth_state`, `re_auth_attempts`, and active subscriptions.
 - If reconnect stops, check for max reconnection attempts reached in logs.
+- Use `Adapter.auth_state/1` to check current auth status (`:unauthenticated`, `:authenticating`, `:authenticated`, `:expired`).
 
-## 14) Practical Support Rules for AI Assistants
+Auth-specific checks:
+- If `authenticate/1` returns `{:error, {:pre_auth_required, metadata}}`, the exchange needs a REST call first. Complete the REST auth flow, then call `Adapter.mark_authenticated/1`.
+- If auth expires (state becomes `:expired`), the adapter has a handler prepared for re-auth. Expiry scheduling requires exchange-specific TTL data (not yet extracted).
+- After disconnect, auth state resets to `:unauthenticated` and re-auth is attempted on reconnect.
+
+## 15) Practical Support Rules for AI Assistants
 When helping users, always ask for:
 - exchange module (`CCXT.<Exchange>`)
 - REST vs WebSocket path

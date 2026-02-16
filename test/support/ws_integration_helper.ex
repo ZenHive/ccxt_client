@@ -128,7 +128,7 @@ defmodule CCXT.Test.WSIntegrationHelper do
       assert is_map(message)
 
   """
-  @spec subscribe_and_receive!(module(), pid(), map(), non_neg_integer()) :: map()
+  @spec subscribe_and_receive!(module(), pid(), map(), non_neg_integer()) :: map() | list()
   def subscribe_and_receive!(adapter_module, adapter, subscription, timeout \\ @message_timeout_ms) do
     case adapter_module.subscribe(adapter, subscription) do
       :ok -> :ok
@@ -136,7 +136,33 @@ defmodule CCXT.Test.WSIntegrationHelper do
       {:error, reason} -> flunk("Subscribe failed: #{inspect(reason)}")
     end
 
-    receive_message(timeout)
+    receive_data_message(timeout)
+  end
+
+  @doc false
+  defp receive_data_message(timeout) do
+    message = receive_message(timeout)
+
+    if subscription_confirmation?(message) do
+      receive_data_message(timeout)
+    else
+      message
+    end
+  end
+
+  @doc false
+  # JSON-RPC confirmation: has "jsonrpc" and "result" but no "method" (not a notification)
+  defp subscription_confirmation?(%{"jsonrpc" => "2.0", "result" => _} = msg) when not is_map_key(msg, "method") do
+    true
+  end
+
+  # Topic-based confirmation (Bybit): {"op": "subscribe", "success": true}
+  defp subscription_confirmation?(%{"op" => "subscribe", "success" => true}) do
+    true
+  end
+
+  defp subscription_confirmation?(_) do
+    false
   end
 
   @doc """
@@ -144,12 +170,25 @@ defmodule CCXT.Test.WSIntegrationHelper do
 
   The test handler sends messages as `{:ws_message, data}`.
   """
-  @spec receive_message(non_neg_integer()) :: map()
+  @spec receive_message(non_neg_integer()) :: map() | list()
   def receive_message(timeout \\ @message_timeout_ms) do
     receive do
+      # Tagged tuple from W14/W14b normalization layer: {family, payload}
+      {:ws_message, {_family, data}} when is_map(data) ->
+        data
+
+      {:ws_message, {_family, data}} when is_list(data) ->
+        data
+
+      # Raw map (pre-normalization or direct handler)
       {:ws_message, data} when is_map(data) ->
         data
 
+      # Raw list (e.g., trades)
+      {:ws_message, data} when is_list(data) ->
+        data
+
+      # Binary JSON
       {:ws_message, data} when is_binary(data) ->
         case Jason.decode(data) do
           {:ok, decoded} -> decoded
@@ -239,6 +278,10 @@ defmodule CCXT.Test.WSIntegrationHelper do
   Uses BTC/USDT as the default since it's widely supported.
   """
   @spec test_symbol(String.t()) :: String.t()
+  def test_symbol("deribit") do
+    "BTC-PERPETUAL"
+  end
+
   def test_symbol(_exchange_id) do
     "BTC/USDT"
   end

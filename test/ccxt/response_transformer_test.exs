@@ -38,6 +38,43 @@ defmodule CCXT.ResponseTransformerTest do
     end
   end
 
+  describe "extract_path/2" do
+    test "extracts nested data from response envelope" do
+      body = %{"retCode" => 0, "result" => %{"list" => [[1, 2, 3]]}}
+      assert ResponseTransformer.extract_path(body, ["result", "list"]) == [[1, 2, 3]]
+    end
+
+    test "extracts single-level path" do
+      body = %{"jsonrpc" => "2.0", "result" => %{"ticks" => [1, 2, 3]}}
+      assert ResponseTransformer.extract_path(body, ["result"]) == %{"ticks" => [1, 2, 3]}
+    end
+
+    test "returns data unchanged for empty path" do
+      body = %{"data" => "test"}
+      assert ResponseTransformer.extract_path(body, []) == body
+    end
+
+    test "returns original data when key not found" do
+      body = %{"a" => 1}
+      assert ResponseTransformer.extract_path(body, ["missing"]) == body
+    end
+
+    test "returns original data when intermediate key not found" do
+      body = %{"result" => %{"data" => "test"}}
+      assert ResponseTransformer.extract_path(body, ["result", "missing"]) == %{"data" => "test"}
+    end
+
+    test "returns non-map data unchanged" do
+      assert ResponseTransformer.extract_path([1, 2, 3], ["key"]) == [1, 2, 3]
+      assert ResponseTransformer.extract_path("string", ["key"]) == "string"
+    end
+
+    test "works via transform/2 with tagged tuple" do
+      body = %{"retCode" => 0, "result" => %{"list" => [[1, 2, 3]]}}
+      assert ResponseTransformer.transform(body, {:extract_path, ["result", "list"]}) == [[1, 2, 3]]
+    end
+  end
+
   describe "unwrap_single_element_list/1" do
     test "unwraps single-element list containing a map" do
       assert ResponseTransformer.unwrap_single_element_list([%{"key" => "value"}]) == %{"key" => "value"}
@@ -67,6 +104,36 @@ defmodule CCXT.ResponseTransformerTest do
     test "handles nested maps" do
       nested = %{"outer" => %{"inner" => "value"}}
       assert ResponseTransformer.unwrap_single_element_list([nested]) == nested
+    end
+  end
+
+  describe "extract_path_unwrap via transform/2" do
+    test "extracts path then unwraps single-element list" do
+      body = %{"retCode" => 0, "result" => %{"list" => [%{"symbol" => "BTCUSDT", "lastPrice" => "50000"}]}}
+
+      result = ResponseTransformer.transform(body, {:extract_path_unwrap, ["result", "list"]})
+      assert result == %{"symbol" => "BTCUSDT", "lastPrice" => "50000"}
+    end
+
+    test "extracts path and returns multi-element list unchanged" do
+      body = %{"result" => %{"list" => [%{"a" => 1}, %{"b" => 2}]}}
+
+      result = ResponseTransformer.transform(body, {:extract_path_unwrap, ["result", "list"]})
+      assert result == [%{"a" => 1}, %{"b" => 2}]
+    end
+
+    test "extracts path and returns nil for empty list (singular endpoints)" do
+      body = %{"result" => %{"list" => []}}
+
+      result = ResponseTransformer.transform(body, {:extract_path_unwrap, ["result", "list"]})
+      assert result == nil
+    end
+
+    test "handles already-unwrapped map (no list wrapping)" do
+      body = %{"result" => %{"list" => %{"symbol" => "BTCUSDT"}}}
+
+      result = ResponseTransformer.transform(body, {:extract_path_unwrap, ["result", "list"]})
+      assert result == %{"symbol" => "BTCUSDT"}
     end
   end
 

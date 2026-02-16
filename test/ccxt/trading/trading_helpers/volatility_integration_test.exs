@@ -3,10 +3,8 @@ defmodule CCXT.Trading.TradingHelpers.VolatilityIntegrationTest do
   Integration tests for CCXT.Volatility module using real exchange data.
 
   Uses Bybit to fetch OHLCV data and verify volatility calculations
-  work with real market data.
-
-  Note: `fetch_ohlcv` returns raw exchange JSON until Task 169
-  (Response Coercion) is complete. Tests manually extract OHLCV data.
+  work with real market data. Uses `normalize: false` to get raw candle
+  arrays (ResponseTransformer extracts the path automatically).
   """
 
   use ExUnit.Case, async: false
@@ -21,18 +19,11 @@ defmodule CCXT.Trading.TradingHelpers.VolatilityIntegrationTest do
     {:ok, exchange: CCXT.Bybit}
   end
 
-  # Helper to extract OHLCV list from raw Bybit response
-  # TODO: Remove when Task 169 (Response Coercion) is complete
+  # Helper to extract OHLCV list from response
+  # ResponseTransformer extracts the path (e.g. ["result", "list"]) automatically,
+  # so with normalize: false the response IS the candle list already.
   # OHLCV format: [timestamp, open, high, low, close, volume, turnover]
-  defp extract_ohlcv(raw_response) when is_map(raw_response) do
-    raw_response
-    |> get_in(["result", "list"])
-    |> case do
-      list when is_list(list) -> list
-      _ -> []
-    end
-  end
-
+  defp extract_ohlcv(response) when is_list(response), do: response
   defp extract_ohlcv(_), do: []
 
   defp parse_close(candle) when is_list(candle) do
@@ -64,7 +55,7 @@ defmodule CCXT.Trading.TradingHelpers.VolatilityIntegrationTest do
   describe "with real Bybit OHLCV data" do
     @tag timeout: 30_000
     test "realized/2 calculates volatility from closes", %{exchange: exchange} do
-      case exchange.fetch_ohlcv("BTC/USDT", "1h", nil, 100) do
+      case exchange.fetch_ohlcv("BTC/USDT", "1h", nil, 100, normalize: false) do
         {:ok, raw_response} ->
           ohlcv_list = extract_ohlcv(raw_response)
 
@@ -87,7 +78,7 @@ defmodule CCXT.Trading.TradingHelpers.VolatilityIntegrationTest do
 
     @tag timeout: 30_000
     test "realized/2 with annualize option", %{exchange: exchange} do
-      case exchange.fetch_ohlcv("ETH/USDT", "1h", nil, 100) do
+      case exchange.fetch_ohlcv("ETH/USDT", "1h", nil, 100, normalize: false) do
         {:ok, raw_response} ->
           ohlcv_list = extract_ohlcv(raw_response)
 
@@ -112,7 +103,7 @@ defmodule CCXT.Trading.TradingHelpers.VolatilityIntegrationTest do
 
     @tag timeout: 30_000
     test "parkinson/2 calculates from high-low range", %{exchange: exchange} do
-      case exchange.fetch_ohlcv("BTC/USDT", "1h", nil, 50) do
+      case exchange.fetch_ohlcv("BTC/USDT", "1h", nil, 50, normalize: false) do
         {:ok, raw_response} ->
           ohlcv_list = extract_ohlcv(raw_response)
 
@@ -143,7 +134,7 @@ defmodule CCXT.Trading.TradingHelpers.VolatilityIntegrationTest do
 
     @tag timeout: 30_000
     test "garman_klass/2 calculates from OHLC data", %{exchange: exchange} do
-      case exchange.fetch_ohlcv("BTC/USDT", "1h", nil, 50) do
+      case exchange.fetch_ohlcv("BTC/USDT", "1h", nil, 50, normalize: false) do
         {:ok, raw_response} ->
           ohlcv_list = extract_ohlcv(raw_response)
 
@@ -176,7 +167,7 @@ defmodule CCXT.Trading.TradingHelpers.VolatilityIntegrationTest do
 
     @tag timeout: 30_000
     test "rolling/3 calculates rolling volatility series", %{exchange: exchange} do
-      case exchange.fetch_ohlcv("ETH/USDT", "1h", nil, 100) do
+      case exchange.fetch_ohlcv("ETH/USDT", "1h", nil, 100, normalize: false) do
         {:ok, raw_response} ->
           ohlcv_list = extract_ohlcv(raw_response)
 
@@ -207,7 +198,7 @@ defmodule CCXT.Trading.TradingHelpers.VolatilityIntegrationTest do
 
     @tag timeout: 30_000
     test "cone/2 calculates volatility at different periods", %{exchange: exchange} do
-      case exchange.fetch_ohlcv("BTC/USDT", "1h", nil, 100) do
+      case exchange.fetch_ohlcv("BTC/USDT", "1h", nil, 100, normalize: false) do
         {:ok, raw_response} ->
           ohlcv_list = extract_ohlcv(raw_response)
 
@@ -239,7 +230,7 @@ defmodule CCXT.Trading.TradingHelpers.VolatilityIntegrationTest do
 
     @tag timeout: 30_000
     test "elevated?/3 detects elevated volatility", %{exchange: exchange} do
-      case exchange.fetch_ohlcv("BTC/USDT", "1h", nil, 100) do
+      case exchange.fetch_ohlcv("BTC/USDT", "1h", nil, 100, normalize: false) do
         {:ok, raw_response} ->
           ohlcv_list = extract_ohlcv(raw_response)
 

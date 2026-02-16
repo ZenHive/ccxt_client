@@ -42,6 +42,8 @@ defmodule CCXT.Types.Schema.MarketInterface do
   - `margin_modes` - Supported margin modes for this market. CCXT.Types.MarketMarginModes.t() (optional)
   - `created` - Market creation timestamp in milliseconds. integer() | nil
   - `raw` - Raw exchange response data. any()
+  - `precision` - Per-symbol precision data (amount, price, cost increments). map() | nil
+  - `limits` - Per-symbol trading limits (amount, cost, leverage, price min/max). map() | nil
 
   ## Usage
 
@@ -98,7 +100,9 @@ defmodule CCXT.Types.Schema.MarketInterface do
       type: "CCXT.Types.MarketMarginModes.t()"
     },
     %{name: :created, optional: false, source: "created", type: "integer() | nil"},
-    %{name: :raw, optional: false, source: "info", type: "any()"}
+    %{name: :raw, optional: false, source: "info", type: "any()"},
+    %{name: :precision, optional: false, source: "precision", type: "map() | nil"},
+    %{name: :limits, optional: false, source: "limits", type: "map() | nil"}
   ]
   @type_spec_str """
   %__MODULE__{
@@ -137,7 +141,9 @@ defmodule CCXT.Types.Schema.MarketInterface do
     fee_side: String.t() | nil,
     margin_modes: CCXT.Types.MarketMarginModes.t() | nil,
     created: integer() | nil,
-    raw: any()
+    raw: any(),
+    precision: any(),
+    limits: any()
   }
   """
   @type_spec Code.string_to_quoted!(@type_spec_str)
@@ -202,7 +208,9 @@ defmodule CCXT.Types.Schema.MarketInterface do
           fee_side: get_camel_value(map, :fee_side, :feeSide),
           margin_modes: get_camel_value(map, :margin_modes, :marginModes),
           created: get_value(map, :created),
-          raw: get_camel_value(map, :raw, :info)
+          raw: get_camel_value(map, :raw, :info),
+          precision: get_value(map, :precision),
+          limits: get_value(map, :limits)
         }
       end
 

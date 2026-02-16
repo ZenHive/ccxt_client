@@ -1,0 +1,3899 @@
+{
+  "generated_at": "2026-02-14T10:39:52.766Z",
+  "exchange_count": 48,
+  "exchanges": [
+    {
+      "exchange": "apex",
+      "envelope": {
+        "pattern": "topic_data",
+        "discriminator_field": "topic",
+        "data_field": "data"
+      },
+      "match_type": "exact_then_substring",
+      "discriminators": [
+        {
+          "variable": "topic",
+          "field": "topic",
+          "fallback_field": "op",
+          "method": "safeString2"
+        },
+        {
+          "variable": "type",
+          "field": "type",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "ws_zk_accounts_v3",
+          "handler": "handleAccount",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orderBook",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "depth",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candle",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "kline",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "instrumentInfo",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trade",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "recentlyTrade",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "pong",
+          "handler": "handlePong",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "auth",
+          "handler": "handleAuthenticate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ping",
+          "handler": "handlePing",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "arkham",
+      "envelope": {
+        "pattern": "channel_data",
+        "discriminator_field": "channel",
+        "data_field": "data"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "channel",
+          "field": "channel",
+          "method": "safeString"
+        },
+        {
+          "variable": "type",
+          "field": "type",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "l2_updates",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trades",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "balances",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "positions",
+          "handler": "handlePositions",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "order_statuses",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trigger_orders",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "confirmations",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "ascendex",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "subject",
+          "field": "m",
+          "method": "safeString"
+        },
+        {
+          "variable": "channel",
+          "field": "ch",
+          "method": "safeString"
+        },
+        {
+          "variable": "channel",
+          "field": "ch",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 2,
+      "handlers": [
+        {
+          "channel": "ping",
+          "handler": "handlePing",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "auth",
+          "handler": "handleAuthenticate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "sub",
+          "handler": "handleSubscriptionStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "depth",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "depth-snapshot",
+          "handler": "handleOrderBookSnapshot",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trades",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "bar",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "balance",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "futures-account-update",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "id",
+          "handler": "nonce",
+          "dict_name": "request"
+        },
+        {
+          "channel": "key",
+          "handler": "apiKey",
+          "dict_name": "request"
+        }
+      ]
+    },
+    {
+      "exchange": "aster",
+      "envelope": {
+        "pattern": "flat",
+        "discriminator_field": "e",
+        "data_field": "self"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "stream",
+          "field": "stream",
+          "method": "safeString"
+        },
+        {
+          "variable": "event",
+          "field": "e",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "aggTrade",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "depth5",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "depth10",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "depth20",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "kline",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "markPrice",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "bookTicker",
+          "handler": "handleBidAsk",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "binance",
+      "envelope": {
+        "pattern": "flat",
+        "discriminator_field": "e",
+        "data_field": "self"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "status",
+          "field": "status",
+          "method": "safeString"
+        },
+        {
+          "variable": "id",
+          "field": "id",
+          "method": "safeString"
+        },
+        {
+          "variable": "event",
+          "field": "e",
+          "method": "safeString"
+        },
+        {
+          "variable": "requestId",
+          "field": "id",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "depthUpdate",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trade",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "aggTrade",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "kline",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "markPrice_kline",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "indexPrice_kline",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "1hTicker@arr",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "4hTicker@arr",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "1dTicker@arr",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "24hrTicker@arr",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "24hrMiniTicker@arr",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "1hTicker",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "4hTicker",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "1dTicker",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "24hrTicker",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "24hrMiniTicker",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "markPriceUpdate",
+          "handler": "handleMarkPrices",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "markPriceUpdate@arr",
+          "handler": "handleMarkPrices",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "bookTicker",
+          "handler": "handleBidsAsks",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "outboundAccountPosition",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "balanceUpdate",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ACCOUNT_UPDATE",
+          "handler": "handleAcountUpdate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "executionReport",
+          "handler": "handleOrderUpdate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ORDER_TRADE_UPDATE",
+          "handler": "handleOrderUpdate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ALGO_UPDATE",
+          "handler": "handleOrderUpdate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "forceOrder",
+          "handler": "handleLiquidation",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "eventStreamTerminated",
+          "handler": "handleEventStreamTerminated",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "externalLockUpdate",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "bitfinex",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "event",
+          "field": "event",
+          "method": "safeString"
+        },
+        {
+          "variable": "channel",
+          "field": "subscription.channel",
+          "method": "safeString_nested"
+        }
+      ],
+      "dict_count": 3,
+      "handlers": [
+        {
+          "channel": "book",
+          "handler": "handleOrderBook",
+          "dict_name": "publicMethods"
+        },
+        {
+          "channel": "cs",
+          "handler": "handleChecksum",
+          "dict_name": "publicMethods"
+        },
+        {
+          "channel": "candles",
+          "handler": "handleOHLCV",
+          "dict_name": "publicMethods"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "publicMethods"
+        },
+        {
+          "channel": "trades",
+          "handler": "handleTrades",
+          "dict_name": "publicMethods"
+        },
+        {
+          "channel": "os",
+          "handler": "handleOrders",
+          "dict_name": "privateMethods"
+        },
+        {
+          "channel": "ou",
+          "handler": "handleOrders",
+          "dict_name": "privateMethods"
+        },
+        {
+          "channel": "on",
+          "handler": "handleOrders",
+          "dict_name": "privateMethods"
+        },
+        {
+          "channel": "oc",
+          "handler": "handleOrders",
+          "dict_name": "privateMethods"
+        },
+        {
+          "channel": "wu",
+          "handler": "handleBalance",
+          "dict_name": "privateMethods"
+        },
+        {
+          "channel": "ws",
+          "handler": "handleBalance",
+          "dict_name": "privateMethods"
+        },
+        {
+          "channel": "tu",
+          "handler": "handleMyTrade",
+          "dict_name": "privateMethods"
+        },
+        {
+          "channel": "info",
+          "handler": "handleSystemStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "subscribed",
+          "handler": "handleSubscriptionStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "unsubscribed",
+          "handler": "handleUnsubscriptionStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "auth",
+          "handler": "handleAuthenticationMessage",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "bitget",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "content",
+          "field": "message",
+          "method": "safeString"
+        },
+        {
+          "variable": "event",
+          "field": "event",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trade",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "publicTrade",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "fill",
+          "handler": "handleMyTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "order",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orders",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ordersAlgo",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orders-algo",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orders-crossed",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orders-isolated",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "account",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "position",
+          "handler": "handlePositions",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "positions",
+          "handler": "handlePositions",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "account-isolated",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "account-crossed",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "kline",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "bithumb",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "topic",
+          "field": "type",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orderbookdepth",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "transaction",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "myAsset",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "myOrder",
+          "handler": "handleOrders",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "bitmart",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact_then_substring",
+      "discriminators": [
+        {
+          "variable": "event",
+          "field": "event",
+          "fallback_field": "action",
+          "method": "safeString2"
+        }
+      ],
+      "dict_count": 2,
+      "handlers": [
+        {
+          "channel": "info",
+          "handler": "handleSystemStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "login",
+          "handler": "handleAuthenticate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "access",
+          "handler": "handleAuthenticate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "subscribe",
+          "handler": "handleSubscriptionStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "unsubscribe",
+          "handler": "handleUnSubscription",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "depth",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trade",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "kline",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "order",
+          "handler": "handleOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "position",
+          "handler": "handlePositions",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "balance",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "asset",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "bitmex",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "table",
+          "field": "table",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "orderBookL2",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orderBookL2_25",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orderBook10",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "instrument",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trade",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "tradeBin1m",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "tradeBin5m",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "tradeBin1h",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "tradeBin1d",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "order",
+          "handler": "handleOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "execution",
+          "handler": "handleMyTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "margin",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "liquidation",
+          "handler": "handleLiquidation",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "position",
+          "handler": "handlePositions",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "bitopro",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "event",
+          "field": "event",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "TRADE",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "TICKER",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ORDER_BOOK",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ACCOUNT_BALANCE",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "USER_TRADE",
+          "handler": "handleMyTrade",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "bitrue",
+      "envelope": {
+        "pattern": "flat",
+        "discriminator_field": "e",
+        "data_field": "self"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "event",
+          "field": "e",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "BALANCE",
+          "handler": "handleBalance",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "ORDER",
+          "handler": "handleOrder",
+          "dict_name": "handlers"
+        }
+      ]
+    },
+    {
+      "exchange": "bitvavo",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "error",
+          "field": "error",
+          "method": "safeString"
+        },
+        {
+          "variable": "event",
+          "field": "event",
+          "method": "safeString"
+        },
+        {
+          "variable": "action",
+          "field": "action",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "subscribed",
+          "handler": "handleSubscriptionStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "book",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "getBook",
+          "handler": "handleOrderBookSnapshot",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trade",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candle",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticker24h",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "authenticate",
+          "handler": "handleAuthenticationMessage",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "order",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "fill",
+          "handler": "handleMyTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "privateCreateOrder",
+          "handler": "handleSingleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "privateUpdateOrder",
+          "handler": "handleSingleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "privateGetBalance",
+          "handler": "handleFetchBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "privateCancelOrders",
+          "handler": "handleMultipleOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "privateGetOrders",
+          "handler": "handleMultipleOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "privateGetOrder",
+          "handler": "handleSingleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "privateCancelOrder",
+          "handler": "handleSingleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "privateGetOrdersOpen",
+          "handler": "handleMultipleOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "privateGetAccount",
+          "handler": "handleTradingFees",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "privateGetDepositHistory",
+          "handler": "handleDeposits",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "privateGetWithdrawalHistory",
+          "handler": "handleWithdraws",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "privateWithdrawAssets",
+          "handler": "handleWithdraw",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "privateGetTrades",
+          "handler": "handleMyTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "getAssets",
+          "handler": "handleFetchCurrencies",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "getCandles",
+          "handler": "handleFetchOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "getMarkets",
+          "handler": "handleMarkets",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "blockchaincom",
+      "envelope": {
+        "pattern": "channel_data",
+        "discriminator_field": "channel",
+        "data_field": "data"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "channel",
+          "field": "channel",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "trades",
+          "handler": "handleTrades",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "prices",
+          "handler": "handleOHLCV",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "l2",
+          "handler": "handleOrderBook",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "l3",
+          "handler": "handleOrderBook",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "auth",
+          "handler": "handleAuthenticationMessage",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "balances",
+          "handler": "handleBalance",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "trading",
+          "handler": "handleOrders",
+          "dict_name": "handlers"
+        }
+      ]
+    },
+    {
+      "exchange": "bybit",
+      "envelope": {
+        "pattern": "topic_data",
+        "discriminator_field": "topic",
+        "data_field": "data"
+      },
+      "match_type": "exact_then_substring",
+      "discriminators": [
+        {
+          "variable": "topic",
+          "field": "topic",
+          "fallback_field": "op",
+          "method": "safeString2"
+        },
+        {
+          "variable": "ret_msg",
+          "field": "ret_msg",
+          "method": "safeString"
+        },
+        {
+          "variable": "event",
+          "field": "event",
+          "method": "safeString"
+        },
+        {
+          "variable": "type",
+          "field": "type",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "orderbook",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "kline",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "order",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "stopOrder",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trade",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "publicTrade",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "depth",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "wallet",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "outboundAccountInfo",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "execution",
+          "handler": "handleMyTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "execution.fast",
+          "handler": "handleMyTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticketInfo",
+          "handler": "handleMyTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "user.openapi.perp.trade",
+          "handler": "handleMyTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "position",
+          "handler": "handlePositions",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "liquidation",
+          "handler": "handleLiquidation",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "allLiquidation",
+          "handler": "handleLiquidation",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "pong",
+          "handler": "handlePong",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "order.create",
+          "handler": "handleOrderWs",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "order.amend",
+          "handler": "handleOrderWs",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "order.cancel",
+          "handler": "handleOrderWs",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "auth",
+          "handler": "handleAuthenticate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "unsubscribe",
+          "handler": "handleUnSubscribe",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "cex",
+      "envelope": {
+        "pattern": "flat",
+        "discriminator_field": "e",
+        "data_field": "self"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "ok",
+          "field": "ok",
+          "method": "safeString"
+        },
+        {
+          "variable": "event",
+          "field": "e",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "auth",
+          "handler": "handleAuthenticationMessage",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "connected",
+          "handler": "handleConnected",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "tick",
+          "handler": "handleTicker",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "init-ohlcv-data",
+          "handler": "handleInitOHLCV",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "ohlcv24",
+          "handler": "handleOHLCV24",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "ohlcv1m",
+          "handler": "handleOHLCV1m",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "ohlcv",
+          "handler": "handleOHLCV",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "get-balance",
+          "handler": "handleBalance",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "order-book-subscribe",
+          "handler": "handleOrderBookSnapshot",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "md_update",
+          "handler": "handleOrderBookUpdate",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "open-orders",
+          "handler": "resolveData",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "order",
+          "handler": "handleOrderUpdate",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "history-update",
+          "handler": "handleTrade",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "history",
+          "handler": "handleTradesSnapshot",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "tx",
+          "handler": "handleTransaction",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "place-order",
+          "handler": "resolveData",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "cancel-replace-order",
+          "handler": "resolveData",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "cancel-order",
+          "handler": "resolveData",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "mass-cancel-place-orders",
+          "handler": "resolveData",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "get-order",
+          "handler": "resolveData",
+          "dict_name": "handlers"
+        }
+      ]
+    },
+    {
+      "exchange": "coinbaseexchange",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "type",
+          "field": "type",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "snapshot",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "l2update",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "subscribe",
+          "handler": "handleSubscriptionStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "received",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "open",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "change",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "done",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "error",
+          "handler": "handleErrorMessage",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "coinex",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "method",
+          "field": "method",
+          "method": "safeString"
+        },
+        {
+          "variable": "error",
+          "field": "message",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "state.update",
+          "handler": "handleTicker",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "balance.update",
+          "handler": "handleBalance",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "deals.update",
+          "handler": "handleTrades",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "user_deals.update",
+          "handler": "handleMyTrades",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "depth.update",
+          "handler": "handleOrderBook",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "order.update",
+          "handler": "handleOrders",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "stop.update",
+          "handler": "handleOrders",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "bbo.update",
+          "handler": "handleBidAsk",
+          "dict_name": "handlers"
+        }
+      ]
+    },
+    {
+      "exchange": "coinone",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact_then_substring",
+      "discriminators": [
+        {
+          "variable": "type",
+          "field": "response_type",
+          "method": "safeString"
+        },
+        {
+          "variable": "topic",
+          "field": "channel",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "ORDERBOOK",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "TICKER",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "TRADE",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "cryptocom",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "method",
+          "field": "method",
+          "method": "safeString"
+        },
+        {
+          "variable": "id",
+          "field": "id",
+          "method": "safeString"
+        },
+        {
+          "variable": "subId",
+          "field": "subscription.id",
+          "method": "safeString_nested"
+        }
+      ],
+      "dict_count": 2,
+      "handlers": [
+        {
+          "channel": "public/heartbeat",
+          "handler": "handlePing",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "public/auth",
+          "handler": "handleAuthenticate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "private/create-order",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "private/amend-order",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "private/cancel-order",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "private/cancel-all-orders",
+          "handler": "handleCancelAllOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "private/close-position",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "subscribe",
+          "handler": "handleSubscribe",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "unsubscribe",
+          "handler": "handleUnsubscribe",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "api_key",
+          "handler": "apiKey",
+          "dict_name": "request"
+        }
+      ]
+    },
+    {
+      "exchange": "defx",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "error",
+          "field": "code",
+          "method": "safeString"
+        },
+        {
+          "variable": "errorMsg",
+          "field": "msg",
+          "method": "safeString"
+        },
+        {
+          "variable": "event",
+          "field": "event",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "ohlc",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "24hrTicker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trades",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "depth",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "WALLET_BALANCE_UPDATE",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ORDER_UPDATE",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "POSITION_UPDATE",
+          "handler": "handlePositions",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "deribit",
+      "envelope": {
+        "pattern": "jsonrpc_subscription",
+        "discriminator_field": "params.channel",
+        "data_field": "params.data"
+      },
+      "match_type": "split",
+      "discriminators": [
+        {
+          "variable": "channel",
+          "field": "params.channel",
+          "method": "safeString_nested"
+        },
+        {
+          "variable": "accessToken",
+          "field": "result.access_token",
+          "method": "safeString_nested"
+        }
+      ],
+      "dict_count": 2,
+      "handlers": [
+        {
+          "channel": "trades",
+          "handler": "handleMyTrades",
+          "dict_name": "userHandlers"
+        },
+        {
+          "channel": "portfolio",
+          "handler": "handleBalance",
+          "dict_name": "userHandlers"
+        },
+        {
+          "channel": "orders",
+          "handler": "handleOrders",
+          "dict_name": "userHandlers"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "quote",
+          "handler": "handleBidAsk",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "book",
+          "handler": "handleOrderBook",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "trades",
+          "handler": "handleTrades",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "chart",
+          "handler": "handleOHLCV",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "user",
+          "handler": "safeValue",
+          "dict_name": "handlers"
+        }
+      ]
+    },
+    {
+      "exchange": "derive",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "split",
+      "discriminators": [
+        {
+          "variable": "id",
+          "field": "id",
+          "method": "safeString"
+        },
+        {
+          "variable": "channel",
+          "field": "params.channel",
+          "method": "safeString_nested"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "orderbook",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trades",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orders",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "mytrades",
+          "handler": "handleMyTrade",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "dydx",
+      "envelope": {
+        "pattern": "channel_data",
+        "discriminator_field": "channel",
+        "data_field": "data"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "type",
+          "field": "type",
+          "method": "safeString"
+        },
+        {
+          "variable": "topic",
+          "field": "channel",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "v4_trades",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "v4_orderbook",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "v4_candles",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "exmo",
+      "envelope": {
+        "pattern": "topic_data",
+        "discriminator_field": "topic",
+        "data_field": "data"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "event",
+          "field": "event",
+          "method": "safeString"
+        },
+        {
+          "variable": "topic",
+          "field": "topic",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 2,
+      "handlers": [
+        {
+          "channel": "logged_in",
+          "handler": "handleAuthenticationMessage",
+          "dict_name": "events"
+        },
+        {
+          "channel": "info",
+          "handler": "handleInfo",
+          "dict_name": "events"
+        },
+        {
+          "channel": "subscribed",
+          "handler": "handleSubscribed",
+          "dict_name": "events"
+        },
+        {
+          "channel": "spot/ticker",
+          "handler": "handleTicker",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "spot/wallet",
+          "handler": "handleBalance",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "margin/wallet",
+          "handler": "handleBalance",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "margin/wallets",
+          "handler": "handleBalance",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "spot/trades",
+          "handler": "handleTrades",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "margin/trades",
+          "handler": "handleTrades",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "spot/order_book_updates",
+          "handler": "handleOrderBook",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "spot/orders",
+          "handler": "handleOrders",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "margin/orders",
+          "handler": "handleOrders",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "spot/user_trades",
+          "handler": "handleMyTrades",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "margin/user_trades",
+          "handler": "handleMyTrades",
+          "dict_name": "handlers"
+        }
+      ]
+    },
+    {
+      "exchange": "gate",
+      "envelope": {
+        "pattern": "channel_result",
+        "discriminator_field": "channel",
+        "data_field": "result"
+      },
+      "match_type": "split",
+      "discriminators": [
+        {
+          "variable": "event",
+          "field": "event",
+          "method": "safeString"
+        },
+        {
+          "variable": "channel",
+          "field": "channel",
+          "method": "safeString"
+        },
+        {
+          "variable": "requestId",
+          "field": "request_id",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 9,
+      "handlers": [
+        {
+          "channel": "usertrades",
+          "handler": "handleMyTrades",
+          "dict_name": "v4Methods"
+        },
+        {
+          "channel": "candlesticks",
+          "handler": "handleOHLCV",
+          "dict_name": "v4Methods"
+        },
+        {
+          "channel": "orders",
+          "handler": "handleOrder",
+          "dict_name": "v4Methods"
+        },
+        {
+          "channel": "positions",
+          "handler": "handlePositions",
+          "dict_name": "v4Methods"
+        },
+        {
+          "channel": "tickers",
+          "handler": "handleTicker",
+          "dict_name": "v4Methods"
+        },
+        {
+          "channel": "book_ticker",
+          "handler": "handleBidAsk",
+          "dict_name": "v4Methods"
+        },
+        {
+          "channel": "trades",
+          "handler": "handleTrades",
+          "dict_name": "v4Methods"
+        },
+        {
+          "channel": "order_book_update",
+          "handler": "handleOrderBook",
+          "dict_name": "v4Methods"
+        },
+        {
+          "channel": "balances",
+          "handler": "handleBalance",
+          "dict_name": "v4Methods"
+        },
+        {
+          "channel": "liquidates",
+          "handler": "handleLiquidation",
+          "dict_name": "v4Methods"
+        },
+        {
+          "channel": "api_key",
+          "handler": "apiKey",
+          "dict_name": "payload"
+        },
+        {
+          "channel": "KEY",
+          "handler": "apiKey",
+          "dict_name": "auth"
+        }
+      ]
+    },
+    {
+      "exchange": "gemini",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "reason",
+          "field": "reason",
+          "method": "safeString"
+        },
+        {
+          "variable": "type",
+          "field": "type",
+          "method": "safeString"
+        },
+        {
+          "variable": "eventType",
+          "field": "event.type",
+          "method": "safeString_nested"
+        },
+        {
+          "variable": "eventReason",
+          "field": "event.reason",
+          "method": "safeString_nested"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "l2_updates",
+          "handler": "handleL2Updates",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trade",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "subscription_ack",
+          "handler": "handleSubscription",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "heartbeat",
+          "handler": "handleHeartbeat",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "hitbtc",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "channel",
+          "field": "ch",
+          "fallback_field": "method",
+          "method": "safeString2"
+        },
+        {
+          "variable": "clientOrderId",
+          "field": "result.client_order_id",
+          "method": "safeString_nested"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "candles",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trades",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orderbook",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orderbook/top",
+          "handler": "handleBidAsk",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "spot_order",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "spot_orders",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "margin_order",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "margin_orders",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "futures_order",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "futures_orders",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "spot_balance",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "futures_balance",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "hollaex",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "content",
+          "field": "message",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "trade",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orderbook",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "order",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "wallet",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "usertrade",
+          "handler": "handleMyTrades",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "hyperliquid",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact_then_substring",
+      "discriminators": [
+        {
+          "variable": "topic",
+          "field": "channel",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "pong",
+          "handler": "handlePong",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trades",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "l2Book",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candle",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orderUpdates",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "userFills",
+          "handler": "handleMyTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "webData2",
+          "handler": "handleWsTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "allMids",
+          "handler": "handleWsTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "post",
+          "handler": "handleWsPost",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "subscriptionResponse",
+          "handler": "handleSubscriptionResponse",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "independentreserve",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "event",
+          "field": "Event",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "Subscriptions",
+          "handler": "handleSubscriptions",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "Heartbeat",
+          "handler": "handleHeartbeat",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "Trade",
+          "handler": "handleTrades",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "OrderBookSnapshot",
+          "handler": "handleOrderBook",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "OrderBookChange",
+          "handler": "handleOrderBook",
+          "dict_name": "handlers"
+        }
+      ]
+    },
+    {
+      "exchange": "kraken",
+      "envelope": {
+        "pattern": "channel_data",
+        "discriminator_field": "channel",
+        "data_field": "data"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "event",
+          "field": "event",
+          "fallback_field": "method",
+          "method": "safeString2"
+        },
+        {
+          "variable": "channel",
+          "field": "channel",
+          "method": "safeString"
+        },
+        {
+          "variable": "execType",
+          "field": "first.exec_type",
+          "method": "safeString_nested"
+        }
+      ],
+      "dict_count": 2,
+      "handlers": [
+        {
+          "channel": "balances",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "book",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ohlc",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trade",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "myTrades",
+          "handler": "handleMyTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orders",
+          "handler": "handleOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "heartbeat",
+          "handler": "handleHeartbeat",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "systemStatus",
+          "handler": "handleSystemStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "subscriptionStatus",
+          "handler": "handleSubscriptionStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "add_order",
+          "handler": "handleCreateEditOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "amend_order",
+          "handler": "handleCreateEditOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "cancel_order",
+          "handler": "handleCancelOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "cancel_all",
+          "handler": "handleCancelAllOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "pong",
+          "handler": "handlePong",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "kucoin",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "type",
+          "field": "type",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "heartbeat",
+          "handler": "handleHeartbeat",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "welcome",
+          "handler": "handleSystemStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ack",
+          "handler": "handleSubscriptionStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "message",
+          "handler": "handleSubject",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "pong",
+          "handler": "handlePong",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "error",
+          "handler": "handleErrorMessage",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "kucoinfutures",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "type",
+          "field": "type",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "heartbeat",
+          "handler": "handleHeartbeat",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "welcome",
+          "handler": "handleSystemStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "message",
+          "handler": "handleSubject",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "pong",
+          "handler": "handlePong",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "error",
+          "handler": "handleErrorMessage",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ack",
+          "handler": "handleSubscriptionStatus",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "mexc",
+      "envelope": {
+        "pattern": "channel_data",
+        "discriminator_field": "channel",
+        "data_field": "data"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "c",
+          "field": "c",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "public.deals.v3.api",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "push.deal",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "public.kline.v3.api",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "push.kline",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "public.bookTicker.v3.api",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "public.miniTicker.v3.api",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "public.miniTickers.v3.api",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "push.ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "push.tickers",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "public.increase.depth.v3.api",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "push.depth",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "private.orders.v3.api",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "push.personal.order",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "private.account.v3.api",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "push.personal.asset",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "private.deals.v3.api",
+          "handler": "handleMyTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "push.personal.order.deal",
+          "handler": "handleMyTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "pong",
+          "handler": "handlePong",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "modetrade",
+      "envelope": {
+        "pattern": "topic_data",
+        "discriminator_field": "topic",
+        "data_field": "data"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "event",
+          "field": "event",
+          "method": "safeString"
+        },
+        {
+          "variable": "topic",
+          "field": "topic",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "ping",
+          "handler": "handlePing",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "pong",
+          "handler": "handlePong",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "subscribe",
+          "handler": "handleSubscribe",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orderbook",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "tickers",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "kline",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trade",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "auth",
+          "handler": "handleAuth",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "executionreport",
+          "handler": "handleOrderUpdate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "algoexecutionreport",
+          "handler": "handleOrderUpdate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "position",
+          "handler": "handlePositions",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "balance",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "bbos",
+          "handler": "handleBidAsk",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "ndax",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "payload",
+          "field": "o",
+          "method": "safeString"
+        },
+        {
+          "variable": "event",
+          "field": "n",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "SubscribeLevel2",
+          "handler": "handleSubscriptionStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "SubscribeLevel1",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "Level2UpdateEvent",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "Level1UpdateEvent",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "SubscribeTrades",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "TradeDataUpdateEvent",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "SubscribeTicker",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "TickerDataUpdateEvent",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "okx",
+      "envelope": {
+        "pattern": "arg_data",
+        "discriminator_field": "arg.channel",
+        "data_field": "data"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "event",
+          "field": "event",
+          "fallback_field": "op",
+          "method": "safeString2"
+        },
+        {
+          "variable": "table",
+          "field": "table",
+          "method": "safeString"
+        },
+        {
+          "variable": "channel",
+          "field": "arg.channel",
+          "method": "safeString_nested"
+        },
+        {
+          "variable": "channel",
+          "field": "arg.channel",
+          "method": "safeString_nested"
+        },
+        {
+          "variable": "marketId",
+          "field": "arg.instId",
+          "method": "safeString_nested"
+        }
+      ],
+      "dict_count": 2,
+      "handlers": [
+        {
+          "channel": "info",
+          "handler": "handleSystemStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "login",
+          "handler": "handleAuthenticate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "subscribe",
+          "handler": "handleSubscriptionStatus",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "unsubscribe",
+          "handler": "handleUnsubscription",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "order",
+          "handler": "handlePlaceOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "batch-orders",
+          "handler": "handlePlaceOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "amend-order",
+          "handler": "handlePlaceOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "batch-amend-orders",
+          "handler": "handlePlaceOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "cancel-order",
+          "handler": "handlePlaceOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "mass-cancel",
+          "handler": "handleCancelAllOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "bbo-tbt",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "books",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "books5",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "books50-l2-tbt",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "books-l2-tbt",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "tickers",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "mark-price",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "positions",
+          "handler": "handlePositions",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "index-tickers",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "sprd-tickers",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "block-tickers",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trades",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trades-all",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "account",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "funding-rate",
+          "handler": "handleFundingRate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "margin_account",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orders",
+          "handler": "handleOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orders-algo",
+          "handler": "handleOrders",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "liquidation-orders",
+          "handler": "handleLiquidation",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "balance_and_position",
+          "handler": "handleBalanceAndPosition",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candle",
+          "handler": "handleOHLCV",
+          "dict_name": "_prefix_match",
+          "match_type": "prefix"
+        }
+      ]
+    },
+    {
+      "exchange": "onetrading",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "ORDER_BOOK_UPDATE",
+          "handler": "handleOrderBook",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "ORDER_BOOK_SNAPSHOT",
+          "handler": "handleOrderBook",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "ACTIVE_ORDERS_SNAPSHOT",
+          "handler": "handleOrders",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "INACTIVE_ORDERS_SNAPSHOT",
+          "handler": "handleOrders",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "ACCOUNT_UPDATE",
+          "handler": "handleAccountUpdate",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "BALANCES_SNAPSHOT",
+          "handler": "handleBalanceSnapshot",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "SUBSCRIPTIONS",
+          "handler": "handleSubscriptions",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "SUBSCRIPTION_UPDATED",
+          "handler": "handleSubscriptions",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "PRICE_TICK",
+          "handler": "handleTicker",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "PRICE_TICK_HISTORY",
+          "handler": "handleSubscriptions",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "HEARTBEAT",
+          "handler": "handleHeartbeat",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "MARKET_TICKER_UPDATES",
+          "handler": "handleTicker",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "PRICE_POINT_UPDATES",
+          "handler": "handlePricePointUpdates",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "CANDLESTICK_SNAPSHOT",
+          "handler": "handleOHLCV",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "CANDLESTICK",
+          "handler": "handleOHLCV",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "AUTHENTICATED",
+          "handler": "handleAuthenticationMessage",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "FILL",
+          "handler": "handleTrading",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "DONE",
+          "handler": "handleTrading",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "BOOKED",
+          "handler": "handleTrading",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "UPDATE",
+          "handler": "handleTrading",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "TRACKED",
+          "handler": "handleTrading",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "TRIGGERED",
+          "handler": "handleTrading",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "STOP_TRACKED",
+          "handler": "handleTrading",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "STOP_TRIGGERED",
+          "handler": "handleTrading",
+          "dict_name": "handlers"
+        }
+      ]
+    },
+    {
+      "exchange": "p2b",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "result",
+          "field": "result",
+          "method": "safeString"
+        },
+        {
+          "variable": "method",
+          "field": "method",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "depth.update",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "price.update",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "kline.update",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "state.update",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "deals.update",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "paradex",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "split",
+      "discriminators": [
+        {
+          "variable": "channel",
+          "field": "data.channel",
+          "method": "safeString_nested"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "trades",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "order_book",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "markets_summary",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orders",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "poloniex",
+      "envelope": {
+        "pattern": "channel_data",
+        "discriminator_field": "channel",
+        "data_field": "data"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "type",
+          "field": "channel",
+          "method": "safeString"
+        },
+        {
+          "variable": "event",
+          "field": "event",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "candles_minute_1",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_minute_5",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_minute_10",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_minute_15",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_minute_30",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_hour_1",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_hour_2",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_hour_4",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_hour_6",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_hour_12",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_day_1",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_day_3",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_week_1",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_month_1",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "book",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "book_lv2",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trades",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orders",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "balances",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "createOrder",
+          "handler": "handleOrderRequest",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "cancelOrder",
+          "handler": "handleOrderRequest",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "cancelAllOrders",
+          "handler": "handleOrderRequest",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "auth",
+          "handler": "handleAuthenticate",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "probit",
+      "envelope": {
+        "pattern": "channel_data",
+        "discriminator_field": "channel",
+        "data_field": "data"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "errorCode",
+          "field": "errorCode",
+          "method": "safeString"
+        },
+        {
+          "variable": "type",
+          "field": "type",
+          "method": "safeString"
+        },
+        {
+          "variable": "channel",
+          "field": "channel",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "marketdata",
+          "handler": "handleMarketData",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "balance",
+          "handler": "handleBalance",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "trade_history",
+          "handler": "handleMyTrades",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "open_order",
+          "handler": "handleOrders",
+          "dict_name": "handlers"
+        },
+        {
+          "channel": "order_history",
+          "handler": "handleOrders",
+          "dict_name": "handlers"
+        }
+      ]
+    },
+    {
+      "exchange": "toobit",
+      "envelope": {
+        "pattern": "topic_data",
+        "discriminator_field": "topic",
+        "data_field": "data"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "topic",
+          "field": "topic",
+          "method": "safeString"
+        },
+        {
+          "variable": "event",
+          "field": "item.e",
+          "method": "safeString_nested"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "trade",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "kline",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "realtimes",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "depth",
+          "handler": "handleOrderBookPartialSnapshot",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "diffDepth",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "outboundAccountInfo",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "outboundContractAccountInfo",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "executionReport",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "contractExecutionReport",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticketInfo",
+          "handler": "handleMyTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "outboundContractPositionInfo",
+          "handler": "handlePositions",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "upbit",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "methodName",
+          "field": "type",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orderbook",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trade",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "myOrder",
+          "handler": "handleMyOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "myAsset",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candle.1s",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "whitebit",
+      "envelope": {
+        "pattern": "unknown",
+        "discriminator_field": null,
+        "data_field": null
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "result",
+          "field": "result",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "market_update",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trades_update",
+          "handler": "handleTrades",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "depth_update",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "candles_update",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ordersPending_update",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ordersExecuted_update",
+          "handler": "handleOrder",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "balanceSpot_update",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "balanceMargin_update",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "deals_update",
+          "handler": "handleMyTrades",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "woo",
+      "envelope": {
+        "pattern": "topic_data",
+        "discriminator_field": "topic",
+        "data_field": "data"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "event",
+          "field": "event",
+          "method": "safeString"
+        },
+        {
+          "variable": "topic",
+          "field": "topic",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "ping",
+          "handler": "handlePing",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "pong",
+          "handler": "handlePong",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "subscribe",
+          "handler": "handleSubscribe",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "unsubscribe",
+          "handler": "handleUnSubscription",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orderbook",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orderbookupdate",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "tickers",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "kline",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "auth",
+          "handler": "handleAuth",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "executionreport",
+          "handler": "handleOrderUpdate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "algoexecutionreportv2",
+          "handler": "handleOrderUpdate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trade",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "balance",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "position",
+          "handler": "handlePositions",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "bbos",
+          "handler": "handleBidAsk",
+          "dict_name": "methods"
+        }
+      ]
+    },
+    {
+      "exchange": "woofipro",
+      "envelope": {
+        "pattern": "topic_data",
+        "discriminator_field": "topic",
+        "data_field": "data"
+      },
+      "match_type": "exact",
+      "discriminators": [
+        {
+          "variable": "event",
+          "field": "event",
+          "method": "safeString"
+        },
+        {
+          "variable": "topic",
+          "field": "topic",
+          "method": "safeString"
+        }
+      ],
+      "dict_count": 1,
+      "handlers": [
+        {
+          "channel": "ping",
+          "handler": "handlePing",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "pong",
+          "handler": "handlePong",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "subscribe",
+          "handler": "handleSubscribe",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "orderbook",
+          "handler": "handleOrderBook",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "ticker",
+          "handler": "handleTicker",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "tickers",
+          "handler": "handleTickers",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "kline",
+          "handler": "handleOHLCV",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "trade",
+          "handler": "handleTrade",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "auth",
+          "handler": "handleAuth",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "executionreport",
+          "handler": "handleOrderUpdate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "algoexecutionreport",
+          "handler": "handleOrderUpdate",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "position",
+          "handler": "handlePositions",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "balance",
+          "handler": "handleBalance",
+          "dict_name": "methods"
+        },
+        {
+          "channel": "bbos",
+          "handler": "handleBidAsk",
+          "dict_name": "methods"
+        }
+      ]
+    }
+  ]
+}

@@ -26,7 +26,12 @@ defmodule CCXT.ResponseTransformer do
 
   require Logger
 
-  @type transformer :: :unwrap_single_element_list | :order_book_from_flat_list | nil
+  @type transformer ::
+          :unwrap_single_element_list
+          | :order_book_from_flat_list
+          | {:extract_path, [String.t()]}
+          | {:extract_path_unwrap, [String.t()]}
+          | nil
 
   @doc """
   Applies a transformer to the response body.
@@ -37,6 +42,14 @@ defmodule CCXT.ResponseTransformer do
   def transform(body, nil), do: body
   def transform(body, :unwrap_single_element_list), do: unwrap_single_element_list(body)
   def transform(body, :order_book_from_flat_list), do: order_book_from_flat_list(body)
+  def transform(body, {:extract_path, path}) when is_list(path), do: extract_path(body, path)
+
+  def transform(body, {:extract_path_unwrap, path}) when is_list(path) do
+    case body |> extract_path(path) |> unwrap_single_element_list() do
+      [] -> nil
+      other -> other
+    end
+  end
 
   def transform(body, unknown) do
     Logger.warning("[ResponseTransformer] Unknown transformer: #{inspect(unknown)}, returning body unchanged")
@@ -106,4 +119,39 @@ defmodule CCXT.ResponseTransformer do
   end
 
   def order_book_from_flat_list(other), do: other
+
+  @doc """
+  Extracts nested data from a response envelope using a key path.
+
+  Walks into nested maps following the given keys. Returns the data at the
+  final key, or the current level's data if a key is not found (i.e., stops
+  walking and returns whatever map it reached).
+
+  ## Examples
+
+      iex> body = %{"retCode" => 0, "result" => %{"list" => [[1, 2, 3]]}}
+      iex> CCXT.ResponseTransformer.extract_path(body, ["result", "list"])
+      [[1, 2, 3]]
+
+      iex> CCXT.ResponseTransformer.extract_path(%{"data" => "test"}, [])
+      %{"data" => "test"}
+
+      iex> CCXT.ResponseTransformer.extract_path(%{"a" => 1}, ["missing"])
+      %{"a" => 1}
+
+      iex> CCXT.ResponseTransformer.extract_path(%{"result" => %{"data" => "test"}}, ["result", "missing"])
+      %{"data" => "test"}
+
+  """
+  @spec extract_path(term(), [String.t()]) :: term()
+  def extract_path(data, []), do: data
+
+  def extract_path(%{} = data, [key | rest]) do
+    case Map.get(data, key) do
+      nil -> data
+      value -> extract_path(value, rest)
+    end
+  end
+
+  def extract_path(data, _path), do: data
 end

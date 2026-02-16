@@ -87,6 +87,59 @@ defmodule CCXT.Generator.Functions.EndpointsTest do
       refute code =~ ~S(\\ nil)
     end
 
+    test "endpoint without required_params generates all arities including /1" do
+      # Task 176 regression: when since/limit are optional, the function
+      # must be callable with just symbol (arity 1).
+      # Compile a real module and check arities from __info__(:functions).
+      endpoint = %{
+        name: :fetch_trades,
+        method: :get,
+        path: "/trades",
+        auth: false,
+        params: [:symbol, :since, :limit]
+      }
+
+      spec = build_spec(endpoints: [endpoint])
+      mod = compile_endpoint_module(spec)
+
+      arities =
+        :functions
+        |> mod.__info__()
+        |> Enum.filter(fn {name, _} -> name == :fetch_trades end)
+        |> Enum.map(fn {_, arity} -> arity end)
+        |> Enum.sort()
+
+      # symbol-only (/1) must exist alongside /2, /3, /4
+      assert 1 in arities, "fetch_trades/1 (symbol-only) must be generated"
+      assert 2 in arities
+      assert 3 in arities
+      assert 4 in arities
+    end
+
+    test "endpoint with required_params omits lower arities" do
+      endpoint = %{
+        name: :fetch_trades,
+        method: :get,
+        path: "/trades",
+        auth: false,
+        params: [:symbol, :since, :limit],
+        required_params: [:symbol, :since, :limit]
+      }
+
+      spec = build_spec(endpoints: [endpoint])
+      mod = compile_endpoint_module(spec)
+
+      arities =
+        :functions
+        |> mod.__info__()
+        |> Enum.filter(fn {name, _} -> name == :fetch_trades end)
+        |> Enum.map(fn {_, arity} -> arity end)
+        |> Enum.sort()
+
+      # All params required — no defaults, so only full arity + opts
+      refute 1 in arities, "fetch_trades/1 should NOT exist when all params required"
+    end
+
     test "endpoint with response_type passes through to generated code" do
       endpoint = Map.put(ticker_endpoint(), :response_type, :ticker)
       spec = build_spec(endpoints: [endpoint])
@@ -487,6 +540,33 @@ defmodule CCXT.Generator.Functions.EndpointsTest do
       auth: true,
       params: []
     }
+  end
+
+  # Compile endpoint AST into a real module and return the module name.
+  # This lets us assert on actual arities via __info__(:functions)
+  # rather than pattern-matching generated source text.
+  defp compile_endpoint_module(spec) do
+    ast = Endpoints.generate_endpoints(spec)
+    unique = :erlang.unique_integer([:positive])
+    module_name = Module.concat(__MODULE__, "Compiled#{unique}")
+
+    {:module, module, _bytecode, _exports} =
+      Module.create(
+        module_name,
+        quote do
+          @ccxt_spec unquote(Macro.escape(spec))
+          # Pre-define parser attributes as nil to suppress warnings —
+          # generated endpoints reference @ccxt_parser_* that only exist
+          # in real exchange modules produced by the full Generator.
+          @ccxt_parser_trade nil
+          @ccxt_parser_ticker nil
+          @ccxt_parser_balance nil
+          unquote_splicing(List.flatten(ast))
+        end,
+        Macro.Env.location(__ENV__)
+      )
+
+    module
   end
 
   # Convert AST list to a single string for assertion

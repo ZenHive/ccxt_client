@@ -46,14 +46,15 @@ defmodule CCXT.WS.Patterns.JsonRpc do
 
   @impl true
   def format_channel(template, params, config) do
-    channel_name = template[:channel_name] || ""
+    channel_name = template[:channel_name]
     separator = template[:separator] || config[:separator] || "."
     market_id_format = template[:market_id_format] || config[:market_id_format] || :native
+    template_params = template[:params] || []
 
-    case params[:symbol] do
-      nil -> channel_name
-      symbol -> channel_name <> separator <> Pattern.format_market_id(symbol, market_id_format)
-    end
+    [channel_name]
+    |> Pattern.maybe_add_part(params[:symbol], &Pattern.format_market_id(&1, market_id_format))
+    |> Pattern.apply_template_params(template_params, params)
+    |> Pattern.build_channel(separator)
   end
 
   @doc false

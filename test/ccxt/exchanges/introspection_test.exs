@@ -484,6 +484,22 @@ defmodule CCXT.Exchanges.IntrospectionTest do
                "#{name}: __ccxt_dex__/0 should return boolean or nil"
       end
     end
+
+    test "all modules export __ccxt_precision_mode__/0" do
+      for {name, module} <- all_exchange_modules() do
+        assert function_exported?(module, :__ccxt_precision_mode__, 0),
+               "#{name}: missing __ccxt_precision_mode__/0"
+      end
+    end
+
+    test "__ccxt_precision_mode__/0 returns integer or nil" do
+      for {name, module} <- all_exchange_modules() do
+        result = module.__ccxt_precision_mode__()
+
+        assert is_nil(result) or is_integer(result),
+               "#{name}: __ccxt_precision_mode__/0 should return integer or nil, got #{inspect(result)}"
+      end
+    end
   end
 
   describe "extended introspection - documentation functions" do

@@ -123,7 +123,8 @@ defmodule CCXT.WS.Generator do
       rest_module = derive_rest_module(__CALLER__.module)
 
       # Generate adapter AST (will be injected as nested module)
-      adapter_ast = Adapter.generate_adapter(__CALLER__.module, rest_module, ws_config)
+      spec_id = Map.get(spec, :id)
+      adapter_ast = Adapter.generate_adapter(__CALLER__.module, rest_module, ws_config, spec_id)
 
       quote do
         # Track spec file for recompilation

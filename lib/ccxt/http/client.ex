@@ -138,7 +138,17 @@ defmodule CCXT.HTTP.Client do
     debug_request = Keyword.get(opts, :debug_request, false)
     # Extra opts for testing (e.g., plug: {Req.Test, :stub_name})
     extra_opts =
-      Keyword.drop(opts, [:params, :credentials, :timeout, :retry, :cost, :rate_limit, :base_url, :debug_request])
+      Keyword.drop(opts, [
+        :params,
+        :credentials,
+        :timeout,
+        :retry,
+        :cost,
+        :rate_limit,
+        :base_url,
+        :debug_request,
+        :normalize
+      ])
 
     # exchange_id is pre-computed at compile time by the generator macro
     exchange = spec.exchange_id

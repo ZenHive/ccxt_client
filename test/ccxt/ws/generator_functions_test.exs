@@ -138,6 +138,50 @@ defmodule CCXT.WS.Generator.FunctionsTest do
     end
   end
 
+  describe "jsonrpc pattern with template params (Task 177)" do
+    @jsonrpc_config %{
+      subscription_pattern: :jsonrpc_subscribe,
+      subscription_config: %{
+        op_field: "method",
+        args_field: "params.channels",
+        market_id_format: :native
+      },
+      channel_templates: %{
+        watch_ticker: %{
+          channel_name: "ticker",
+          separator: ".",
+          market_id_format: :native,
+          pattern: :jsonrpc,
+          params: [%{"default" => "100ms", "name" => "interval"}]
+        },
+        watch_balance: %{
+          channel_name: "user.portfolio",
+          separator: ".",
+          pattern: :jsonrpc,
+          params: []
+        }
+      }
+    }
+
+    test "watch_ticker subscription includes default interval suffix" do
+      mod = build_module(@jsonrpc_config)
+
+      assert {:ok, sub} = mod.watch_ticker_subscription("BTC-PERPETUAL")
+      assert sub.channel == "ticker.BTC-PERPETUAL.100ms"
+      assert sub.method == :watch_ticker
+      assert sub.auth_required == false
+    end
+
+    test "watch_balance subscription produces non-empty channel" do
+      mod = build_module(@jsonrpc_config)
+
+      assert {:ok, sub} = mod.watch_balance_subscription()
+      assert sub.channel == "user.portfolio"
+      assert sub.method == :watch_balance
+      assert sub.auth_required == true
+    end
+  end
+
   describe "url-routed subscriptions" do
     test "builds no-param URL-routed subscription from url" do
       mod = build_module(@ws_config)

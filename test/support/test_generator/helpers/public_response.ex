@@ -87,7 +87,7 @@ defmodule CCXT.Test.Generator.Helpers.PublicResponse do
   end
 
   defp assert_valid_response_body(body, :fetch_markets) do
-    assert is_list(body) or is_map(body), "fetch_markets should return list or map"
+    assert is_list(body), "fetch_markets should return a list (CCXT types fetchMarkets as Market[])"
   end
 
   defp assert_valid_response_body(body, :fetch_currencies) do
@@ -128,7 +128,7 @@ defmodule CCXT.Test.Generator.Helpers.PublicResponse do
   end
 
   defp log_success(:fetch_markets, exchange_id, _symbol, body) do
-    count = if is_list(body), do: length(body), else: map_size(body)
+    count = length(List.wrap(body))
     Logger.info("#{exchange_id} fetch_markets: #{count} markets")
   end
 

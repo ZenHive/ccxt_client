@@ -129,4 +129,76 @@ defmodule CCXT.WS.Patterns.JsonRpcTest do
       assert channel == "ticker.btcusdt"
     end
   end
+
+  describe "format_channel/3 with template params" do
+    test "appends default interval from template params (Deribit ticker)" do
+      template = %{
+        channel_name: "ticker",
+        separator: ".",
+        params: [%{"default" => "100ms", "name" => "interval"}]
+      }
+
+      params = %{symbol: "BTC-PERPETUAL"}
+      config = %{market_id_format: :native}
+
+      channel = JsonRpc.format_channel(template, params, config)
+
+      assert channel == "ticker.BTC-PERPETUAL.100ms"
+    end
+
+    test "empty template params list produces unchanged behavior" do
+      template = %{channel_name: "ticker", separator: ".", params: []}
+      params = %{symbol: "BTC-PERPETUAL"}
+      config = %{}
+
+      channel = JsonRpc.format_channel(template, params, config)
+
+      assert channel == "ticker.BTC-PERPETUAL"
+    end
+
+    test "nil-default template param is skipped" do
+      template = %{
+        channel_name: "book",
+        separator: ".",
+        params: [%{"default" => nil, "name" => "limit"}]
+      }
+
+      params = %{symbol: "BTC-PERPETUAL"}
+      config = %{}
+
+      channel = JsonRpc.format_channel(template, params, config)
+
+      assert channel == "book.BTC-PERPETUAL"
+    end
+
+    test "runtime override replaces default interval" do
+      template = %{
+        channel_name: "ticker",
+        separator: ".",
+        params: [%{"default" => "100ms", "name" => "interval"}]
+      }
+
+      params = %{"interval" => "raw", symbol: "BTC-PERPETUAL"}
+      config = %{}
+
+      channel = JsonRpc.format_channel(template, params, config)
+
+      assert channel == "ticker.BTC-PERPETUAL.raw"
+    end
+
+    test "channel without symbol still appends template params" do
+      template = %{
+        channel_name: "heartbeat",
+        separator: ".",
+        params: [%{"default" => "10", "name" => "interval"}]
+      }
+
+      params = %{}
+      config = %{}
+
+      channel = JsonRpc.format_channel(template, params, config)
+
+      assert channel == "heartbeat.10"
+    end
+  end
 end
