@@ -61,6 +61,7 @@ defmodule CCXT.WS.Generator.Adapter do
       use GenServer
 
       alias CCXT.WS.Auth
+      alias CCXT.WS.Auth.Expiry
       alias CCXT.WS.Client, as: WSClient
       alias CCXT.WS.Contract
       alias CCXT.WS.Helpers
@@ -488,19 +489,30 @@ defmodule CCXT.WS.Generator.Adapter do
           :ok ->
             mark_auth_success(state, %{pattern: pattern, market_type: resolve_market_type(state)})
 
+          {:ok, auth_meta} ->
+            mark_auth_success(state, %{pattern: pattern, market_type: resolve_market_type(state)}, auth_meta)
+
           {:error, _} = error ->
             {:reply, error, %{state | auth_state: :unauthenticated}}
         end
       end
 
       @doc false
-      defp mark_auth_success(state, context) do
+      defp mark_auth_success(state, context, auth_meta \\ nil) do
+        # Cancel any existing auth expiry timer
+        if state.auth_timer_ref, do: Process.cancel_timer(state.auth_timer_ref)
+
+        auth_config = get_in(state.spec.ws, [:auth])
+        {timer_ref, expires_at} = schedule_auth_expiry(auth_meta, auth_config)
+
         new_state = %{
           state
           | auth_state: :authenticated,
             was_authenticated: true,
             auth_context: context,
-            re_auth_attempts: 0
+            re_auth_attempts: 0,
+            auth_timer_ref: timer_ref,
+            auth_expires_at: expires_at
         }
 
         {:reply, :ok, new_state}
@@ -551,20 +563,47 @@ defmodule CCXT.WS.Generator.Adapter do
           :ok ->
             re_auth_success(state, %{pattern: pattern, market_type: resolve_market_type(state)})
 
+          {:ok, auth_meta} ->
+            re_auth_success(state, %{pattern: pattern, market_type: resolve_market_type(state)}, auth_meta)
+
           {:error, _} = error ->
             error
         end
       end
 
       @doc false
-      defp re_auth_success(state, context) do
+      defp re_auth_success(state, context, auth_meta \\ nil) do
+        # Cancel any existing auth expiry timer
+        if state.auth_timer_ref, do: Process.cancel_timer(state.auth_timer_ref)
+
+        auth_config = get_in(state.spec.ws, [:auth])
+        {timer_ref, expires_at} = schedule_auth_expiry(auth_meta, auth_config)
+
         {:ok,
          %{
            state
            | auth_state: :authenticated,
              auth_context: context,
-             re_auth_attempts: 0
+             re_auth_attempts: 0,
+             auth_timer_ref: timer_ref,
+             auth_expires_at: expires_at
          }}
+      end
+
+      @doc false
+      # Computes and schedules auth expiry timer via Expiry pure functions.
+      # Returns {timer_ref, expires_at} or {nil, nil} when no TTL available.
+      defp schedule_auth_expiry(auth_meta, auth_config) do
+        ttl_ms = Expiry.compute_ttl_ms(auth_meta, auth_config)
+
+        case Expiry.schedule_delay_ms(ttl_ms) do
+          nil ->
+            {nil, nil}
+
+          delay_ms ->
+            ref = Process.send_after(self(), :auth_expired, delay_ms)
+            {ref, System.monotonic_time(:millisecond) + delay_ms}
+        end
       end
     end
   end
