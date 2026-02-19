@@ -9885,7 +9885,7 @@
         separator: "."
       },
       watch_liquidations: %{
-        channel_name: "liquidation",
+        channel_name: "allLiquidation",
         market_id_format: :native,
         params: [
           %{

@@ -4923,7 +4923,7 @@
     precision_mode: 4,
     sample_limits: %{
       "amount" => %{
-        "max" => 2000000,
+        "max" => 2857142,
         "min" => 0.1
       },
       "cost" => %{
@@ -4936,14 +4936,14 @@
       "price" => 0.0001
     },
     spot: %{
-      base: "RED",
-      base_id: "red",
+      base: "LAYER",
+      base_id: "layer",
       case: :lower,
       contract: false,
-      id: "redusdt",
+      id: "layerusdt",
       limits: %{
         "amount" => %{
-          "max" => 2000000,
+          "max" => 2857142,
           "min" => 0.1
         },
         "cost" => %{
@@ -4965,7 +4965,7 @@
       quote: "USDT",
       quote_id: "usdt",
       separator: "",
-      symbol: "RED/USDT",
+      symbol: "LAYER/USDT",
       taker: 0.002
     },
     swap: %{

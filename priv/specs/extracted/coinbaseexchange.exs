@@ -1907,15 +1907,15 @@
       "price" => %{}
     },
     sample_precision: %{
-      "amount" => 0.01,
-      "price" => 0.0001
+      "amount" => 1,
+      "price" => 1.0e-5
     },
     spot: %{
-      base: "OSMO",
-      base_id: "OSMO",
+      base: "VARA",
+      base_id: "VARA",
       case: :upper,
       contract: false,
-      id: "OSMO-USD",
+      id: "VARA-USD",
       limits: %{
         "amount" => %{},
         "cost" => %{
@@ -1926,13 +1926,13 @@
       },
       maker: 0.004,
       precision: %{
-        "amount" => 0.01,
-        "price" => 0.0001
+        "amount" => 1,
+        "price" => 1.0e-5
       },
       quote: "USD",
       quote_id: "USD",
       separator: "-",
-      symbol: "OSMO/USD",
+      symbol: "VARA/USD",
       taker: 0.006
     }
   },

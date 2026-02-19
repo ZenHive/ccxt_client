@@ -1,7 +1,7 @@
 {
   "ccxt_version": "4.5.34",
-  "generated_at": "2026-02-18T10:29:31.834Z",
-  "exchange_count": 100,
+  "generated_at": "2026-02-19T05:54:40.622Z",
+  "exchange_count": 101,
   "formats": {
     "alp": {
       "spot": {
@@ -716,7 +716,7 @@
           },
           "market": {
             "min": 0,
-            "max": 2204.96541
+            "max": 1887.09733208
           }
         },
         "marginModes": {
@@ -1039,7 +1039,7 @@
           },
           "market": {
             "min": 0,
-            "max": 4.1009437
+            "max": 3.62346391
           }
         },
         "marginModes": {
@@ -1210,11 +1210,11 @@
       "spot": {
         "separator": "-",
         "case": "upper",
-        "id": "SEAM-USDT",
-        "symbol": "SEAM/USDT",
-        "base": "SEAM",
+        "id": "AGUSTO-USDT",
+        "symbol": "AGUSTO/USDT",
+        "base": "AGUSTO",
         "quote": "USDT",
-        "baseId": "SEAM",
+        "baseId": "AGUSTO",
         "quoteId": "USDT",
         "type": "spot",
         "spot": true,
@@ -1228,8 +1228,8 @@
         "maker": 0.001,
         "feeSide": "get",
         "precision": {
-          "amount": 0.0001,
-          "price": 0.0001
+          "amount": 1,
+          "price": 1e-8
         },
         "limits": {
           "leverage": {},
@@ -1237,7 +1237,7 @@
           "price": {},
           "cost": {
             "min": 1,
-            "max": 60000
+            "max": 1271
           }
         },
         "marginModes": {}
@@ -1285,15 +1285,15 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 0.0001,
-        "price": 0.0001
+        "amount": 1,
+        "price": 1e-8
       },
       "sample_limits": {
         "amount": {},
         "price": {},
         "cost": {
           "min": 1,
-          "max": 60000
+          "max": 1271
         }
       }
     },
@@ -1415,12 +1415,12 @@
             "max": 20
           },
           "price": {
-            "min": 2447730.792,
-            "max": 5711371.847999999
+            "min": 2447733.894,
+            "max": 5711379.086
           },
           "cost": {
             "min": 50,
-            "max": 114227436.95999998
+            "max": 114227581.72
           }
         },
         "marginModes": {}
@@ -1436,12 +1436,12 @@
           "max": 20
         },
         "price": {
-          "min": 2447730.792,
-          "max": 5711371.847999999
+          "min": 2447733.894,
+          "max": 5711379.086
         },
         "cost": {
           "min": 50,
-          "max": 114227436.95999998
+          "max": 114227581.72
         }
       }
     },
@@ -2128,12 +2128,12 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 40.0861451,
+            "min": 44.296949,
             "max": 999999999999
           },
           "price": {
-            "min": 0.00172338079,
-            "max": 0.172338079
+            "min": 0.00158350134,
+            "max": 0.158350134
           },
           "cost": {
             "min": 1
@@ -2148,12 +2148,12 @@
       },
       "sample_limits": {
         "amount": {
-          "min": 40.0861451,
+          "min": 44.296949,
           "max": 999999999999
         },
         "price": {
-          "min": 0.00172338079,
-          "max": 0.172338079
+          "min": 0.00158350134,
+          "max": 0.158350134
         },
         "cost": {
           "min": 1
@@ -2319,11 +2319,11 @@
       "spot": {
         "separator": "",
         "case": "lower",
-        "id": "sandjpy",
-        "symbol": "SAND/JPY",
-        "base": "SAND",
+        "id": "ethjpy",
+        "symbol": "ETH/JPY",
+        "base": "ETH",
         "quote": "JPY",
-        "baseId": "sand",
+        "baseId": "eth",
         "quoteId": "jpy",
         "type": "spot",
         "spot": true,
@@ -2339,9 +2339,9 @@
         "tierBased": false,
         "feeSide": "get",
         "precision": {
-          "price": 0.001,
-          "amount": 0.1,
-          "cost": 0.01
+          "price": 1,
+          "amount": 0.0001,
+          "cost": 1
         },
         "limits": {
           "leverage": {
@@ -2350,8 +2350,8 @@
             "superMax": 1
           },
           "amount": {
-            "min": 0.1,
-            "max": 10000
+            "min": 0.0001,
+            "max": 100
           },
           "price": {},
           "cost": {
@@ -2362,13 +2362,13 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 0.1,
-        "price": 0.001
+        "amount": 0.0001,
+        "price": 1
       },
       "sample_limits": {
         "amount": {
-          "min": 0.1,
-          "max": 10000
+          "min": 0.0001,
+          "max": 100
         },
         "price": {},
         "cost": {
@@ -2406,8 +2406,8 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 175.26982,
-            "max": 350539643.10856
+            "min": 157.37127,
+            "max": 314742545.30727
           },
           "price": {},
           "cost": {
@@ -2424,8 +2424,8 @@
       },
       "sample_limits": {
         "amount": {
-          "min": 175.26982,
-          "max": 350539643.10856
+          "min": 157.37127,
+          "max": 314742545.30727
         },
         "price": {},
         "cost": {
@@ -3117,11 +3117,11 @@
       "spot": {
         "separator": "-",
         "case": "upper",
-        "id": "OSMO-USD",
-        "symbol": "OSMO/USD",
-        "base": "OSMO",
+        "id": "VARA-USD",
+        "symbol": "VARA/USD",
+        "base": "VARA",
         "quote": "USD",
-        "baseId": "OSMO",
+        "baseId": "VARA",
         "quoteId": "USD",
         "type": "spot",
         "spot": true,
@@ -3136,8 +3136,8 @@
         "percentage": true,
         "tierBased": true,
         "precision": {
-          "amount": 0.01,
-          "price": 0.0001
+          "amount": 1,
+          "price": 0.00001
         },
         "limits": {
           "leverage": {},
@@ -3151,8 +3151,8 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 0.01,
-        "price": 0.0001
+        "amount": 1,
+        "price": 0.00001
       },
       "sample_limits": {
         "amount": {},
@@ -3300,12 +3300,12 @@
       "spot": {
         "separator": "",
         "case": "upper",
-        "id": "FOXYUSDT",
-        "symbol": "FOXY/USDT",
-        "base": "FOXY",
-        "quote": "USDT",
-        "baseId": "FOXY",
-        "quoteId": "USDT",
+        "id": "NEARUSDC",
+        "symbol": "NEAR/USDC",
+        "base": "NEAR",
+        "quote": "USDC",
+        "baseId": "NEAR",
+        "quoteId": "USDC",
         "type": "spot",
         "spot": true,
         "margin": false,
@@ -3314,16 +3314,16 @@
         "option": false,
         "active": true,
         "contract": false,
-        "taker": 0.003,
-        "maker": 0.003,
+        "taker": 0.002,
+        "maker": 0.002,
         "precision": {
           "amount": 1e-8,
-          "price": 1e-8
+          "price": 0.0001
         },
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 5000
+            "min": 1
           },
           "price": {},
           "cost": {}
@@ -3333,11 +3333,11 @@
       "precision_mode": 4,
       "sample_precision": {
         "amount": 1e-8,
-        "price": 1e-8
+        "price": 0.0001
       },
       "sample_limits": {
         "amount": {
-          "min": 5000
+          "min": 1
         },
         "price": {},
         "cost": {}
@@ -3449,7 +3449,7 @@
       "spot": {
         "separator": "",
         "case": "upper",
-        "id": "1771410540003001",
+        "id": "1771480440000001",
         "symbol": "TNSR/KRW",
         "base": "TNSR",
         "quote": "KRW",
@@ -4012,8 +4012,8 @@
       "option": {
         "separator": "-",
         "case": "upper",
-        "id": "C-ETH-2100-190226",
-        "symbol": "ETH/USDT:USDT-260219-2100-C",
+        "id": "P-ETH-2020-200226",
+        "symbol": "ETH/USDT:USDT-260220-2020-P",
         "base": "ETH",
         "quote": "USDT",
         "settle": "USDT",
@@ -4031,10 +4031,10 @@
         "linear": true,
         "inverse": false,
         "contractSize": 0.01,
-        "expiry": 1771502400000,
-        "expiryDatetime": "2026-02-19T12:00:00.000Z",
-        "strike": 2100,
-        "optionType": "call",
+        "expiry": 1771588800000,
+        "expiryDatetime": "2026-02-20T12:00:00.000Z",
+        "strike": 2020,
+        "optionType": "put",
         "taker": 0.00015,
         "maker": 0.00015,
         "percentage": true,
@@ -4327,8 +4327,8 @@
       "option": {
         "separator": "-",
         "case": "upper",
-        "id": "SOL-20260327-90-P",
-        "symbol": "SOL/USDC:USDC-260327-90-P",
+        "id": "SOL-20260327-95-P",
+        "symbol": "SOL/USDC:USDC-260327-95-P",
         "base": "SOL",
         "quote": "USDC",
         "settle": "USDC",
@@ -4348,7 +4348,7 @@
         "contractSize": 1,
         "expiry": 1774598400000,
         "expiryDatetime": "2026-03-27T08:00:00.000Z",
-        "strike": 90,
+        "strike": 95,
         "optionType": "put",
         "taker": 0.0003,
         "maker": 0.0001,
@@ -4719,7 +4719,7 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 0.00000122
+            "min": 0.00000129
           },
           "price": {
             "min": 0.0001
@@ -4735,7 +4735,7 @@
       },
       "sample_limits": {
         "amount": {
-          "min": 0.00000122
+          "min": 0.00000129
         },
         "price": {
           "min": 0.0001
@@ -4826,8 +4826,8 @@
             "max": 32000
           },
           "price": {
-            "min": 154.7126,
-            "max": 161.0274
+            "min": 153.6738,
+            "max": 159.9462
           },
           "cost": {}
         },
@@ -4876,8 +4876,8 @@
             "max": 1000000
           },
           "price": {
-            "min": 0.74295,
-            "max": 2.22885
+            "min": 0.7062,
+            "max": 2.1186
           },
           "cost": {}
         },
@@ -4925,8 +4925,8 @@
             "max": 10000
           },
           "price": {
-            "min": 5999.13,
-            "max": 8116.47
+            "min": 6961.84,
+            "max": 9418.96
           },
           "cost": {}
         },
@@ -4945,6 +4945,52 @@
         "cost": {
           "min": 3
         }
+      }
+    },
+    "gemini": {
+      "spot": {
+        "separator": "",
+        "case": "lower",
+        "id": "2zgusd",
+        "symbol": "2Z/GUSD",
+        "base": "2Z",
+        "quote": "GUSD",
+        "baseId": "2Z",
+        "quoteId": "GUSD",
+        "type": "spot",
+        "spot": true,
+        "margin": false,
+        "swap": false,
+        "future": false,
+        "option": false,
+        "contract": false,
+        "taker": 0.004,
+        "maker": 0.002,
+        "precision": {
+          "price": 0.000001,
+          "amount": 0.000001
+        },
+        "limits": {
+          "leverage": {},
+          "amount": {
+            "min": 0.2
+          },
+          "price": {},
+          "cost": {}
+        },
+        "marginModes": {}
+      },
+      "precision_mode": 4,
+      "sample_precision": {
+        "amount": 0.000001,
+        "price": 0.000001
+      },
+      "sample_limits": {
+        "amount": {
+          "min": 0.2
+        },
+        "price": {},
+        "cost": {}
       }
     },
     "hashkey": {
@@ -5274,12 +5320,12 @@
       "spot": {
         "separator": "",
         "case": "lower",
-        "id": "redusdt",
-        "lowercaseId": "redusdt",
-        "symbol": "RED/USDT",
-        "base": "RED",
+        "id": "layerusdt",
+        "lowercaseId": "layerusdt",
+        "symbol": "LAYER/USDT",
+        "base": "LAYER",
         "quote": "USDT",
-        "baseId": "red",
+        "baseId": "layer",
         "quoteId": "usdt",
         "type": "spot",
         "spot": true,
@@ -5307,7 +5353,7 @@
           },
           "amount": {
             "min": 0.1,
-            "max": 2000000
+            "max": 2857142
           },
           "price": {},
           "cost": {
@@ -5418,7 +5464,7 @@
       "sample_limits": {
         "amount": {
           "min": 0.1,
-          "max": 2000000
+          "max": 2857142
         },
         "price": {},
         "cost": {
@@ -5583,7 +5629,7 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 0.00000869
+            "min": 0.00000881
           },
           "price": {
             "min": 10000
@@ -5599,7 +5645,7 @@
       },
       "sample_limits": {
         "amount": {
-          "min": 0.00000869
+          "min": 0.00000881
         },
         "price": {
           "min": 10000
@@ -7184,12 +7230,12 @@
       "swap": {
         "separator": "-",
         "case": "upper",
-        "id": "PYTH-USD-PERP",
-        "symbol": "PYTH/USD:USDC",
-        "base": "PYTH",
+        "id": "DOGE-USD-PERP",
+        "symbol": "DOGE/USD:USDC",
+        "base": "DOGE",
         "quote": "USD",
         "settle": "USDC",
-        "baseId": "PYTH",
+        "baseId": "DOGE",
         "quoteId": "USD",
         "settleId": "USDC",
         "type": "swap",
@@ -7210,7 +7256,7 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "max": 38000000
+            "max": 3000000
           },
           "price": {},
           "cost": {
@@ -7226,7 +7272,7 @@
       },
       "sample_limits": {
         "amount": {
-          "max": 38000000
+          "max": 3000000
         },
         "price": {},
         "cost": {
@@ -7565,7 +7611,7 @@
           "cost": {},
           "market": {
             "min": 0,
-            "max": 47107.82033333
+            "max": 49799.37608333
           }
         },
         "marginModes": {}
@@ -8243,12 +8289,12 @@
       "spot": {
         "separator": "_",
         "case": "lower",
-        "id": "polygon.mv_btc",
-        "symbol": "POLYGON.MV/BTC",
-        "base": "POLYGON.MV",
-        "quote": "BTC",
-        "baseId": "POLYGON.MV",
-        "quoteId": "BTC",
+        "id": "csxem_xem",
+        "symbol": "CSXEM/XEM",
+        "base": "CSXEM",
+        "quote": "XEM",
+        "baseId": "CSXEM",
+        "quoteId": "XEM",
         "type": "spot",
         "spot": true,
         "swap": false,
@@ -8260,7 +8306,7 @@
         "percentage": true,
         "precision": {
           "amount": 1,
-          "price": 1e-8
+          "price": 1
         },
         "limits": {
           "leverage": {},
@@ -8268,7 +8314,7 @@
             "min": 1
           },
           "price": {
-            "min": 1e-8
+            "min": 37000
           },
           "cost": {}
         },
@@ -8277,14 +8323,14 @@
       "precision_mode": 4,
       "sample_precision": {
         "amount": 1,
-        "price": 1e-8
+        "price": 1
       },
       "sample_limits": {
         "amount": {
           "min": 1
         },
         "price": {
-          "min": 1e-8
+          "min": 37000
         },
         "cost": {}
       }
@@ -8410,16 +8456,8 @@
       ]
     },
     {
-      "exchange": "gemini",
-      "error": "gemini GET https://api.gemini.com/v1/symbols fetch failed",
-      "type": "api_error",
-      "countries": [
-        "US"
-      ]
-    },
-    {
       "exchange": "mercado",
-      "error": "mercado GET https://www.mercadobitcoin.net/api/coins 403 Forbidden <!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n<title>Attention Required! | Cloudflare</title>\n<meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/cf.errors.css\" />\n<!--[if lt IE 9]><link rel=\"stylesheet\" id='cf_styles-ie-css' href=\"/cdn-cgi/styles/cf.errors.ie.css\" /><![endif]-->\n<style>body{margin:0;padding:0}</style>\n\n\n<!--[if gte IE 10]><!-->\n<script>\n  if (!navigator.cookieEnabled) {\n    window.addEventListener('DOMContentLoaded', function () {\n      var cookieEl = document.getElementById('cookie-alert');\n      cookieEl.style.display = 'block';\n    })\n  }\n</script>\n<!--<![endif]-->\n\n\n</head>\n<body>\n  <div id=\"cf-wrapper\">\n    <div class=\"cf-alert cf-alert-error cf-cookie-error\" id=\"cookie-alert\" data-translate=\"enable_cookies\">Please enable cookies.</div>\n    <div id=\"cf-error-details\" class=\"cf-error-details-wrapper\">\n      <div class=\"cf-wrapper cf-header cf-error-overview\">\n        <h1 data-translate=\"block_headline\">Sorry, you have been blocked</h1>\n        <h2 class=\"cf-subheadline\"><span data-translate=\"unable_to_access\">You are unable to access</span> mercadobitcoin.net</h2>\n      </div><!-- /.header -->\n\n      <div class=\"cf-section cf-highlight\">\n        <div class=\"cf-wrapper\">\n          <div class=\"cf-screenshot-container cf-screenshot-full\">\n            \n              <span class=\"cf-no-screenshot error\"></span>\n            \n          </div>\n        </div>\n      </div><!-- /.captcha-container -->\n\n      <div class=\"cf-section cf-wrapper\">\n        <div class=\"cf-columns two\">\n          <div class=\"cf-column\">\n            <h2 data-translate=\"blocked_why_headline\">Why have I been blocked?</h2>\n\n            <p data-translate=\"blocked_why_detail\">This website is using a security service to protect itself from online attacks. The action you just performed triggered the security solution. There are several actions that could trigger this block including submitting a certain word or phrase, a SQL command or malformed data.</p>\n          </div>\n\n          <div class=\"cf-column\">\n            <h2 data-translate=\"blocked_resolve_headline\">What can I do to resolve this?</h2>\n\n            <p data-translate=\"blocked_resolve_detail\">You can email the site owner to let them know you were blocked. Please include what you were doing when this page came up and the Cloudflare Ray ID found at the bottom of this page.</p>\n          </div>\n        </div>\n      </div><!-- /.section -->\n\n      <div class=\"cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300\">\n  <p class=\"text-13\">\n    <span class=\"cf-footer-item sm:block sm:mb-1\">Cloudflare Ray ID: <strong class=\"font-semibold\">9cfcd7d2cc7eb68d</strong></span>\n    <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n    <span id=\"cf-footer-item-ip\" class=\"cf-footer-item hidden sm:block sm:mb-1\">\n      Your IP:\n      <button type=\"button\" id=\"cf-footer-ip-reveal\" class=\"cf-footer-ip-reveal-btn\">Click to reveal</button>\n      <span class=\"hidden\" id=\"cf-footer-ip\">161.142.148.76</span>\n      <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n    </span>\n    <span class=\"cf-footer-item sm:block sm:mb-1\"><span>Performance &amp; security by</span> <a rel=\"noopener noreferrer\" href=\"https://www.cloudflare.com/5xx-error-landing\" id=\"brand_link\" target=\"_blank\">Cloudflare</a></span>\n    \n  </p>\n  <script>(function(){function d(){var b=a.getElementById(\"cf-footer-item-ip\"),c=a.getElementById(\"cf-footer-ip-reveal\");b&&\"classList\"in b&&(b.classList.remove(\"hidden\"),c.addEventListener(\"click\",function(){c.classList.add(\"hidden\");a.getElementById(\"cf-footer-ip\").classList.remove(\"hidden\")}))}var a=document;document.addEventListener&&a.addEventListener(\"DOMContentLoaded\",d)})();</script>\n</div><!-- /.error-footer -->\n\n\n    </div><!-- /#cf-error-details -->\n  </div><!-- /#cf-wrapper -->\n\n  <script>\n  window._cf_translation = {};\n  \n  \n</script>\n\n</body>\n</html>\n",
+      "error": "mercado GET https://www.mercadobitcoin.net/api/coins 403 Forbidden <!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n<title>Attention Required! | Cloudflare</title>\n<meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/cf.errors.css\" />\n<!--[if lt IE 9]><link rel=\"stylesheet\" id='cf_styles-ie-css' href=\"/cdn-cgi/styles/cf.errors.ie.css\" /><![endif]-->\n<style>body{margin:0;padding:0}</style>\n\n\n<!--[if gte IE 10]><!-->\n<script>\n  if (!navigator.cookieEnabled) {\n    window.addEventListener('DOMContentLoaded', function () {\n      var cookieEl = document.getElementById('cookie-alert');\n      cookieEl.style.display = 'block';\n    })\n  }\n</script>\n<!--<![endif]-->\n\n\n</head>\n<body>\n  <div id=\"cf-wrapper\">\n    <div class=\"cf-alert cf-alert-error cf-cookie-error\" id=\"cookie-alert\" data-translate=\"enable_cookies\">Please enable cookies.</div>\n    <div id=\"cf-error-details\" class=\"cf-error-details-wrapper\">\n      <div class=\"cf-wrapper cf-header cf-error-overview\">\n        <h1 data-translate=\"block_headline\">Sorry, you have been blocked</h1>\n        <h2 class=\"cf-subheadline\"><span data-translate=\"unable_to_access\">You are unable to access</span> mercadobitcoin.net</h2>\n      </div><!-- /.header -->\n\n      <div class=\"cf-section cf-highlight\">\n        <div class=\"cf-wrapper\">\n          <div class=\"cf-screenshot-container cf-screenshot-full\">\n            \n              <span class=\"cf-no-screenshot error\"></span>\n            \n          </div>\n        </div>\n      </div><!-- /.captcha-container -->\n\n      <div class=\"cf-section cf-wrapper\">\n        <div class=\"cf-columns two\">\n          <div class=\"cf-column\">\n            <h2 data-translate=\"blocked_why_headline\">Why have I been blocked?</h2>\n\n            <p data-translate=\"blocked_why_detail\">This website is using a security service to protect itself from online attacks. The action you just performed triggered the security solution. There are several actions that could trigger this block including submitting a certain word or phrase, a SQL command or malformed data.</p>\n          </div>\n\n          <div class=\"cf-column\">\n            <h2 data-translate=\"blocked_resolve_headline\">What can I do to resolve this?</h2>\n\n            <p data-translate=\"blocked_resolve_detail\">You can email the site owner to let them know you were blocked. Please include what you were doing when this page came up and the Cloudflare Ray ID found at the bottom of this page.</p>\n          </div>\n        </div>\n      </div><!-- /.section -->\n\n      <div class=\"cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300\">\n  <p class=\"text-13\">\n    <span class=\"cf-footer-item sm:block sm:mb-1\">Cloudflare Ray ID: <strong class=\"font-semibold\">9d038290efe66e42</strong></span>\n    <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n    <span id=\"cf-footer-item-ip\" class=\"cf-footer-item hidden sm:block sm:mb-1\">\n      Your IP:\n      <button type=\"button\" id=\"cf-footer-ip-reveal\" class=\"cf-footer-ip-reveal-btn\">Click to reveal</button>\n      <span class=\"hidden\" id=\"cf-footer-ip\">161.142.148.76</span>\n      <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n    </span>\n    <span class=\"cf-footer-item sm:block sm:mb-1\"><span>Performance &amp; security by</span> <a rel=\"noopener noreferrer\" href=\"https://www.cloudflare.com/5xx-error-landing\" id=\"brand_link\" target=\"_blank\">Cloudflare</a></span>\n    \n  </p>\n  <script>(function(){function d(){var b=a.getElementById(\"cf-footer-item-ip\"),c=a.getElementById(\"cf-footer-ip-reveal\");b&&\"classList\"in b&&(b.classList.remove(\"hidden\"),c.addEventListener(\"click\",function(){c.classList.add(\"hidden\");a.getElementById(\"cf-footer-ip\").classList.remove(\"hidden\")}))}var a=document;document.addEventListener&&a.addEventListener(\"DOMContentLoaded\",d)})();</script>\n</div><!-- /.error-footer -->\n\n\n    </div><!-- /#cf-error-details -->\n  </div><!-- /#cf-wrapper -->\n\n  <script>\n  window._cf_translation = {};\n  \n  \n</script>\n\n</body>\n</html>\n",
       "type": "geo_blocked",
       "countries": [
         "BR"
@@ -8427,7 +8465,7 @@
     },
     {
       "exchange": "oxfun",
-      "error": "oxfun GET https://api.ox.fun/v3/assets 530 <none> <!doctype html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!-->\n<html class=\"no-js\" lang=\"en-US\">\n    <!--<![endif]-->\n    <head>\n        <title>Origin DNS error | api.ox.fun | Cloudflare</title>\n        <meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/main.css\" /> <script>\n  (function(){if(document.addEventListener&&window.XMLHttpRequest&&JSON&&JSON.stringify){var e=function(a){var c=document.getElementById(\"error-feedback-survey\"),d=document.getElementById(\"error-feedback-success\"),b=new XMLHttpRequest;a={event:\"feedback clicked\",properties:{errorCode: 1016 },helpful:a,version: 1 };b.open(\"POST\",\"https://sparrow.cloudflare.com/api/v1/event\");b.setRequestHeader(\"Content-Type\",\"application/json\");b.setRequestHeader(\"Sparrow-Source-Key\",\"c771f0e4b54944bebf4261d44bd79a1e\");\nb.send(JSON.stringify(a));c.classList.add(\"feedback-hidden\");d.classList.remove(\"feedback-hidden\")};document.addEventListener(\"DOMContentLoaded\",function(){var a=document.getElementById(\"error-feedback\"),c=document.getElementById(\"feedback-button-yes\"),d=document.getElementById(\"feedback-button-no\");\"classList\"in a&&(a.classList.remove(\"feedback-hidden\"),c.addEventListener(\"click\",function(){e(!0)}),d.addEventListener(\"click\",function(){e(!1)}))})}})();\n</script>\n        <script\n            defer\n            src=\"https://performance.radar.cloudflare.com/beacon.js\"\n        ></script>\n    </head>\n    <body>\n        <div id=\"cf-wrapper\">\n            <div\n                class=\"cf-alert cf-alert-error cf-cookie-error hidden\"\n                id=\"cookie-alert\"\n                data-translate=\"enable_cookies\"\n            >\n                Please enable cookies.\n            </div>\n            <div id=\"cf-error-details\" class=\"p-0\">\n                <header\n                    class=\"mx-auto pt-10 lg:pt-6 lg:px-8 w-240 lg:w-full mb-15 antialiased\"\n                >\n                    <h1\n                        class=\"inline-block md:block mr-2 md:mb-2 font-light text-60 md:text-3xl text-black-dark leading-tight\"\n                    >\n                        <span data-translate=\"error\">Error</span>\n                        <span>1016</span>\n                    </h1>\n                    <span\n                        class=\"inline-block md:block heading-ray-id font-mono text-15 lg:text-sm lg:leading-relaxed\"\n                        >Ray ID: 9cfcd7dd3871328c &bull;</span\n                    >\n                    <span\n                        class=\"inline-block md:block heading-ray-id font-mono text-15 lg:text-sm lg:leading-relaxed\"\n                        >2026-02-18 10:29:24 UTC</span\n                    >\n                    <h2\n                        class=\"text-gray-600 leading-1.3 text-3xl lg:text-2xl font-light\"\n                    >\n                        Origin DNS error\n                    </h2>\n                </header>\n                \n                \n                <section class=\"w-240 lg:w-full mx-auto mb-8 lg:px-8\">\n                    <div id=\"what-happened-section\" class=\"w-1/2 md:w-full\">\n                        <h2\n                            class=\"text-3xl leading-tight font-normal mb-4 text-black-dark antialiased\"\n                            data-translate=\"what_happened\"\n                        >\n                            What happened?\n                        </h2>\n                        \n                            <p>You've requested a page on a website (api.ox.fun) that is on the <a href=\"https://www.cloudflare.com/5xx-error-landing/\" target=\"_blank\">Cloudflare</a> network. Cloudflare is currently unable to resolve your requested domain (api.ox.fun).</p>\n                        \n                        \n                        <p>\n                            Please see\n                            <a\n                                rel=\"noopener noreferrer\"\n                                href=\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1016/\"\n                                target=\"_blank\"\n                                >https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1016/</a\n                            >\n                            for more details.\n                        </p>\n                        \n                    </div>\n\n                    \n                    <div\n                        id=\"resolution-copy-section\"\n                        class=\"w-1/2 mt-6 text-15 leading-normal\"\n                    >\n                        <h2\n                            class=\"text-3xl leading-tight font-normal mb-4 text-black-dark antialiased\"\n                            data-translate=\"what_can_i_do\"\n                        >\n                            What can I do?\n                        </h2>\n                        <p><strong>If you are a visitor of this website:</strong><br />Please try again in a few minutes.</p><p><strong>If you are the owner of this website:</strong><br />Check your DNS settings. If you are using a CNAME origin record, make sure it is valid and resolvable. <a rel=\"noopener noreferrer\" href=\"https://support.cloudflare.com/hc/en-us/articles/234979888-Error-1016-Origin-DNS-error\">Additional troubleshooting information here.</a></p>\n                    </div>\n                    \n                </section>\n                \n\n                <div class=\"feedback-hidden py-8 text-center\" id=\"error-feedback\">\n    <div id=\"error-feedback-survey\" class=\"footer-line-wrapper\">\n        Was this page helpful?\n        <button\n            class=\"border border-solid bg-white cf-button cursor-pointer ml-4 px-4 py-2 rounded\"\n            id=\"feedback-button-yes\"\n            type=\"button\"\n        >\n            Yes\n        </button>\n        <button\n            class=\"border border-solid bg-white cf-button cursor-pointer ml-4 px-4 py-2 rounded\"\n            id=\"feedback-button-no\"\n            type=\"button\"\n        >\n            No\n        </button>\n    </div>\n    <div class=\"feedback-success feedback-hidden\" id=\"error-feedback-success\">\n        Thank you for your feedback!\n    </div>\n</div> <div class=\"cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300\">\n    <p class=\"text-13\">\n      <span class=\"cf-footer-item sm:block sm:mb-1\">Cloudflare Ray ID: <strong class=\"font-semibold\">9cfcd7dd3871328c</strong></span>\n      <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      <span id=\"cf-footer-item-ip\" class=\"cf-footer-item hidden sm:block sm:mb-1\">\n        Your IP:\n        <button type=\"button\" id=\"cf-footer-ip-reveal\" class=\"cf-footer-ip-reveal-btn\">Click to reveal</button>\n        <span class=\"hidden\" id=\"cf-footer-ip\">161.142.148.76</span>\n        <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      </span>\n      <span class=\"cf-footer-item sm:block sm:mb-1\"><span>Performance &amp; security by</span> <a rel=\"noopener noreferrer\" href=\"https://www.cloudflare.com/5xx-error-landing\" id=\"brand_link\" target=\"_blank\">Cloudflare</a></span>\n      \n    </p>\n    <script>(function(){function d(){var b=a.getElementById(\"cf-footer-item-ip\"),c=a.getElementById(\"cf-footer-ip-reveal\");b&&\"classList\"in b&&(b.classList.remove(\"hidden\"),c.addEventListener(\"click\",function(){c.classList.add(\"hidden\");a.getElementById(\"cf-footer-ip\").classList.remove(\"hidden\")}))}var a=document;document.addEventListener&&a.addEventListener(\"DOMContentLoaded\",d)})();</script>\n  </div><!-- /.error-footer -->\n            </div>\n            <!-- /#cf-error-details -->\n        </div>\n        <!-- /#cf-wrapper -->\n\n         <script>\n    window._cf_translation = {};\n    \n    \n  </script> \n        \n    </body>\n</html>",
+      "error": "oxfun GET https://api.ox.fun/v3/assets 530 <none> <!doctype html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!-->\n<html class=\"no-js\" lang=\"en-US\">\n    <!--<![endif]-->\n    <head>\n        <title>Origin DNS error | api.ox.fun | Cloudflare</title>\n        <meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/main.css\" /> <script>\n  (function(){if(document.addEventListener&&window.XMLHttpRequest&&JSON&&JSON.stringify){var e=function(a){var c=document.getElementById(\"error-feedback-survey\"),d=document.getElementById(\"error-feedback-success\"),b=new XMLHttpRequest;a={event:\"feedback clicked\",properties:{errorCode: 1016 },helpful:a,version: 1 };b.open(\"POST\",\"https://sparrow.cloudflare.com/api/v1/event\");b.setRequestHeader(\"Content-Type\",\"application/json\");b.setRequestHeader(\"Sparrow-Source-Key\",\"c771f0e4b54944bebf4261d44bd79a1e\");\nb.send(JSON.stringify(a));c.classList.add(\"feedback-hidden\");d.classList.remove(\"feedback-hidden\")};document.addEventListener(\"DOMContentLoaded\",function(){var a=document.getElementById(\"error-feedback\"),c=document.getElementById(\"feedback-button-yes\"),d=document.getElementById(\"feedback-button-no\");\"classList\"in a&&(a.classList.remove(\"feedback-hidden\"),c.addEventListener(\"click\",function(){e(!0)}),d.addEventListener(\"click\",function(){e(!1)}))})}})();\n</script>\n        <script\n            defer\n            src=\"https://performance.radar.cloudflare.com/beacon.js\"\n        ></script>\n    </head>\n    <body>\n        <div id=\"cf-wrapper\">\n            <div\n                class=\"cf-alert cf-alert-error cf-cookie-error hidden\"\n                id=\"cookie-alert\"\n                data-translate=\"enable_cookies\"\n            >\n                Please enable cookies.\n            </div>\n            <div id=\"cf-error-details\" class=\"p-0\">\n                <header\n                    class=\"mx-auto pt-10 lg:pt-6 lg:px-8 w-240 lg:w-full mb-15 antialiased\"\n                >\n                    <h1\n                        class=\"inline-block md:block mr-2 md:mb-2 font-light text-60 md:text-3xl text-black-dark leading-tight\"\n                    >\n                        <span data-translate=\"error\">Error</span>\n                        <span>1016</span>\n                    </h1>\n                    <span\n                        class=\"inline-block md:block heading-ray-id font-mono text-15 lg:text-sm lg:leading-relaxed\"\n                        >Ray ID: 9d0382a21b2aceb6 &bull;</span\n                    >\n                    <span\n                        class=\"inline-block md:block heading-ray-id font-mono text-15 lg:text-sm lg:leading-relaxed\"\n                        >2026-02-19 05:54:34 UTC</span\n                    >\n                    <h2\n                        class=\"text-gray-600 leading-1.3 text-3xl lg:text-2xl font-light\"\n                    >\n                        Origin DNS error\n                    </h2>\n                </header>\n                \n                \n                <section class=\"w-240 lg:w-full mx-auto mb-8 lg:px-8\">\n                    <div id=\"what-happened-section\" class=\"w-1/2 md:w-full\">\n                        <h2\n                            class=\"text-3xl leading-tight font-normal mb-4 text-black-dark antialiased\"\n                            data-translate=\"what_happened\"\n                        >\n                            What happened?\n                        </h2>\n                        \n                            <p>You've requested a page on a website (api.ox.fun) that is on the <a href=\"https://www.cloudflare.com/5xx-error-landing/\" target=\"_blank\">Cloudflare</a> network. Cloudflare is currently unable to resolve your requested domain (api.ox.fun).</p>\n                        \n                        \n                        <p>\n                            Please see\n                            <a\n                                rel=\"noopener noreferrer\"\n                                href=\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1016/\"\n                                target=\"_blank\"\n                                >https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1016/</a\n                            >\n                            for more details.\n                        </p>\n                        \n                    </div>\n\n                    \n                    <div\n                        id=\"resolution-copy-section\"\n                        class=\"w-1/2 mt-6 text-15 leading-normal\"\n                    >\n                        <h2\n                            class=\"text-3xl leading-tight font-normal mb-4 text-black-dark antialiased\"\n                            data-translate=\"what_can_i_do\"\n                        >\n                            What can I do?\n                        </h2>\n                        <p><strong>If you are a visitor of this website:</strong><br />Please try again in a few minutes.</p><p><strong>If you are the owner of this website:</strong><br />Check your DNS settings. If you are using a CNAME origin record, make sure it is valid and resolvable. <a rel=\"noopener noreferrer\" href=\"https://support.cloudflare.com/hc/en-us/articles/234979888-Error-1016-Origin-DNS-error\">Additional troubleshooting information here.</a></p>\n                    </div>\n                    \n                </section>\n                \n\n                <div class=\"feedback-hidden py-8 text-center\" id=\"error-feedback\">\n    <div id=\"error-feedback-survey\" class=\"footer-line-wrapper\">\n        Was this page helpful?\n        <button\n            class=\"border border-solid bg-white cf-button cursor-pointer ml-4 px-4 py-2 rounded\"\n            id=\"feedback-button-yes\"\n            type=\"button\"\n        >\n            Yes\n        </button>\n        <button\n            class=\"border border-solid bg-white cf-button cursor-pointer ml-4 px-4 py-2 rounded\"\n            id=\"feedback-button-no\"\n            type=\"button\"\n        >\n            No\n        </button>\n    </div>\n    <div class=\"feedback-success feedback-hidden\" id=\"error-feedback-success\">\n        Thank you for your feedback!\n    </div>\n</div> <div class=\"cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300\">\n    <p class=\"text-13\">\n      <span class=\"cf-footer-item sm:block sm:mb-1\">Cloudflare Ray ID: <strong class=\"font-semibold\">9d0382a21b2aceb6</strong></span>\n      <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      <span id=\"cf-footer-item-ip\" class=\"cf-footer-item hidden sm:block sm:mb-1\">\n        Your IP:\n        <button type=\"button\" id=\"cf-footer-ip-reveal\" class=\"cf-footer-ip-reveal-btn\">Click to reveal</button>\n        <span class=\"hidden\" id=\"cf-footer-ip\">161.142.148.76</span>\n        <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      </span>\n      <span class=\"cf-footer-item sm:block sm:mb-1\"><span>Performance &amp; security by</span> <a rel=\"noopener noreferrer\" href=\"https://www.cloudflare.com/5xx-error-landing\" id=\"brand_link\" target=\"_blank\">Cloudflare</a></span>\n      \n    </p>\n    <script>(function(){function d(){var b=a.getElementById(\"cf-footer-item-ip\"),c=a.getElementById(\"cf-footer-ip-reveal\");b&&\"classList\"in b&&(b.classList.remove(\"hidden\"),c.addEventListener(\"click\",function(){c.classList.add(\"hidden\");a.getElementById(\"cf-footer-ip\").classList.remove(\"hidden\")}))}var a=document;document.addEventListener&&a.addEventListener(\"DOMContentLoaded\",d)})();</script>\n  </div><!-- /.error-footer -->\n            </div>\n            <!-- /#cf-error-details -->\n        </div>\n        <!-- /#cf-wrapper -->\n\n         <script>\n    window._cf_translation = {};\n    \n    \n  </script> \n        \n    </body>\n</html>",
       "type": "api_error",
       "countries": [
         "PA"

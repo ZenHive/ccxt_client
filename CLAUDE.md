@@ -68,6 +68,7 @@ Each exchange module: `use CCXT.Generator, spec: "bybit"` — this expands into 
 | **Symbols** | `CCXT.Symbol` | Bidirectional normalization: `"BTC/USDT"` ↔ `"BTCUSDT"` |
 | **Errors** | `CCXT.Error` | Unified error types (`:rate_limited`, `:insufficient_balance`, etc.) |
 | **Resilience** | `CCXT.CircuitBreaker`, `CCXT.Recovery` | Per-exchange circuit breakers via req_fuse |
+| **Observability** | `CCXT.Telemetry` | Centralized telemetry contract (6 events), `attach/2`/`detach/1`, contract versioning |
 | **Types** | `CCXT.Types.*` | Response structs (Order, Ticker, Balance, etc.) |
 | **Trading** | `CCXT.Trading.*` (Funding, Greeks, Risk, Basis, Sizing, Volatility, Options, Portfolio, PowerLaw) | Analytics and trading helpers — hand-written, survive `--output --force` |
 
