@@ -16,12 +16,11 @@ defmodule CCXT.Test.Generator.Helpers.Signature do
   | `:hmac_sha512_nonce` | Header | base64 | 88 chars |
   | `:hmac_sha512_gate` | Header | hex | 128 chars |
   | `:hmac_sha384_payload` | Header | base64 | 64 chars |
+  | `:deribit` | Authorization header | hex | 64 chars (id, ts, sig, nonce fields) |
 
   """
 
   import ExUnit.Assertions
-
-  require Logger
 
   # =============================================================================
   # Signature Length Constants
@@ -196,7 +195,47 @@ defmodule CCXT.Test.Generator.Helpers.Signature do
     assert auth, "Expected Authorization header for deribit signing"
 
     assert String.starts_with?(auth, "deri-hmac-sha256 "),
-           "Expected Authorization to start with 'deri-hmac-sha256 '"
+           "Expected Authorization to start with 'deri-hmac-sha256 ', got: #{auth}"
+
+    # Parse key=value pairs after prefix
+    [_prefix, pairs_str] = String.split(auth, " ", parts: 2)
+
+    pairs =
+      pairs_str
+      |> String.split(",")
+      |> Map.new(fn pair ->
+        [key, value] = String.split(pair, "=", parts: 2)
+        {key, value}
+      end)
+
+    # All 4 required fields must exist
+    for field <- ["id", "ts", "sig", "nonce"] do
+      assert Map.has_key?(pairs, field),
+             "Expected '#{field}=' in Authorization header. Found keys: #{inspect(Map.keys(pairs))}. Full header: #{auth}"
+    end
+
+    # sig must be exactly 64-char lowercase hex (SHA256 HMAC)
+    sig = pairs["sig"]
+    expected_sig_len = @signature_lengths.sha256.hex
+
+    assert String.length(sig) == expected_sig_len,
+           "Expected sig to be #{expected_sig_len}-char hex, got #{String.length(sig)} chars: #{sig}"
+
+    assert String.match?(sig, ~r/^[0-9a-f]+$/),
+           "Expected sig to be lowercase hex, got: #{sig}"
+
+    # ts must be 13-digit milliseconds timestamp
+    ts = pairs["ts"]
+    expected_ts_digits = @timestamp_digits.milliseconds
+
+    assert String.match?(ts, ~r/^\d{#{expected_ts_digits}}$/),
+           "Expected ts to be #{expected_ts_digits}-digit milliseconds timestamp, got: #{ts}"
+
+    # nonce must be numeric (13+ digits in practice)
+    nonce = pairs["nonce"]
+
+    assert String.match?(nonce, ~r/^\d+$/),
+           "Expected nonce to be numeric, got: #{nonce}"
 
     :ok
   end
@@ -209,8 +248,13 @@ defmodule CCXT.Test.Generator.Helpers.Signature do
   def validate_signature_for_pattern(signed, signing, pattern) do
     case Map.get(@pattern_algorithms, pattern) do
       nil ->
-        Logger.warning("Unknown signing pattern: #{pattern}")
-        :ok
+        known = Map.keys(@pattern_algorithms) ++ [:hmac_sha256_query, :deribit, :custom]
+
+        flunk(
+          "Unknown signing pattern: #{inspect(pattern)}. " <>
+            "Known patterns: #{inspect(Enum.sort(known))}. " <>
+            "Add a clause in #{__ENV__.file}:#{__ENV__.line}"
+        )
 
       algorithm ->
         validate_header_signature(signed, signing, algorithm)

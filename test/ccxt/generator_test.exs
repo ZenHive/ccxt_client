@@ -46,6 +46,12 @@ defmodule CCXT.GeneratorTest do
   defp decode_query_string(nil), do: %{}
   defp decode_query_string(qs), do: URI.decode_query(qs)
 
+  # Access helper: works for both raw maps (string keys) and typed structs (atom keys).
+  # In ccxt_ex (no pipeline), responses are raw maps. In ccxt_client (with pipeline),
+  # responses are coerced to typed structs.
+  defp field(data, key) when is_struct(data), do: Map.get(data, String.to_existing_atom(key))
+  defp field(data, key), do: data[key]
+
   # Helper to safely get module attribute (nil -> empty list)
   defp get_module_attribute(module, attr) do
     case module.__info__(:attributes)[attr] do
@@ -149,7 +155,7 @@ defmodule CCXT.GeneratorTest do
       assert {:ok, body} =
                TestExchange.fetch_ticker("BTC/USDT", plug: {Req.Test, :ticker_stub})
 
-      assert body.symbol == "BTC/USDT"
+      assert field(body, "symbol") == "BTC/USDT"
     end
 
     test "fetch_tickers/2 calls the tickers endpoint" do
@@ -175,7 +181,7 @@ defmodule CCXT.GeneratorTest do
       assert {:ok, body} =
                TestExchange.fetch_order_book("BTC/USDT", 10, plug: {Req.Test, :orderbook_stub})
 
-      assert is_list(body.bids)
+      assert is_list(field(body, "bids"))
     end
 
     test "fetch_markets/1 calls the markets endpoint" do
@@ -185,7 +191,7 @@ defmodule CCXT.GeneratorTest do
       end)
 
       assert {:ok, [market | _]} = TestExchange.fetch_markets(plug: {Req.Test, :markets_stub})
-      assert market.id == "BTCUSDT"
+      assert field(market, "id") == "BTCUSDT"
     end
   end
 
@@ -201,7 +207,7 @@ defmodule CCXT.GeneratorTest do
       assert {:ok, body} =
                TestExchange.fetch_balance(@test_credentials, plug: {Req.Test, :balance_stub})
 
-      assert body.free["BTC"] == 1.0
+      assert field(body, "free")["BTC"] == 1.0
     end
 
     test "fetch_open_orders/3 passes symbol parameter (denormalized)" do
@@ -243,7 +249,7 @@ defmodule CCXT.GeneratorTest do
                  plug: {Req.Test, :create_order_stub}
                )
 
-      assert order.id == "order123"
+      assert field(order, "id") == "order123"
     end
 
     test "cancel_order/4 uses path parameter for order_id" do
@@ -256,7 +262,7 @@ defmodule CCXT.GeneratorTest do
       assert {:ok, order} =
                TestExchange.cancel_order(@test_credentials, "order123", "BTC/USDT", plug: {Req.Test, :cancel_order_stub})
 
-      assert order.status == :canceled
+      assert field(order, "status") in ["cancelled", :canceled]
     end
   end
 

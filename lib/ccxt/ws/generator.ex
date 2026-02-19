@@ -153,7 +153,13 @@ defmodule CCXT.WS.Generator do
 
       # Generate adapter AST (will be injected as nested module)
       spec_id = Map.get(spec, :id)
-      adapter_ast = Adapter.generate_adapter(__CALLER__.module, rest_module, ws_config, spec_id)
+
+      # Read pipeline config for conditional normalization/validation generation.
+      # Uses get_env because compile_env can only be called in module body.
+      app = Mix.Project.config()[:app]
+      pipeline = Application.get_env(app, :pipeline, [])
+
+      adapter_ast = Adapter.generate_adapter(__CALLER__.module, rest_module, ws_config, spec_id, pipeline)
 
       quote do
         # Track spec file for recompilation
