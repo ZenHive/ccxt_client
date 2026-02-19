@@ -16,7 +16,9 @@
   },
   rate_limits: %{
     requests: 100,
-    period: 60_000
+    period: 1000,
+    interval_ms: 10,
+    rolling_window_size: 60_000
   },
   signing: %{
     pattern: :hmac_sha256_headers,

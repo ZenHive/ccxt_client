@@ -144,7 +144,7 @@ defmodule CCXT.WS.Auth do
   @doc """
   Builds auth data to include in subscribe messages (for inline_subscribe pattern).
   """
-  @spec build_subscribe_auth(pattern(), Credentials.t(), config(), String.t(), list()) ::
+  @spec build_subscribe_auth(pattern(), Credentials.t(), config(), String.t() | nil, list() | nil) ::
           map() | nil
   def build_subscribe_auth(:inline_subscribe, credentials, config, channel, symbols) do
     InlineSubscribe.build_subscribe_auth(credentials, config, channel, symbols)

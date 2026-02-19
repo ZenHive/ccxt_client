@@ -76,12 +76,20 @@ defmodule CCXT.Spec do
           optional(:other) => map() | nil
         }
 
+  @typedoc """
+  Rate limit configuration extracted from CCXT's `rateLimit` and `rollingWindowSize`.
+
+  All four fields are always present with positive integer values:
+  - `requests` - max(1, div(1000, interval_ms)) requests allowed per `period`
+  - `period` - always 1000 (milliseconds, i.e. per second)
+  - `interval_ms` - minimum interval between requests in milliseconds
+  - `rolling_window_size` - sliding window size for rate calculations in milliseconds
+  """
   @type rate_limit :: %{
-          optional(:requests) => non_neg_integer(),
-          optional(:period) => non_neg_integer(),
-          optional(:rolling_window_size) => non_neg_integer(),
-          optional(:interval_ms) => non_neg_integer(),
-          optional(atom()) => term()
+          requests: pos_integer(),
+          period: pos_integer(),
+          interval_ms: pos_integer(),
+          rolling_window_size: pos_integer()
         }
 
   # Signing config is flexible to accommodate exchange-specific fields.
