@@ -118,5 +118,69 @@ defmodule CCXT.WS.Patterns.TypeSubscribeTest do
 
       assert channel == "ticker:btcusdt"
     end
+
+    test "returns only market ID when channels_field present (Coinbase dual-field)" do
+      template = %{channel_name: "matches"}
+      params = %{symbol: "BTC/USD"}
+      config = %{channels_field: "channels"}
+
+      channel = TypeSubscribe.format_channel(template, params, config)
+
+      # Native format strips "/" → "BTCUSD"; real exchange IDs come via symbol_context
+      assert channel == "BTCUSD"
+    end
+
+    test "returns channel_name when no symbol with channels_field" do
+      template = %{channel_name: "user"}
+      params = %{}
+      config = %{channels_field: "channels"}
+
+      channel = TypeSubscribe.format_channel(template, params, config)
+
+      assert channel == "user"
+    end
+  end
+
+  describe "dual-field subscribe (Coinbase style)" do
+    @coinbase_config %{
+      op_field: "type",
+      args_field: "product_ids",
+      args_format: :string_list,
+      channels_field: "channels",
+      channel_name: "matches"
+    }
+
+    test "subscribe populates both product_ids and channels" do
+      message = TypeSubscribe.subscribe(["BTCUSD"], @coinbase_config)
+
+      assert message["type"] == "subscribe"
+      assert message["product_ids"] == ["BTCUSD"]
+      assert message["channels"] == ["matches"]
+    end
+
+    test "subscribe with multiple product_ids" do
+      message = TypeSubscribe.subscribe(["BTCUSD", "ETHUSD"], @coinbase_config)
+
+      assert message["type"] == "subscribe"
+      assert message["product_ids"] == ["BTCUSD", "ETHUSD"]
+      assert message["channels"] == ["matches"]
+    end
+
+    test "unsubscribe populates both product_ids and channels" do
+      message = TypeSubscribe.unsubscribe(["BTCUSD"], @coinbase_config)
+
+      assert message["type"] == "unsubscribe"
+      assert message["product_ids"] == ["BTCUSD"]
+      assert message["channels"] == ["matches"]
+    end
+
+    test "subscribe with singular channel field returns string" do
+      config = %{@coinbase_config | channels_field: "channel", channel_name: "ticker"}
+      message = TypeSubscribe.subscribe(["BTCUSD"], config)
+
+      assert message["type"] == "subscribe"
+      assert message["product_ids"] == ["BTCUSD"]
+      assert message["channel"] == "ticker"
+    end
   end
 end

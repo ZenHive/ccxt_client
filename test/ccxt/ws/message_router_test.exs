@@ -140,6 +140,42 @@ defmodule CCXT.WS.MessageRouterTest do
 
       assert MessageRouter.extract_data(msg, envelope) == nil
     end
+
+    test "unwraps single-element list when unwrap_list is true" do
+      msg = %{"data" => [%{"price" => "42000", "symbol" => "BTC-USDT"}]}
+      envelope = %{"data_field" => "data", "unwrap_list" => true}
+
+      assert MessageRouter.extract_data(msg, envelope) == %{"price" => "42000", "symbol" => "BTC-USDT"}
+    end
+
+    test "does NOT unwrap multi-element list when unwrap_list is true" do
+      items = [%{"price" => "42000"}, %{"price" => "43000"}]
+      msg = %{"data" => items}
+      envelope = %{"data_field" => "data", "unwrap_list" => true}
+
+      assert MessageRouter.extract_data(msg, envelope) == items
+    end
+
+    test "does NOT unwrap when unwrap_list is false" do
+      msg = %{"data" => [%{"price" => "42000"}]}
+      envelope = %{"data_field" => "data", "unwrap_list" => false}
+
+      assert MessageRouter.extract_data(msg, envelope) == [%{"price" => "42000"}]
+    end
+
+    test "does NOT unwrap when unwrap_list key absent (backward compat)" do
+      msg = %{"data" => [%{"price" => "42000"}]}
+      envelope = %{"data_field" => "data"}
+
+      assert MessageRouter.extract_data(msg, envelope) == [%{"price" => "42000"}]
+    end
+
+    test "passes through non-list data when unwrap_list is true" do
+      msg = %{"data" => %{"price" => "42000"}}
+      envelope = %{"data_field" => "data", "unwrap_list" => true}
+
+      assert MessageRouter.extract_data(msg, envelope) == %{"price" => "42000"}
+    end
   end
 
   # -- route/3 ----------------------------------------------------------------
@@ -245,6 +281,54 @@ defmodule CCXT.WS.MessageRouterTest do
       envelope = %{"discriminator_field" => "e", "data_field" => "self"}
 
       assert {:unknown, ^msg} = MessageRouter.route(msg, envelope, "nonexistent_exchange")
+    end
+
+    # -- response/ack detection (nil discriminator) --
+
+    test "Binance subscription ack (nil id, nil result) routes to :system" do
+      msg = %{"id" => nil, "result" => nil}
+      envelope = %{"discriminator_field" => "e", "data_field" => "self", "pattern" => "flat"}
+
+      assert {:system, ^msg} = MessageRouter.route(msg, envelope, "binance")
+    end
+
+    test "non-nil result ack routes to :system" do
+      msg = %{"id" => 1, "result" => true}
+      envelope = %{"discriminator_field" => "e", "data_field" => "self", "pattern" => "flat"}
+
+      assert {:system, ^msg} = MessageRouter.route(msg, envelope, "binance")
+    end
+
+    test "no discriminator + no result key routes to :unknown" do
+      msg = %{"random" => "data", "other" => "field"}
+      envelope = %{"discriminator_field" => "e", "data_field" => "self"}
+
+      assert {:unknown, ^msg} = MessageRouter.route(msg, envelope, "binance")
+    end
+
+    test "discriminator present + result key routes normally (not :system)" do
+      msg = %{"e" => "trade", "result" => "extra", "s" => "BTCUSDT"}
+      envelope = %{"discriminator_field" => "e", "data_field" => "self", "pattern" => "flat"}
+
+      assert {:routed, :watch_trades, ^msg} = MessageRouter.route(msg, envelope, "binance")
+    end
+
+    test "OKX ticker routing with unwrap_list unwraps single-element list" do
+      ticker_data = %{"instType" => "SPOT", "instId" => "BTC-USDT", "last" => "42000"}
+
+      msg = %{
+        "arg" => %{"channel" => "tickers", "instId" => "BTC-USDT"},
+        "data" => [ticker_data]
+      }
+
+      envelope = %{
+        "discriminator_field" => "arg.channel",
+        "data_field" => "data",
+        "pattern" => "arg_data",
+        "unwrap_list" => true
+      }
+
+      assert {:routed, :watch_ticker, ^ticker_data} = MessageRouter.route(msg, envelope, "okx")
     end
   end
 end

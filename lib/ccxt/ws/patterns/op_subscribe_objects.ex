@@ -42,7 +42,7 @@ defmodule CCXT.WS.Patterns.OpSubscribeObjects do
   end
 
   @impl true
-  def format_channel(template, params, _config) do
+  def format_channel(template, params, config) do
     # For OKX, channels are objects, not strings
     # Returns a map that will be put in the args array
     channel_name = template[:channel_name] || ""
@@ -51,7 +51,7 @@ defmodule CCXT.WS.Patterns.OpSubscribeObjects do
 
     case params[:symbol] do
       nil -> base
-      symbol -> Map.put(base, "instId", Pattern.format_market_id(symbol, :native))
+      symbol -> Map.put(base, "instId", Pattern.format_market_id(symbol, :native, config[:symbol_context]))
     end
   end
 end

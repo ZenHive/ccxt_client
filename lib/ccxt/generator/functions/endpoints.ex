@@ -477,6 +477,19 @@ defmodule CCXT.Generator.Functions.Endpoints do
           base_path
         end
 
+      Regex.match?(~r{^/v\d+/}, path) and Regex.match?(~r{v\d+}, prefix) ->
+        # Version override: path starts with /vN/ and prefix contains a different version.
+        # Replace the version in the prefix to avoid double-versioning.
+        # Example: prefix="/api/v1/", path="/v2/symbols" → "/api/v2/symbols"
+        [_, path_ver] = Regex.run(~r{^/(v\d+)}, path)
+        new_prefix = Regex.replace(~r{v\d+}, prefix, path_ver, global: false)
+        version_prefix = "/" <> path_ver
+
+        quote do
+          stripped = String.replace_prefix(base_path, unquote(version_prefix), "")
+          unquote(new_prefix) <> String.trim_leading(stripped, "/")
+        end
+
       String.ends_with?(prefix, "/") and String.starts_with?(path, "/") ->
         # Avoid double slashes: if prefix ends with "/" and path starts with "/",
         # strip the leading "/" from path

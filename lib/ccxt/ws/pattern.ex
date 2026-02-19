@@ -154,6 +154,44 @@ defmodule CCXT.WS.Pattern do
   end
 
   @doc """
+  Formats a market ID using exchange-specific symbol context.
+
+  When `symbol_context` contains `symbol_patterns`, delegates to
+  `CCXT.Symbol.to_exchange_id/3` for correct exchange-native conversion
+  (e.g., "BTC/USDT" → "BTC-USDT" for OKX, "BTC-PERPETUAL" for Deribit).
+  Applies casing from `format` after conversion.
+
+  Falls back to `format_market_id/2` when symbol_context is nil or empty.
+
+  ## Examples
+
+      # With symbol_context from OKX spec
+      iex> ctx = %{symbol_patterns: %{spot: %{separator: "-", id_template: "{base}-{quote}"}}}
+      iex> CCXT.WS.Pattern.format_market_id("BTC/USDT", :native, ctx)
+      "BTC-USDT"
+
+      # Without symbol_context — falls back to /2
+      iex> CCXT.WS.Pattern.format_market_id("BTC/USDT", :lowercase, nil)
+      "btcusdt"
+
+  """
+  @spec format_market_id(String.t() | nil, atom() | nil, map() | nil) :: String.t()
+  def format_market_id(nil, _format, _symbol_context), do: ""
+
+  def format_market_id(symbol, format, %{} = symbol_context) when map_size(symbol_context) > 0 do
+    exchange_id = CCXT.Symbol.to_exchange_id(symbol, symbol_context)
+    apply_casing(exchange_id, format)
+  end
+
+  def format_market_id(symbol, format, _symbol_context), do: format_market_id(symbol, format)
+
+  @doc false
+  # Applies casing to an already-converted exchange ID
+  defp apply_casing(id, :lowercase), do: String.downcase(id)
+  defp apply_casing(id, :uppercase), do: String.upcase(id)
+  defp apply_casing(id, _), do: id
+
+  @doc """
   Builds a channel string from parts, filtering empty values.
 
   Takes a list of parts, rejects empty strings, and joins with separator.

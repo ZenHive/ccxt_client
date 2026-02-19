@@ -66,7 +66,7 @@ defmodule CCXT.WS.Patterns.MethodAsTopic do
 
     case params[:symbol] do
       nil -> base
-      symbol -> base <> separator <> Pattern.format_market_id(symbol, market_id_format)
+      symbol -> base <> separator <> Pattern.format_market_id(symbol, market_id_format, config[:symbol_context])
     end
   end
 

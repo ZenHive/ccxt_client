@@ -163,9 +163,11 @@ defmodule CCXT.WS.Auth do
   @doc """
   Handles the authentication response from the server.
 
-  Returns `:ok` on successful auth, `{:error, reason}` on failure.
+  Returns `:ok` on successful auth, `{:ok, auth_meta}` with metadata
+  (e.g., `%{ttl_ms: 900_000}` for session expiry scheduling), or
+  `{:error, reason}` on failure.
   """
-  @spec handle_auth_response(pattern(), map(), map()) :: :ok | {:error, term()}
+  @spec handle_auth_response(pattern(), map(), map()) :: :ok | {:ok, map()} | {:error, term()}
   def handle_auth_response(:direct_hmac_expiry, response, state) do
     DirectHmacExpiry.handle_auth_response(response, state)
   end

@@ -13,7 +13,7 @@ Use this file for requested enhancements only.
 
 ### 1) WebSocket Reconnection Hardening and Documentation
 
-Status: In Progress
+Status: In Progress (auth expiry scheduling ported 2026-02-19)
 Score: [D:5/B:9 -> Priority:1.8] (High ROI)  
 Area: WebSocket (`CCXT.WS.Client`, `CCXT.<Exchange>.WS.Adapter`, docs)
 
@@ -28,6 +28,9 @@ Success criteria:
 - [ ] If tests expose generator/spec defects, create a `ccxt_ex` follow-up item with repro details.
 
 Progress notes:
+- 2026-02-19: Auth expiry scheduling manually ported to ccxt_client adapter (preserved file).
+  `mark_auth_success/3`, `re_auth_success/3`, `schedule_auth_expiry/2` wired with `CCXT.WS.Auth.Expiry`.
+  Fixes Deribit WS auth token expiry — tokens now auto-refresh at 80% TTL.
 - 2026-02-13: Reconnection tests backported to ccxt_ex and verified via `--output --force` rebuild.
   Tests cover: `restore_subscriptions` config, `reconnect_on_error` flags, mixed channel types,
   adapter AST reconnection handlers (`@reconnect_delay_ms`, `schedule_reconnect`, `handle_info(:reconnect, ...)`).

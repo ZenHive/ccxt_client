@@ -96,7 +96,7 @@ defmodule CCXT.WS.Client do
   """
   @spec connect(map(), term(), keyword()) :: {:ok, t()} | {:error, term()}
   def connect(spec, url_path, opts \\ []) do
-    with {:ok, url} <- Helpers.resolve_url(spec, url_path, opts),
+    with {:ok, url} <- resolve_connect_url(spec, url_path, opts),
          zen_opts = Helpers.build_client_config(spec, opts),
          {:ok, zen_client} <- ZenClient.connect(url, zen_opts) do
       client = %__MODULE__{
@@ -108,6 +108,17 @@ defmodule CCXT.WS.Client do
       }
 
       {:ok, client}
+    end
+  end
+
+  @doc false
+  # Resolves the connection URL, allowing a `:url` option to bypass spec-based resolution.
+  # Used by the adapter to pass a listen-key-augmented URL directly.
+  @spec resolve_connect_url(map(), term(), keyword()) :: {:ok, String.t()} | {:error, term()}
+  defp resolve_connect_url(spec, url_path, opts) do
+    case Keyword.get(opts, :url) do
+      url when is_binary(url) -> {:ok, url}
+      _ -> Helpers.resolve_url(spec, url_path, opts)
     end
   end
 

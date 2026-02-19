@@ -219,6 +219,98 @@ defmodule CCXT.SpecTest do
     end
   end
 
+  # ===========================================================================
+  # REST API URL by Section (Task 187: Listen Key Pre-Auth)
+  # ===========================================================================
+
+  describe "rest_api_url/3" do
+    test "returns section URL from api_sections when sandbox=false" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{
+            api: "https://api.test.com",
+            api_sections: %{
+              "fapiPrivate" => "https://fapi.test.com",
+              "sapi" => "https://sapi.test.com"
+            }
+          }
+        })
+
+      assert Spec.rest_api_url(spec, "fapiPrivate", false) == "https://fapi.test.com"
+      assert Spec.rest_api_url(spec, "sapi", false) == "https://sapi.test.com"
+    end
+
+    test "falls back to default api URL when section not in api_sections" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{
+            api: "https://api.test.com",
+            api_sections: %{"sapi" => "https://sapi.test.com"}
+          }
+        })
+
+      assert Spec.rest_api_url(spec, "unknown_section", false) == "https://api.test.com"
+    end
+
+    test "falls back to api URL when api_sections is nil" do
+      spec = Spec.from_map(@valid_spec)
+
+      assert Spec.rest_api_url(spec, "fapiPrivate", false) == "https://api.test.com"
+    end
+
+    test "returns sandbox section URL when sandbox=true and sandbox is map" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{
+            api: "https://api.test.com",
+            sandbox: %{
+              "fapiPrivate" => "https://testnet.fapi.test.com",
+              "default" => "https://testnet.test.com"
+            }
+          }
+        })
+
+      assert Spec.rest_api_url(spec, "fapiPrivate", true) == "https://testnet.fapi.test.com"
+    end
+
+    test "falls back to default key in sandbox map" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{
+            api: "https://api.test.com",
+            sandbox: %{"default" => "https://testnet.test.com"}
+          }
+        })
+
+      assert Spec.rest_api_url(spec, "fapiPrivate", true) == "https://testnet.test.com"
+    end
+
+    test "returns string sandbox URL directly when sandbox is string" do
+      spec = Spec.from_map(@valid_spec)
+
+      assert Spec.rest_api_url(spec, "fapiPrivate", true) == "https://sandbox.test.com"
+    end
+
+    test "returns nil when sandbox=true and no sandbox URL" do
+      spec =
+        Spec.from_map(%{
+          id: "test",
+          name: "Test",
+          urls: %{api: "https://api.test.com"}
+        })
+
+      assert Spec.rest_api_url(spec, "fapiPrivate", true) == nil
+    end
+  end
+
   describe "has?/2" do
     test "returns true for supported capabilities" do
       spec = Spec.from_map(@valid_spec)

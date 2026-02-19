@@ -123,6 +123,14 @@ defmodule CCXT.Extract.WsHandlerMappings do
     "resolveData" => nil
   }
 
+  # Handlers that dispatch to MULTIPLE families (e.g., handleAcountUpdate calls
+  # both handleBalance and handlePositions). handler_to_family/1 returns only
+  # the first/primary family; handler_to_families/1 returns all of them.
+  @multi_family_handlers %{
+    "handleAcountUpdate" => [:watch_balance, :watch_positions],
+    "handleBalanceAndPosition" => [:watch_balance, :watch_positions]
+  }
+
   @known_families [
     :watch_ticker,
     :watch_trades,
@@ -282,8 +290,7 @@ defmodule CCXT.Extract.WsHandlerMappings do
       data ->
         data
         |> Map.get("handlers", [])
-        |> Enum.map(fn h -> handler_to_family(Map.get(h, "handler")) end)
-        |> Enum.reject(&is_nil/1)
+        |> Enum.flat_map(fn h -> handler_to_families(Map.get(h, "handler")) end)
         |> Enum.uniq()
         |> Enum.sort()
     end
@@ -301,7 +308,7 @@ defmodule CCXT.Extract.WsHandlerMappings do
       data ->
         data
         |> Map.get("handlers", [])
-        |> Enum.filter(fn h -> handler_to_family(Map.get(h, "handler")) == family end)
+        |> Enum.filter(fn h -> family in handler_to_families(Map.get(h, "handler")) end)
         |> Enum.map(&Map.get(&1, "channel"))
     end
   end
@@ -318,10 +325,35 @@ defmodule CCXT.Extract.WsHandlerMappings do
   Maps a handler method name to a W12 family atom.
 
   Returns nil for non-family handlers or unknown handlers.
+  For handlers that dispatch to multiple families (e.g., `handleAcountUpdate`),
+  returns only the primary family. Use `handler_to_families/1` for the full list.
   """
   @spec handler_to_family(String.t()) :: atom() | nil
   def handler_to_family(handler_name) do
     Map.get(@handler_to_family, handler_name)
+  end
+
+  @doc """
+  Maps a handler method name to ALL W12 families it dispatches to.
+
+  Returns a list of family atoms. For most handlers this is a single-element list.
+  For composite handlers like `handleAcountUpdate` (which calls both `handleBalance`
+  and `handlePositions`), returns all families.
+
+  Returns `[]` for non-family handlers (auth, pong, etc.) or unknown handlers.
+  """
+  @spec handler_to_families(String.t()) :: [atom()]
+  def handler_to_families(handler_name) do
+    case Map.get(@multi_family_handlers, handler_name) do
+      nil ->
+        case handler_to_family(handler_name) do
+          nil -> []
+          family -> [family]
+        end
+
+      families ->
+        families
+    end
   end
 
   # -- Private Helpers -------------------------------------------------------

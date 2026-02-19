@@ -47,19 +47,41 @@ defmodule CCXT.WS.Auth.ListenKey do
   def pre_auth(credentials, config, opts) do
     # The actual REST call is made by the adapter/exchange module
     # This module just returns the config for what endpoint to call
-    market_type = opts[:market_type] || :spot
+    raw_type = opts[:market_type] || :spot
+    market_type = normalize_market_type(raw_type)
     endpoints = config[:pre_auth][:endpoints] || []
 
-    endpoint =
-      Enum.find(endpoints, fn ep -> ep.type == market_type end) ||
-        Enum.find(endpoints, fn ep -> ep.type == :spot end)
+    case Enum.find(endpoints, fn ep -> ep.type == market_type end) do
+      nil ->
+        {:error,
+         {:no_endpoint_for_market_type,
+          %{
+            requested: raw_type,
+            normalized: market_type,
+            available: Enum.map(endpoints, & &1.type)
+          }}}
 
-    if endpoint do
-      {:ok, %{endpoint: endpoint.endpoint, market_type: market_type, credentials: credentials}}
-    else
-      {:error, {:no_endpoint_for_market_type, market_type}}
+      endpoint ->
+        {:ok,
+         %{
+           endpoint: endpoint.endpoint,
+           market_type: market_type,
+           api_section: endpoint[:api_section],
+           # Intentional default: all listen key endpoints are POST
+           method: endpoint[:method] || "POST",
+           path: endpoint[:path],
+           credentials: credentials
+         }}
     end
   end
+
+  @doc false
+  # Maps WS URL path keys to listen key endpoint types.
+  # WS URLs use :future/:delivery but listen key endpoints use :linear/:inverse.
+  defp normalize_market_type(:future), do: :linear
+  defp normalize_market_type(:delivery), do: :inverse
+  defp normalize_market_type(:contract), do: :linear
+  defp normalize_market_type(other), do: other
 
   @impl true
   def build_auth_message(_credentials, _config, _opts) do

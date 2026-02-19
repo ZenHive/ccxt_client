@@ -75,7 +75,14 @@ defmodule CCXT.Test.Generator.Helpers.PublicResponse do
   end
 
   defp assert_valid_response_body(body, :fetch_order_book) do
-    assert is_map(body), "fetch_order_book should return a map"
+    assert is_map(body),
+           "fetch_order_book should return a map, got: #{inspect_type(body)}" <>
+             if(is_list(body),
+               do:
+                 " — response_transformer may need {:extract_path_unwrap, path} " <>
+                   "(add :fetch_order_book to @singular_endpoints)",
+               else: ""
+             )
   end
 
   defp assert_valid_response_body(body, :fetch_trades) do
@@ -87,7 +94,12 @@ defmodule CCXT.Test.Generator.Helpers.PublicResponse do
   end
 
   defp assert_valid_response_body(body, :fetch_markets) do
-    assert is_list(body), "fetch_markets should return a list (CCXT types fetchMarkets as Market[])"
+    assert is_list(body),
+           "fetch_markets should return a list (CCXT types fetchMarkets as Market[]), got: #{inspect_type(body)}" <>
+             if(is_map(body),
+               do: " — check response_transformer config, map keys: #{inspect(Map.keys(body))}",
+               else: ""
+             )
   end
 
   defp assert_valid_response_body(body, :fetch_currencies) do
@@ -242,4 +254,10 @@ defmodule CCXT.Test.Generator.Helpers.PublicResponse do
   # Safely converts non-string values (Maps, etc.) to strings via inspect.
   defp format_message(msg) when is_binary(msg), do: msg
   defp format_message(msg), do: inspect(msg)
+
+  @doc false
+  # Returns a human-readable type description for diagnostic messages.
+  defp inspect_type(value) when is_list(value), do: "list (#{length(value)} elements)"
+  defp inspect_type(value) when is_map(value), do: "map (#{map_size(value)} keys)"
+  defp inspect_type(value), do: inspect(value)
 end

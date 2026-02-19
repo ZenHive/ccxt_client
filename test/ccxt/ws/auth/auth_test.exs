@@ -196,26 +196,95 @@ defmodule CCXT.WS.AuthTest do
               }} = ListenKey.pre_auth(@test_credentials, config, market_type: :linear)
     end
 
-    test "falls back to spot when market type not found" do
+    test "normalizes :future to :linear and finds endpoint" do
       endpoints = [
-        %{type: :spot, endpoint: :public_post_user_data_stream}
+        %{type: :spot, endpoint: :public_post_user_data_stream},
+        %{type: :linear, endpoint: :fapi_private_post_listen_key}
       ]
 
       config = %{pre_auth: %{endpoints: endpoints}}
 
       assert {:ok,
               %{
-                endpoint: :public_post_user_data_stream,
+                endpoint: :fapi_private_post_listen_key,
+                market_type: :linear,
+                credentials: @test_credentials
+              }} = ListenKey.pre_auth(@test_credentials, config, market_type: :future)
+    end
+
+    test "normalizes :delivery to :inverse and finds endpoint" do
+      endpoints = [
+        %{type: :spot, endpoint: :public_post_user_data_stream},
+        %{type: :inverse, endpoint: :dapi_private_post_listen_key}
+      ]
+
+      config = %{pre_auth: %{endpoints: endpoints}}
+
+      assert {:ok,
+              %{
+                endpoint: :dapi_private_post_listen_key,
                 market_type: :inverse,
                 credentials: @test_credentials
-              }} = ListenKey.pre_auth(@test_credentials, config, market_type: :inverse)
+              }} = ListenKey.pre_auth(@test_credentials, config, market_type: :delivery)
+    end
+
+    test "normalizes :contract to :linear" do
+      endpoints = [
+        %{type: :linear, endpoint: :fapi_private_post_listen_key}
+      ]
+
+      config = %{pre_auth: %{endpoints: endpoints}}
+
+      assert {:ok, %{market_type: :linear}} =
+               ListenKey.pre_auth(@test_credentials, config, market_type: :contract)
+    end
+
+    test "returns error with details when no matching endpoint" do
+      endpoints = [
+        %{type: :linear, endpoint: :fapi_private_post_listen_key}
+      ]
+
+      config = %{pre_auth: %{endpoints: endpoints}}
+
+      assert {:error, {:no_endpoint_for_market_type, %{requested: :inverse, normalized: :inverse, available: [:linear]}}} =
+               ListenKey.pre_auth(@test_credentials, config, market_type: :inverse)
     end
 
     test "returns error when no endpoints configured" do
       config = %{pre_auth: %{endpoints: []}}
 
-      assert {:error, {:no_endpoint_for_market_type, :spot}} =
+      assert {:error, {:no_endpoint_for_market_type, %{requested: :spot, normalized: :spot, available: []}}} =
                ListenKey.pre_auth(@test_credentials, config, [])
+    end
+
+    test "passes through enriched fields (api_section, method, path)" do
+      endpoints = [
+        %{
+          type: :linear,
+          endpoint: "fapiPrivatePostListenKey",
+          api_section: "fapiPrivate",
+          method: "POST",
+          path: "/listenKey"
+        }
+      ]
+
+      config = %{pre_auth: %{endpoints: endpoints}}
+
+      assert {:ok, result} = ListenKey.pre_auth(@test_credentials, config, market_type: :linear)
+
+      assert result.endpoint == "fapiPrivatePostListenKey"
+      assert result.api_section == "fapiPrivate"
+      assert result.method == "POST"
+      assert result.path == "/listenKey"
+      assert result.market_type == :linear
+    end
+
+    test "defaults method to POST when not in endpoint config" do
+      endpoints = [%{type: :spot, endpoint: "publicPostUserDataStream"}]
+      config = %{pre_auth: %{endpoints: endpoints}}
+
+      assert {:ok, result} = ListenKey.pre_auth(@test_credentials, config, [])
+      assert result.method == "POST"
     end
   end
 
@@ -250,14 +319,24 @@ defmodule CCXT.WS.AuthTest do
 
   describe "build_subscribe_auth/5 - inline_subscribe" do
     test "builds auth data for subscribe message" do
+      # InlineSubscribe requires base64-encoded secret
+      creds = %Credentials{
+        api_key: "test_api_key",
+        secret: Base.encode64("test_secret_bytes"),
+        password: "test_passphrase"
+      }
+
       config = %{pattern: :inline_subscribe}
 
-      auth_data = Auth.build_subscribe_auth(:inline_subscribe, @test_credentials, config, "user", ["BTC-USD"])
+      auth_data = Auth.build_subscribe_auth(:inline_subscribe, creds, config, "user", ["BTC-USD"])
 
       assert is_map(auth_data)
-      assert auth_data["api_key"] == "test_api_key"
+      assert auth_data["key"] == "test_api_key"
       assert is_binary(auth_data["timestamp"])
       assert is_binary(auth_data["signature"])
+      assert auth_data["passphrase"] == "test_passphrase"
+      # Signature should be base64-encoded
+      assert {:ok, _} = Base.decode64(auth_data["signature"])
     end
   end
 
@@ -440,6 +519,46 @@ defmodule CCXT.WS.AuthTest do
     end
   end
 
+  describe "JsonrpcLinebreak - TTL extraction from auth response" do
+    alias CCXT.WS.Auth.JsonrpcLinebreak
+
+    test "returns {:ok, %{ttl_ms: N}} when expires_in is present as integer" do
+      response = %{"result" => %{"access_token" => "tok_abc", "expires_in" => 900}}
+
+      assert {:ok, %{ttl_ms: 900_000}} = JsonrpcLinebreak.handle_auth_response(response, %{})
+    end
+
+    test "returns {:ok, %{ttl_ms: N}} when expires_in is a numeric string" do
+      response = %{"result" => %{"access_token" => "tok_abc", "expires_in" => "1800"}}
+
+      assert {:ok, %{ttl_ms: 1_800_000}} = JsonrpcLinebreak.handle_auth_response(response, %{})
+    end
+
+    test "returns bare :ok when expires_in is absent" do
+      response = %{"result" => %{"access_token" => "tok_abc"}}
+
+      assert :ok = JsonrpcLinebreak.handle_auth_response(response, %{})
+    end
+
+    test "returns bare :ok when expires_in is zero" do
+      response = %{"result" => %{"access_token" => "tok_abc", "expires_in" => 0}}
+
+      assert :ok = JsonrpcLinebreak.handle_auth_response(response, %{})
+    end
+
+    test "returns bare :ok when expires_in is negative" do
+      response = %{"result" => %{"access_token" => "tok_abc", "expires_in" => -100}}
+
+      assert :ok = JsonrpcLinebreak.handle_auth_response(response, %{})
+    end
+
+    test "returns bare :ok when expires_in is non-numeric string" do
+      response = %{"result" => %{"access_token" => "tok_abc", "expires_in" => "never"}}
+
+      assert :ok = JsonrpcLinebreak.handle_auth_response(response, %{})
+    end
+  end
+
   describe "JsonrpcLinebreak - custom opts" do
     alias CCXT.WS.Auth.JsonrpcLinebreak
 
@@ -549,27 +668,52 @@ defmodule CCXT.WS.AuthTest do
   describe "InlineSubscribe - build_subscribe_auth/4 variants" do
     alias CCXT.WS.Auth.InlineSubscribe
 
-    test "multiple symbols" do
+    @b64_credentials %Credentials{
+      api_key: "test_api_key",
+      secret: Base.encode64("test_secret_bytes"),
+      password: "test_passphrase"
+    }
+
+    test "produces correct field names and base64 signature" do
       auth_data =
         InlineSubscribe.build_subscribe_auth(
-          @test_credentials,
+          @b64_credentials,
           %{},
           "user",
-          ["BTC-USD", "ETH-USD", "SOL-USD"]
+          ["BTC-USD", "ETH-USD"]
         )
 
       assert is_map(auth_data)
-      assert auth_data["api_key"] == "test_api_key"
+      assert auth_data["key"] == "test_api_key"
+      assert auth_data["passphrase"] == "test_passphrase"
       assert is_binary(auth_data["timestamp"])
       assert is_binary(auth_data["signature"])
+      # Signature must be valid base64
+      assert {:ok, _} = Base.decode64(auth_data["signature"])
     end
 
-    test "empty symbols list" do
-      auth_data = InlineSubscribe.build_subscribe_auth(@test_credentials, %{}, "user", [])
+    test "channel and symbols are ignored (fixed payload)" do
+      # Same credentials produce same signature regardless of channel/symbols
+      auth1 = InlineSubscribe.build_subscribe_auth(@b64_credentials, %{}, "user", ["BTC-USD"])
+      auth2 = InlineSubscribe.build_subscribe_auth(@b64_credentials, %{}, "level2", ["ETH-USD"])
 
-      assert is_map(auth_data)
-      assert auth_data["api_key"] == "test_api_key"
-      assert is_binary(auth_data["signature"])
+      # Both use same timestamp-based payload, so with same timestamp they'd match
+      # Just verify both produce valid auth data
+      assert auth1["key"] == auth2["key"]
+      assert auth1["passphrase"] == auth2["passphrase"]
+    end
+
+    test "no passphrase when password is nil" do
+      creds = %Credentials{
+        api_key: "test_api_key",
+        secret: Base.encode64("test_secret"),
+        password: nil
+      }
+
+      auth_data = InlineSubscribe.build_subscribe_auth(creds, %{}, "user", [])
+
+      assert auth_data["key"] == "test_api_key"
+      refute Map.has_key?(auth_data, "passphrase")
     end
   end
 

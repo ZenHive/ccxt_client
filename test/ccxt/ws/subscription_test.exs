@@ -119,4 +119,159 @@ defmodule CCXT.WS.SubscriptionTest do
       assert channel == "ticker.ETHUSDT"
     end
   end
+
+  describe "format_channel/3 with symbol_context" do
+    # OKX-style: dash separator (BTC/USDT → BTC-USDT)
+    @okx_symbol_context %{
+      symbol_patterns: %{
+        spot: %{
+          case: :upper,
+          pattern: :dash_upper,
+          suffix: nil,
+          separator: "-",
+          date_format: nil,
+          component_order: nil
+        }
+      },
+      symbol_format: nil,
+      symbol_formats: nil,
+      currency_aliases: %{}
+    }
+
+    test "OKX op_subscribe_objects: produces BTC-USDT in instId" do
+      template = %{channel_name: "tickers"}
+      params = %{symbol: "BTC/USDT"}
+
+      config = %{
+        subscription_pattern: :op_subscribe_objects,
+        subscription_config: %{},
+        symbol_context: @okx_symbol_context
+      }
+
+      channel = Subscription.format_channel(template, params, config)
+      assert channel == %{"channel" => "tickers", "instId" => "BTC-USDT"}
+    end
+
+    test "symbol_context threads through to op_subscribe pattern" do
+      template = %{channel_name: "tickers", separator: "."}
+      params = %{symbol: "BTC/USDT"}
+
+      config = %{
+        subscription_pattern: :op_subscribe,
+        subscription_config: %{},
+        symbol_context: @okx_symbol_context
+      }
+
+      channel = Subscription.format_channel(template, params, config)
+      assert channel == "tickers.BTC-USDT"
+    end
+
+    test "without symbol_context, falls back to naive formatting" do
+      template = %{channel_name: "tickers", separator: "."}
+      params = %{symbol: "BTC/USDT"}
+      config = %{subscription_pattern: :op_subscribe, subscription_config: %{}}
+
+      channel = Subscription.format_channel(template, params, config)
+      assert channel == "tickers.BTCUSDT"
+    end
+
+    test "Binance method_subscribe: lowercase with symbol_context" do
+      binance_ctx = %{
+        symbol_patterns: %{
+          spot: %{
+            case: :upper,
+            pattern: :no_separator_upper,
+            suffix: nil,
+            separator: "",
+            date_format: nil,
+            component_order: nil
+          }
+        },
+        symbol_format: nil,
+        symbol_formats: nil,
+        currency_aliases: %{}
+      }
+
+      template = %{channel_name: "ticker", separator: "@", market_id_format: :lowercase}
+      params = %{symbol: "BTC/USDT"}
+
+      config = %{
+        subscription_pattern: :method_subscribe,
+        subscription_config: %{},
+        symbol_context: binance_ctx
+      }
+
+      channel = Subscription.format_channel(template, params, config)
+      assert channel == "btcusdt@ticker"
+    end
+
+    test "Coinbase type_subscribe: dash separator with symbol_context" do
+      coinbase_ctx = %{
+        symbol_patterns: %{
+          spot: %{
+            case: :upper,
+            pattern: :dash_upper,
+            suffix: nil,
+            separator: "-",
+            date_format: nil,
+            component_order: nil
+          }
+        },
+        symbol_format: nil,
+        symbol_formats: nil,
+        currency_aliases: %{}
+      }
+
+      template = %{channel_name: "ticker", separator: "-"}
+      params = %{symbol: "BTC/USD"}
+
+      config = %{
+        subscription_pattern: :type_subscribe,
+        subscription_config: %{},
+        symbol_context: coinbase_ctx
+      }
+
+      channel = Subscription.format_channel(template, params, config)
+      assert channel == "ticker-BTC-USD"
+    end
+  end
+
+  describe "Coinbase dual-field (end-to-end through Subscription)" do
+    @coinbase_ws_config %{
+      subscription_pattern: :type_subscribe,
+      subscription_config: %{
+        op_field: "type",
+        args_field: "product_ids",
+        args_format: :string_list,
+        channels_field: "channels",
+        channel_name: "matches"
+      }
+    }
+
+    test "build_subscribe produces dual-field message" do
+      message = Subscription.build_subscribe(["BTC-USD"], @coinbase_ws_config)
+
+      assert message["type"] == "subscribe"
+      assert message["product_ids"] == ["BTC-USD"]
+      assert message["channels"] == ["matches"]
+    end
+
+    test "build_unsubscribe produces dual-field message" do
+      message = Subscription.build_unsubscribe(["BTC-USD"], @coinbase_ws_config)
+
+      assert message["type"] == "unsubscribe"
+      assert message["product_ids"] == ["BTC-USD"]
+      assert message["channels"] == ["matches"]
+    end
+
+    test "format_channel with channels_field returns only market ID" do
+      template = %{channel_name: "matches"}
+      params = %{symbol: "BTC/USD"}
+
+      channel = Subscription.format_channel(template, params, @coinbase_ws_config)
+
+      # With channels_field, format_channel returns only the market ID
+      assert channel == "BTCUSD"
+    end
+  end
 end

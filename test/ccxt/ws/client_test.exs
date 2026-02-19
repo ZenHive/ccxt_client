@@ -250,6 +250,27 @@ defmodule CCXT.WS.ClientTest do
     end
   end
 
+  describe "connect/3 :url option" do
+    test "bypasses URL resolution when :url is provided" do
+      # Spec has no matching URL for :nonexistent, but :url option overrides
+      spec = %{ws: %{urls: %{}}}
+
+      # The connection will fail at ZenClient.connect (connection refused),
+      # NOT at URL resolution — proving the :url option bypassed spec lookup
+      result = Client.connect(spec, :nonexistent, url: "ws://127.0.0.1:1")
+
+      # Should NOT be :url_not_found — that would mean :url option didn't work
+      case result do
+        {:error, {:url_not_found, _}} ->
+          flunk("Expected :url option to bypass URL resolution, but got :url_not_found")
+
+        {:error, _reason} ->
+          # Connection error is expected (no server on port 1) — URL bypass worked
+          :ok
+      end
+    end
+  end
+
   # Integration tests would require a real WebSocket server
   # These are tagged as :integration and skipped by default
 

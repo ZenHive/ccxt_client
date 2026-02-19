@@ -144,6 +144,13 @@ defmodule CCXT.WS.Subscription do
     sub_config = config[:subscription_config] || %{}
     module = Map.get(@pattern_modules, pattern, Custom)
 
+    # Thread symbol_context into sub_config so pattern modules can access it
+    sub_config =
+      case config[:symbol_context] do
+        nil -> sub_config
+        ctx -> Map.put(sub_config, :symbol_context, ctx)
+      end
+
     module.format_channel(template, params, sub_config)
   end
 end

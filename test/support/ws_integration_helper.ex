@@ -34,6 +34,8 @@ defmodule CCXT.Test.WSIntegrationHelper do
 
   alias CCXT.WS.Helpers
 
+  require Logger
+
   # Default timeouts for WS operations
   @connect_timeout_ms 15_000
   @message_timeout_ms 30_000
@@ -82,29 +84,57 @@ defmodule CCXT.Test.WSIntegrationHelper do
   @doc """
   Waits for the adapter to reach connected state.
 
-  Polls `connected?/1` until it returns true or timeout is reached.
+  Uses `connection_state/1` when available (never-raising), falls back to
+  `connected?/1` with catch for older adapters. Reports diagnostic info on timeout.
   """
   @spec wait_for_connected!(module(), pid(), non_neg_integer()) :: :ok
   def wait_for_connected!(adapter_module, adapter, timeout \\ @connect_timeout_ms) do
     deadline = System.monotonic_time(:millisecond) + timeout
 
-    wait_loop(adapter_module, adapter, deadline)
+    wait_loop(adapter_module, adapter, deadline, timeout)
   end
 
   @doc false
-  defp wait_loop(adapter_module, adapter, deadline) do
-    if adapter_module.connected?(adapter) do
+  defp wait_loop(adapter_module, adapter, deadline, timeout) do
+    state = poll_connection_state(adapter_module, adapter)
+
+    if state == :connected do
       :ok
     else
       remaining = deadline - System.monotonic_time(:millisecond)
 
       if remaining <= 0 do
-        flunk("Adapter failed to connect within timeout")
+        flunk("""
+        Adapter failed to connect within #{timeout}ms.
+        Last state: #{inspect(state)}
+        Adapter alive: #{Process.alive?(adapter)}
+        Module: #{inspect(adapter_module)}
+        """)
       else
         Process.sleep(@state_poll_interval_ms)
-        wait_loop(adapter_module, adapter, deadline)
+        wait_loop(adapter_module, adapter, deadline, timeout)
       end
     end
+  end
+
+  @doc false
+  # Polls connection state using connection_state/1 (preferred) or connected?/1 (fallback)
+  defp poll_connection_state(adapter_module, adapter) do
+    if function_exported?(adapter_module, :connection_state, 1) do
+      adapter_module.connection_state(adapter)
+    else
+      poll_connected_legacy(adapter_module, adapter)
+    end
+  end
+
+  @doc false
+  # Fallback for adapters without connection_state/1 — wraps connected?/1
+  # with implicit try/catch (bare catch on defp body)
+  defp poll_connected_legacy(adapter_module, adapter) do
+    if adapter_module.connected?(adapter), do: :connected, else: :disconnected
+  catch
+    :exit, {:timeout, _} -> :connecting
+    :exit, {:noproc, _} -> :disconnected
   end
 
   @doc """
@@ -140,30 +170,104 @@ defmodule CCXT.Test.WSIntegrationHelper do
   end
 
   @doc false
-  defp receive_data_message(timeout) do
-    message = receive_message(timeout)
+  # Public for testability. Receives messages, skipping :system-tagged and
+  # shape-matched system messages, returning the first data payload.
+  # Uses a deadline so skipped system messages don't extend the total wait.
+  def receive_data_message(timeout) do
+    deadline = System.monotonic_time(:millisecond) + timeout
+    do_receive_data_message(deadline, timeout)
+  end
 
-    if subscription_confirmation?(message) do
-      receive_data_message(timeout)
-    else
-      message
+  @doc false
+  defp do_receive_data_message(deadline, original_timeout) do
+    remaining = deadline - System.monotonic_time(:millisecond)
+
+    if remaining <= 0 do
+      flunk("No data message received within #{original_timeout}ms (only system messages)")
+    end
+
+    case receive_tagged_message(remaining) do
+      {:system, _data} ->
+        do_receive_data_message(deadline, original_timeout)
+
+      {_family, data} ->
+        cond do
+          error_message?(data) ->
+            ExUnit.Assertions.flunk("Received error from exchange: #{inspect(data)}")
+
+          system_message?(data) ->
+            do_receive_data_message(deadline, original_timeout)
+
+          true ->
+            data
+        end
     end
   end
 
   @doc false
-  # JSON-RPC confirmation: has "jsonrpc" and "result" but no "method" (not a notification)
-  defp subscription_confirmation?(%{"jsonrpc" => "2.0", "result" => _} = msg) when not is_map_key(msg, "method") do
-    true
+  # Preserves family tags so receive_data_message/1 can distinguish
+  # :system messages (subscription acks) from data payloads.
+  # Untagged messages get {:untagged, data} for backward compatibility.
+  defp receive_tagged_message(timeout) do
+    receive do
+      {:ws_message, {:system, _} = tagged} ->
+        tagged
+
+      {:ws_message, {family, data} = _tagged} when is_map(data) or is_list(data) ->
+        {family, data}
+
+      {:ws_message, {family, data}} when is_binary(data) ->
+        case Jason.decode(data) do
+          {:ok, decoded} -> {family, decoded}
+          {:error, _} -> {family, data}
+        end
+
+      {:ws_message, data} when is_map(data) ->
+        {:untagged, data}
+
+      {:ws_message, data} when is_list(data) ->
+        {:untagged, data}
+
+      {:ws_message, data} when is_binary(data) ->
+        case Jason.decode(data) do
+          {:ok, decoded} -> {:untagged, decoded}
+          {:error, _} -> {:untagged, data}
+        end
+    after
+      timeout ->
+        flunk("No message received within #{timeout}ms")
+    end
   end
+
+  @doc false
+  # Detects error payloads that should fail the test immediately (not be swallowed).
+  defp error_message?(%{"type" => "error"}), do: true
+  defp error_message?(%{"event" => "error"}), do: true
+  defp error_message?(%{"error" => err}) when is_binary(err) or is_map(err), do: true
+  defp error_message?(_), do: false
+
+  @doc false
+  # Filters out system messages (confirmations, heartbeats, pongs) so
+  # receive_data_message/1 only returns actual data payloads.
+
+  # JSON-RPC confirmation: has "jsonrpc" and "result" but no "method" (not a notification)
+  defp system_message?(%{"jsonrpc" => "2.0", "result" => _} = msg) when not is_map_key(msg, "method"), do: true
 
   # Topic-based confirmation (Bybit): {"op": "subscribe", "success": true}
-  defp subscription_confirmation?(%{"op" => "subscribe", "success" => true}) do
-    true
-  end
+  defp system_message?(%{"op" => "subscribe", "success" => true}), do: true
 
-  defp subscription_confirmation?(_) do
-    false
-  end
+  # Channel confirmation (Coinbase): {"type": "subscriptions", "channels": [...]}
+  defp system_message?(%{"type" => "subscriptions", "channels" => c}) when is_list(c), do: true
+
+  # Heartbeat messages (various exchange formats)
+  defp system_message?(%{"type" => "heartbeat"}), do: true
+  defp system_message?(%{"event" => "heartbeat"}), do: true
+
+  # Pong responses
+  defp system_message?(%{"op" => "pong"}), do: true
+  defp system_message?(%{"ret_msg" => "pong"}), do: true
+
+  defp system_message?(_), do: false
 
   @doc """
   Receives a message from the test handler.
@@ -282,6 +386,10 @@ defmodule CCXT.Test.WSIntegrationHelper do
     "BTC-PERPETUAL"
   end
 
+  def test_symbol("coinbaseexchange") do
+    "BTC/USD"
+  end
+
   def test_symbol(_exchange_id) do
     "BTC/USDT"
   end
@@ -344,33 +452,46 @@ defmodule CCXT.Test.WSIntegrationHelper do
     auth_config != nil && auth_config != %{}
   end
 
+  @doc false
+  # Logs a warning when private channels exist but credentials are missing.
+  # Called from generated setup_all; separate function to avoid nesting depth.
+  @spec warn_if_missing_credentials(String.t(), boolean(), term()) :: :ok
+  def warn_if_missing_credentials(exchange_id, true = _has_private, nil = _credentials) do
+    Logger.warning("No testnet credentials for #{exchange_id} - private channel tests will be skipped")
+  end
+
+  def warn_if_missing_credentials(_exchange_id, _has_private, _credentials), do: :ok
+
   @doc """
   Missing credentials message for WS integration tests.
   """
   @spec missing_ws_credentials_message(String.t(), keyword()) :: String.t()
   def missing_ws_credentials_message(exchange_id, opts \\ []) do
-    testnet = Keyword.get(opts, :testnet, true)
     passphrase = Keyword.get(opts, :passphrase, false)
+    sandbox_key = Keyword.get(opts, :sandbox_key, :default)
 
-    prefix = String.upcase(exchange_id)
-    testnet_part = if testnet, do: "_TESTNET", else: ""
+    # Use Testnet.env_var_prefix for correct env var names (e.g., BINANCE_FUTURES_TESTNET)
+    exchange_atom = String.to_existing_atom(exchange_id)
+    prefix = CCXT.Testnet.env_var_prefix(exchange_atom, sandbox_key)
 
     env_vars =
       if passphrase do
+        exchange_prefix = String.upcase(exchange_id)
+
         """
-          export #{prefix}#{testnet_part}_API_KEY="your_key"
-          export #{prefix}#{testnet_part}_API_SECRET="your_secret"
-          export #{prefix}_PASSPHRASE="your_passphrase"
+          export #{prefix}_API_KEY="your_key"
+          export #{prefix}_API_SECRET="your_secret"
+          export #{exchange_prefix}_PASSPHRASE="your_passphrase"
         """
       else
         """
-          export #{prefix}#{testnet_part}_API_KEY="your_key"
-          export #{prefix}#{testnet_part}_API_SECRET="your_secret"
+          export #{prefix}_API_KEY="your_key"
+          export #{prefix}_API_SECRET="your_secret"
         """
       end
 
     """
-    Missing #{if testnet, do: "testnet ", else: ""}credentials for #{exchange_id} WS integration tests!
+    Missing testnet credentials for #{exchange_id} WS integration tests!
 
     Set these environment variables:
     #{String.trim(env_vars)}

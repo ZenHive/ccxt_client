@@ -108,6 +108,7 @@
         :timeout
       ],
       path: "/v5/order/disconnected-cancel-all",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -222,6 +223,7 @@
         :price
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -244,6 +246,7 @@
         :cost
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -268,6 +271,7 @@
         :price
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -291,6 +295,7 @@
         :cost
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -343,6 +348,7 @@
         :stopLoss
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -369,6 +375,7 @@
         :orders
       ],
       path: "/v5/order/create-batch",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -394,6 +401,7 @@
         :price
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -420,6 +428,7 @@
         :price
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -446,6 +455,7 @@
         :triggerPrice
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -475,6 +485,7 @@
         :stopLossPrice
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -500,6 +511,7 @@
         :triggerPrice
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -527,6 +539,7 @@
         :triggerPrice
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -556,6 +569,7 @@
         :takeProfitPrice
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -583,6 +597,7 @@
         :trailingTriggerPrice
       ],
       path: "/v5/position/trading-stop",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -610,6 +625,7 @@
         :triggerPrice
       ],
       path: "/v5/order/create",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -661,6 +677,7 @@
         :orders
       ],
       path: "/v5/order/amend-batch",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -695,6 +712,7 @@
       param_mappings: %{},
       params: [],
       path: "/v5/account/wallet-balance",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -735,6 +753,7 @@
         :limit
       ],
       path: "/v5/order/history",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -754,6 +773,7 @@
       },
       params: [],
       path: "/v5/order/history",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -774,6 +794,7 @@
         :limit
       ],
       path: "/v5/order/history",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -867,6 +888,7 @@
         :code
       ],
       path: "/v5/spot-cross-margin-trade/loan-info",
+      response_transformer: {:extract_path_unwrap, ["result"]},
       source: :intercepted
     },
     %{
@@ -896,6 +918,7 @@
         :code
       ],
       path: "/v5/asset/deposit/query-address",
+      response_transformer: {:extract_path_unwrap, ["result"]},
       source: :intercepted
     },
     %{
@@ -1057,6 +1080,7 @@
         :limit
       ],
       path: "/v5/market/index-price-kline",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1076,6 +1100,7 @@
         :limit
       ],
       path: "/v5/market/orderbook",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -1116,6 +1141,7 @@
         :symbol
       ],
       path: "/v5/position/list",
+      response_transformer: {:extract_path_unwrap, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1133,6 +1159,7 @@
         :symbols
       ],
       path: "/v5/market/risk-limit",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -1183,6 +1210,7 @@
         :limit
       ],
       path: "/v5/market/mark-price-kline",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1201,6 +1229,7 @@
         :symbol
       ],
       path: "/v5/market/risk-limit",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1216,6 +1245,7 @@
       param_mappings: %{},
       params: [],
       path: "/v5/market/instruments-info",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1345,6 +1375,7 @@
         :limit
       ],
       path: "/v5/market/open-interest",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -1363,6 +1394,7 @@
       },
       params: [],
       path: "/v5/order/realtime",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1461,7 +1493,7 @@
         :limit
       ],
       path: "/v5/market/orderbook",
-      response_transformer: {:extract_path, ["result"]},
+      response_transformer: {:extract_path_unwrap, ["result"]},
       source: :intercepted
     },
     %{
@@ -1485,6 +1517,7 @@
         :limit
       ],
       path: "/v5/execution/list",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1572,6 +1605,7 @@
         :limit
       ],
       path: "/v5/market/premium-index-price-kline",
+      response_transformer: {:extract_path, ["result", "list"]},
       source: :intercepted
     },
     %{
@@ -1637,6 +1671,7 @@
       param_mappings: %{},
       params: [],
       path: "/v5/market/time",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -1781,6 +1816,7 @@
         :symbol
       ],
       path: "/v5/position/set-leverage",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -1799,6 +1835,7 @@
         :symbol
       ],
       path: "/v5/account/set-margin-mode",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -1819,6 +1856,7 @@
         :symbol
       ],
       path: "/v5/position/switch-mode",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -1843,6 +1881,7 @@
         :toAccount
       ],
       path: "/v5/asset/transfer/inter-transfer",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -2983,6 +3022,10 @@
       description: "trigger price cannot be lower than 90% of qty.",
       type: :invalid_order
     },
+    170209 => %{
+      description: "{\"retCode\":170209,\"retMsg\":\"This trading pair is only available to the Brunei,Kampuchea (Cambodia ],Indonesia,Laos,Malaysia,Burma,Philippines,Thailand,Timor-Leste,Vietnam region.\",\"result\":{},\"retExtInfo\":{},\"time\":1769526868171}",
+      type: :access_restricted
+    },
     170210 => %{
       description: "New order rejected.",
       type: :invalid_order
@@ -3959,6 +4002,7 @@
     170203 => :invalid_order,
     170204 => :invalid_order,
     170206 => :invalid_order,
+    170209 => :access_restricted,
     170210 => :invalid_order,
     170213 => :order_not_found,
     170217 => :invalid_order,
@@ -5379,8 +5423,8 @@
         "{\n         \"retCode\": 0,\n         \"retMsg\": \"OK\",\n         \"result\": {\n             \"list\": [\n                 {\n                     \"totalEquity\": \"18070.32797922\",\n                     \"accountIMRate\": \"0.0101\",\n                     \"totalMarginBalance\": \"18070.32797922\",\n                     \"totalInitialMargin\": \"182.60183684\",\n                     \"accountType\": \"UNIFIED\",\n                     \"totalAvailableBalance\": \"17887.72614237\",\n                     \"accountMMRate\": \"0\",\n                     \"totalPerpUPL\": \"-0.11001349\",\n                     \"totalWalletBalance\": \"18070.43799271\",\n                     \"accountLTV\": \"0.017\",\n                     \"totalMaintenanceMargin\": \"0.38106773\",\n                     \"coin\": [\n                         {\n                             \"availableToBorrow\": \"2.5\",\n                             \"bonus\": \"0\",\n                             \"accruedInterest\": \"0\",\n                             \"availableToWithdraw\": \"0.805994\",\n                             \"totalOrderIM\": \"0\",\n                             \"equity\": \"0.805994\",\n                             \"totalPositionMM\": \"0\",\n                             \"usdValue\": \"12920.95352538\",\n                             \"unrealisedPnl\": \"0\",\n                             \"borrowAmount\": \"0\",\n                             \"totalPositionIM\": \"0\",\n                             \"walletBalance\": \"0.805994\",\n                             \"cumRealisedPnl\": \"0\",\n                             \"coin\": \"BTC\"\n                         }\n                     ]\n                 }\n             ]\n         },\n         \"retExtInfo\": {},\n         \"time\": 1672125441042\n     }",
         "account['used'] = this.safeString (coinEntry, 'locked');"
       ],
-      "line_end" => 3508,
-      "line_start" => 3342,
+      "line_end" => 3514,
+      "line_start" => 3348,
       "mappings" => [
         %{
           "comment" => nil,
@@ -5407,8 +5451,8 @@
       "examples" => [
         "{\n         \"tokenId\": \"BTC\",\n         \"total\": \"0.00048621\",\n         \"locked\": \"0\",\n         \"loan\": \"0\",\n         \"interest\": \"0\",\n         \"free\": \"0.00048621\"\n     },"
       ],
-      "line_end" => 7428,
-      "line_start" => 7406,
+      "line_end" => 7438,
+      "line_start" => 7416,
       "mappings" => [
         %{
           "comment" => nil,
@@ -5466,8 +5510,8 @@
         "{\n         \"coin\": \"USDT\",\n         \"interestRate\": \"0.000107000000\",\n         \"loanAbleAmount\": \"\",\n         \"maxLoanAmount\": \"79999.999\",\n         \"timestamp\": 1666734490778\n     }",
         "{\n         \"timestamp\": 1721469600000,\n         \"currency\": \"USDC\",\n         \"hourlyBorrowRate\": \"0.000014621596\",\n         \"vipLevel\": \"No VIP\"\n     }"
       ],
-      "line_end" => 7305,
-      "line_start" => 7275,
+      "line_end" => 7315,
+      "line_start" => 7285,
       "mappings" => [
         %{
           "comment" => nil,
@@ -5506,8 +5550,8 @@
         "{\n         \"exchangeStatus\": \"processing\",\n         \"quoteTxId\": \"1010020692439483803499737088\"\n     }",
         "{\n         \"accountType\": \"eb_convert_uta\",\n         \"exchangeTxId\": \"1010020692439483803499737088\",\n         \"userId\": \"100406395\",\n         \"fromCoin\": \"USDT\",\n         \"fromCoinType\": \"crypto\",\n         \"fromAmount\": \"10\",\n         \"toCoin\": \"BTC\",\n         \"toCoinType\": \"crypto\",\n         \"toAmount\": \"0.00015344889\",\n         \"exchangeStatus\": \"success\",\n         \"extInfo\": {},\n         \"convertRate\": \"0.000015344889\",\n         \"createdAt\": \"1727257904726\"\n     }"
       ],
-      "line_end" => 9378,
-      "line_start" => 9319,
+      "line_end" => 9388,
+      "line_start" => 9329,
       "mappings" => [
         %{
           "comment" => nil,
@@ -5569,8 +5613,8 @@
       "examples" => [
         "{\n         \"chainType\": \"ERC20\",\n         \"addressDeposit\": \"0xf56297c6717c1d1c42c30324468ed50a9b7402ee\",\n         \"tagDeposit\": '',\n         \"chain\": \"ETH\"\n     }"
       ],
-      "line_end" => 5752,
-      "line_start" => 5732,
+      "line_end" => 5762,
+      "line_start" => 5742,
       "mappings" => [
         %{
           "comment" => nil,
@@ -5607,8 +5651,8 @@
       "examples" => [
         "{\n        \"name\": \"BTC\",\n        \"coin\": \"BTC\",\n        \"remainAmount\": \"150\",\n        \"chains\": [\n            {\n                \"chainType\": \"BTC\",\n                \"confirmation\": \"10000\",\n                \"withdrawFee\": \"0.0005\",\n                \"depositMin\": \"0.0005\",\n                \"withdrawMin\": \"0.001\",\n                \"chain\": \"BTC\",\n                \"chainDeposit\": \"1\",\n                \"chainWithdraw\": \"1\",\n                \"minAccuracy\": \"8\"\n            }\n        ]\n    }"
       ],
-      "line_end" => 7911,
-      "line_start" => 7859,
+      "line_end" => 7921,
+      "line_start" => 7869,
       "mappings" => [
         %{
           "comment" => nil,
@@ -5650,8 +5694,8 @@
       "examples" => [
         "{\n         \"symbol\": \"BTCUSDT\",\n         \"bidPrice\": \"19255\",\n         \"askPrice\": \"19255.5\",\n         \"lastPrice\": \"19255.50\",\n         \"lastTickDirection\": \"ZeroPlusTick\",\n         \"prevPrice24h\": \"18634.50\",\n         \"price24hPcnt\": \"0.033325\",\n         \"highPrice24h\": \"19675.00\",\n         \"lowPrice24h\": \"18610.00\",\n         \"prevPrice1h\": \"19278.00\",\n         \"markPrice\": \"19255.00\",\n         \"indexPrice\": \"19260.68\",\n         \"openInterest\": \"48069.549\",\n         \"turnover24h\": \"4686694853.047006\",\n         \"volume24h\": \"243730.252\",\n         \"fundingRate\": \"0.0001\",\n         \"nextFundingTime\": \"1663689600000\",\n         \"predictedDeliveryPrice\": \"\",\n         \"basisRate\": \"\",\n         \"deliveryFeeRate\": \"\",\n         \"deliveryTime\": \"0\"\n     }"
       ],
-      "line_end" => 2805,
-      "line_start" => 2744,
+      "line_end" => 2807,
+      "line_start" => 2746,
       "mappings" => [
         %{
           "comment" => nil,
@@ -5753,8 +5797,8 @@
       "examples" => [
         "{\n         \"symbol\": \"BTC-26JAN24-39000-C\",\n         \"bid1Price\": \"3205\",\n         \"bid1Size\": \"7.1\",\n         \"bid1Iv\": \"0.5478\",\n         \"ask1Price\": \"3315\",\n         \"ask1Size\": \"1.98\",\n         \"ask1Iv\": \"0.5638\",\n         \"lastPrice\": \"3230\",\n         \"highPrice24h\": \"3255\",\n         \"lowPrice24h\": \"3200\",\n         \"markPrice\": \"3273.02263032\",\n         \"indexPrice\": \"36790.96\",\n         \"markIv\": \"0.5577\",\n         \"underlyingPrice\": \"37649.67254894\",\n         \"openInterest\": \"19.67\",\n         \"turnover24h\": \"170140.33875912\",\n         \"volume24h\": \"4.56\",\n         \"totalVolume\": \"22\",\n         \"totalTurnover\": \"789305\",\n         \"delta\": \"0.49640971\",\n         \"gamma\": \"0.00004131\",\n         \"vega\": \"69.08651675\",\n         \"theta\": \"-24.9443226\",\n         \"predictedDeliveryPrice\": \"0\",\n         \"change24h\": \"0.18532111\"\n     }"
       ],
-      "line_end" => 8398,
-      "line_start" => 8345,
+      "line_end" => 8408,
+      "line_start" => 8355,
       "mappings" => [
         %{
           "comment" => nil,
@@ -5861,8 +5905,8 @@
       "examples" => [
         "{\n     \"symbol\": \"XMRUSDT\",\n     \"orderType\": \"UNKNOWN\",\n     \"underlyingPrice\": \"\",\n     \"orderLinkId\": \"\",\n     \"orderId\": \"a11e5fe2-1dbf-4bab-a9b2-af80a14efc5d\",\n     \"stopOrderType\": \"UNKNOWN\",\n     \"execTime\": \"1710950400000\",\n     \"feeCurrency\": \"\",\n     \"createType\": \"\",\n     \"feeRate\": \"-0.000761\",\n     \"tradeIv\": \"\",\n     \"blockTradeId\": \"\",\n     \"markPrice\": \"136.79\",\n     \"execPrice\": \"137.11\",\n     \"markIv\": \"\",\n     \"orderQty\": \"0\",\n     \"orderPrice\": \"0\",\n     \"execValue\": \"134.3678\",\n     \"closedSize\": \"0\",\n     \"execType\": \"Funding\",\n     \"seq\": \"28097658790\",\n     \"side\": \"Sell\",\n     \"indexPrice\": \"\",\n     \"leavesQty\": \"0\",\n     \"isMaker\": false,\n     \"execFee\": \"-0.10232512\",\n     \"execId\": \"8d1ef156-4ec6-4445-9a6c-1c0c24dbd046\",\n     \"marketUnit\": \"\",\n     \"execQty\": \"0.98\",\n     \"nextPageCursor\": \"5774437%3A0%2C5771289%3A0\"\n }"
       ],
-      "line_end" => 8759,
-      "line_start" => 8707,
+      "line_end" => 8769,
+      "line_start" => 8717,
       "mappings" => [
         %{
           "comment" => nil,
@@ -5915,8 +5959,8 @@
         "{\n         \"id\": 234467,\n         \"user_id\": 1,\n         \"coin\": \"BTC\",\n         \"wallet_id\": 27913,\n         \"type\": \"Realized P&L\",\n         \"amount\": \"-0.00000006\",\n         \"tx_id\": \"\",\n         \"address\": \"BTCUSD\",\n         \"wallet_balance\": \"0.03000330\",\n         \"exec_time\": \"2019-12-09T00:00:25.000Z\",\n         \"cross_seq\": 0\n     }",
         "{\n         \"symbol\": \"XRPUSDT\",\n         \"side\": \"Buy\",\n         \"funding\": \"\",\n         \"orderLinkId\": \"linear-order\",\n         \"orderId\": \"592b7e41-78fd-42e2-9aa3-91e1835ef3e1\",\n         \"fee\": \"0.00260280\",\n         \"change\": \"-0.0026028\",\n         \"cashFlow\": \"0\",\n         \"transactionTime\": \"1672121182224\",\n         \"type\": \"TRADE\",\n         \"feeRate\": \"0.0006\",\n         \"size\": \"12\",\n         \"qty\": \"12\",\n         \"cashBalance\": \"5086.58101322\",\n         \"currency\": \"USDT\",\n         \"category\": \"linear\",\n         \"tradePrice\": \"0.3615\",\n         \"tradeId\": \"8569c10f-5061-5891-81c4-a54929847eb3\"\n     }"
       ],
-      "line_end" => 6332,
-      "line_start" => 6256,
+      "line_end" => 6342,
+      "line_start" => 6266,
       "mappings" => [
         %{
           "comment" => nil,
@@ -6006,8 +6050,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 6358,
-      "line_start" => 6334,
+      "line_end" => 6368,
+      "line_start" => 6344,
       "mappings" => [],
       "name" => "parseLedgerEntryType",
       "signature" => "parseLedgerEntryType (type)",
@@ -6016,8 +6060,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 6873,
-      "line_start" => 6863,
+      "line_end" => 6883,
+      "line_start" => 6873,
       "mappings" => [
         %{
           "comment" => nil,
@@ -6054,8 +6098,8 @@
       "examples" => [
         "[\n      {\n          \"id\": 1,\n          \"symbol\": \"BTCUSD\",\n          \"riskLimitValue\": \"150\",\n          \"maintenanceMargin\": \"0.5\",\n          \"initialMargin\": \"1\",\n          \"isLowestRisk\": 1,\n          \"maxLeverage\": \"100.00\"\n      }\n  ]"
       ],
-      "line_end" => 8621,
-      "line_start" => 8590,
+      "line_end" => 8631,
+      "line_start" => 8600,
       "mappings" => [],
       "name" => "parseLeverageTiers",
       "signature" => "parseLeverageTiers (response, symbols: Strings = undefined, marketIdKey = undefined): LeverageTiers",
@@ -6066,8 +6110,8 @@
       "examples" => [
         "{\n         \"symbol\": \"ETHPERP\",\n         \"orderType\": \"Market\",\n         \"underlyingPrice\": \"\",\n         \"orderLinkId\": \"\",\n         \"side\": \"Buy\",\n         \"indexPrice\": \"\",\n         \"orderId\": \"8c065341-7b52-4ca9-ac2c-37e31ac55c94\",\n         \"stopOrderType\": \"UNKNOWN\",\n         \"leavesQty\": \"0\",\n         \"execTime\": \"1672282722429\",\n         \"isMaker\": false,\n         \"execFee\": \"0.071409\",\n         \"feeRate\": \"0.0006\",\n         \"execId\": \"e0cbe81d-0f18-5866-9415-cf319b5dab3b\",\n         \"tradeIv\": \"\",\n         \"blockTradeId\": \"\",\n         \"markPrice\": \"1183.54\",\n         \"execPrice\": \"1190.15\",\n         \"markIv\": \"\",\n         \"orderQty\": \"0.1\",\n         \"orderPrice\": \"1236.9\",\n         \"execValue\": \"119.015\",\n         \"execType\": \"Trade\",\n         \"execQty\": \"0.1\"\n     }"
       ],
-      "line_end" => 8531,
-      "line_start" => 8484,
+      "line_end" => 8541,
+      "line_start" => 8494,
       "mappings" => [
         %{
           "comment" => nil,
@@ -6124,8 +6168,8 @@
       "examples" => [
         "{\n         \"symbol\": \"BTCUSDT\",\n         \"buyRatio\": \"0.5707\",\n         \"sellRatio\": \"0.4293\",\n         \"timestamp\": \"1729123200000\"\n     }"
       ],
-      "line_end" => 9456,
-      "line_start" => 9435,
+      "line_end" => 9466,
+      "line_start" => 9445,
       "mappings" => [
         %{
           "comment" => nil,
@@ -6168,8 +6212,8 @@
         "{\n         \"coin\": \"BTC\",\n         \"amount\": \"0.001\"\n     }",
         "{\n         \"resultStatus\": \"SU\"\n     }"
       ],
-      "line_end" => 7639,
-      "line_start" => 7614,
+      "line_end" => 7649,
+      "line_start" => 7624,
       "mappings" => [
         %{
           "comment" => nil,
@@ -6214,8 +6258,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 9498,
-      "line_start" => 9491,
+      "line_end" => 9508,
+      "line_start" => 9501,
       "mappings" => [
         %{
           "comment" => nil,
@@ -6240,8 +6284,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 9507,
-      "line_start" => 9500,
+      "line_end" => 9517,
+      "line_start" => 9510,
       "mappings" => [],
       "name" => "parseMarginModeType",
       "signature" => "parseMarginModeType (marginMode: Str): Str",
@@ -6252,8 +6296,8 @@
       "examples" => [
         "[\n      {\n          \"id\": 1,\n          \"symbol\": \"BTCUSD\",\n          \"riskLimitValue\": \"150\",\n          \"maintenanceMargin\": \"0.5\",\n          \"initialMargin\": \"1\",\n          \"isLowestRisk\": 1,\n          \"maxLeverage\": \"100.00\"\n      }\n  ]"
       ],
-      "line_end" => 8658,
-      "line_start" => 8623,
+      "line_end" => 8668,
+      "line_start" => 8633,
       "mappings" => [
         %{
           "comment" => nil,
@@ -6305,8 +6349,8 @@
       "examples" => [
         "[\n         \"1621162800\",\n         \"49592.43\",\n         \"49644.91\",\n         \"49342.37\",\n         \"49349.42\",\n         \"1451.59\",\n         \"2.4343353100000003\"\n     ]"
       ],
-      "line_end" => 2630,
-      "line_start" => 2609,
+      "line_end" => 2632,
+      "line_start" => 2611,
       "mappings" => [],
       "name" => "parseOHLCV",
       "signature" => "parseOHLCV (ohlcv, market: Market = undefined): OHLCV",
@@ -6317,8 +6361,8 @@
       "examples" => [
         "{\n        \"openInterest\": 64757.62400000,\n        \"timestamp\": 1665784800000,\n    }"
       ],
-      "line_end" => 7237,
-      "line_start" => 7217,
+      "line_end" => 7247,
+      "line_start" => 7227,
       "mappings" => [
         %{
           "comment" => nil,
@@ -6360,8 +6404,8 @@
       "examples" => [
         "{\n         \"symbol\": \"BTC-27DEC24-55000-P\",\n         \"bid1Price\": \"0\",\n         \"bid1Size\": \"0\",\n         \"bid1Iv\": \"0\",\n         \"ask1Price\": \"0\",\n         \"ask1Size\": \"0\",\n         \"ask1Iv\": \"0\",\n         \"lastPrice\": \"10980\",\n         \"highPrice24h\": \"0\",\n         \"lowPrice24h\": \"0\",\n         \"markPrice\": \"11814.66756236\",\n         \"indexPrice\": \"63838.92\",\n         \"markIv\": \"0.8866\",\n         \"underlyingPrice\": \"71690.55303594\",\n         \"openInterest\": \"0.01\",\n         \"turnover24h\": \"0\",\n         \"volume24h\": \"0\",\n         \"totalVolume\": \"2\",\n         \"totalTurnover\": \"78719\",\n         \"delta\": \"-0.23284954\",\n         \"gamma\": \"0.0000055\",\n         \"vega\": \"191.70757975\",\n         \"theta\": \"-30.43617927\",\n         \"predictedDeliveryPrice\": \"0\",\n         \"change24h\": \"0\"\n     }"
       ],
-      "line_end" => 8937,
-      "line_start" => 8886,
+      "line_end" => 8947,
+      "line_start" => 8896,
       "mappings" => [
         %{
           "comment" => nil,
@@ -6460,8 +6504,8 @@
         "{\n         \"symbol\": \"BTCUSDT\",\n         \"orderType\": \"Market\",\n         \"orderLinkId\": \"\",\n         \"slLimitPrice\": \"0\",\n         \"orderId\": \"f5f2d355-9a11-4af3-9b83-aa1d6ab6ddfe\",\n         \"cancelType\": \"UNKNOWN\",\n         \"avgPrice\": \"122529.9\",\n         \"stopOrderType\": \"\",\n         \"lastPriceOnCreated\": \"123747.9\",\n         \"orderStatus\": \"Filled\",\n         \"createType\": \"CreateByUser\",\n         \"takeProfit\": \"\",\n         \"cumExecValue\": \"122.5299\",\n         \"tpslMode\": \"\",\n         \"smpType\": \"None\",\n         \"triggerDirection\": 0,\n         \"blockTradeId\": \"\",\n         \"cumFeeDetail\": {\n             \"USDT\": \"0.06739145\"\n         },\n         \"rejectReason\": \"EC_NoError\",\n         \"isLeverage\": \"\",\n         \"price\": \"120518\",\n         \"orderIv\": \"\",\n         \"createdTime\": \"1757837618905\",\n         \"tpTriggerBy\": \"\",\n         \"positionIdx\": 0,\n         \"timeInForce\": \"IOC\",\n         \"leavesValue\": \"0\",\n         \"updatedTime\": \"1757837618909\",\n         \"side\": \"Sell\",\n         \"smpGroup\": 0,\n         \"triggerPrice\": \"\",\n         \"tpLimitPrice\": \"0\",\n         \"cumExecFee\": \"0.06739145\",\n         \"slTriggerBy\": \"\",\n         \"leavesQty\": \"0\",\n         \"closeOnTrigger\": false,\n         \"slippageToleranceType\": \"UNKNOWN\",\n         \"placeType\": \"\",\n         \"cumExecQty\": \"0.001\",\n         \"reduceOnly\": true,\n         \"qty\": \"0.001\",\n         \"stopLoss\": \"\",\n         \"smpOrderId\": \"\",\n         \"slippageTolerance\": \"0\",\n         \"triggerBy\": \"\",\n         \"extraFees\": \"\"\n     }",
         "{\n        \"category\": \"linear\",\n        \"symbol\": \"LTCUSDT\",\n        \"orderId\": '',\n        \"orderLinkId\": '',\n        \"createAt\": '',\n        \"code\": \"10001\",\n        \"msg\": \"The number of contracts exceeds maximum limit allowed: too large\"\n    }"
       ],
-      "line_end" => 3934,
-      "line_start" => 3716,
+      "line_end" => 3940,
+      "line_start" => 3722,
       "mappings" => [
         %{
           "comment" => nil,
@@ -6616,8 +6660,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 3704,
-      "line_start" => 3677,
+      "line_end" => 3710,
+      "line_start" => 3683,
       "mappings" => [],
       "name" => "parseOrderStatus",
       "signature" => "parseOrderStatus (status: Str)",
@@ -6632,8 +6676,8 @@
         "{\n         \"symbol\": \"XRPUSDT\",\n         \"leverage\": \"10\",\n         \"avgPrice\": \"0.3615\",\n         \"liqPrice\": \"0.0001\",\n         \"riskLimitValue\": \"200000\",\n         \"takeProfit\": \"\",\n         \"positionValue\": \"36.15\",\n         \"tpslMode\": \"Full\",\n         \"riskId\": 41,\n         \"trailingStop\": \"0\",\n         \"unrealisedPnl\": \"-1.83\",\n         \"markPrice\": \"0.3432\",\n         \"cumRealisedPnl\": \"0.48805876\",\n         \"positionMM\": \"0.381021\",\n         \"createdTime\": \"1672121182216\",\n         \"positionIdx\": 0,\n         \"positionIM\": \"3.634521\",\n         \"updatedTime\": \"1672279322668\",\n         \"side\": \"Buy\",\n         \"bustPrice\": \"\",\n         \"size\": \"100\",\n         \"positionStatus\": \"Normal\",\n         \"stopLoss\": \"\",\n         \"tradeMode\": 0\n     }",
         "{\n        symbol: 'XRPUSDT',\n        orderType: 'Market',\n        leverage: '10',\n        updatedTime: '1712717265572',\n        side: 'Sell',\n        orderId: '071749f3-a9fa-427b-b5ca-27b2f52b81de',\n        closedPnl: '-0.00049568',\n        avgEntryPrice: '0.6045',\n        qty: '3',\n        cumEntryValue: '1.8135',\n        createdTime: '1712717265566',\n        orderPrice: '0.5744',\n        closedSize: '3',\n        avgExitPrice: '0.605',\n        execType: 'Trade',\n        fillCount: '1',\n        cumExitValue: '1.815'\n    }"
       ],
-      "line_end" => 6845,
-      "line_start" => 6601,
+      "line_end" => 6855,
+      "line_start" => 6611,
       "mappings" => [
         %{
           "comment" => nil,
@@ -6708,7 +6752,7 @@
         %{
           "comment" => nil,
           "key" => "realizedPnl",
-          "value" => "this.safeNumber (position, 'closedPnl')"
+          "value" => "this.safeNumber2 (position, 'curRealisedPnl', 'closedPnl')"
         },
         %{
           "comment" => nil,
@@ -6768,7 +6812,7 @@
       ],
       "name" => "parsePosition",
       "signature" => "parsePosition (position: Dict, market: Market = undefined): Position",
-      "source" => "parsePosition (position: Dict, market: Market = undefined): Position {\n        //\n        // linear swap\n        //\n        //     {\n        //         \"positionIdx\": 0,\n        //         \"riskId\": \"11\",\n        //         \"symbol\": \"ETHUSDT\",\n        //         \"side\": \"Buy\",\n        //         \"size\": \"0.10\",\n        //         \"positionValue\": \"119.845\",\n        //         \"entryPrice\": \"1198.45\",\n        //         \"tradeMode\": 1,\n        //         \"autoAddMargin\": 0,\n        //         \"leverage\": \"4.2\",\n        //         \"positionBalance\": \"28.58931118\",\n        //         \"liqPrice\": \"919.10\",\n        //         \"bustPrice\": \"913.15\",\n        //         \"takeProfit\": \"0.00\",\n        //         \"stopLoss\": \"0.00\",\n        //         \"trailingStop\": \"0.00\",\n        //         \"unrealisedPnl\": \"0.083\",\n        //         \"createdTime\": \"1669097244192\",\n        //         \"updatedTime\": \"1669413126190\",\n        //         \"tpSlMode\": \"Full\",\n        //         \"riskLimitValue\": \"900000\",\n        //         \"activePrice\": \"0.00\"\n        //     }\n        //\n        // usdc\n        //    {\n        //       \"symbol\":\"BTCPERP\",\n        //       \"leverage\":\"1.00\",\n        //       \"occClosingFee\":\"0.0000\",\n        //       \"liqPrice\":\"\",\n        //       \"positionValue\":\"30.8100\",\n        //       \"takeProfit\":\"0.0\",\n        //       \"riskId\":\"10001\",\n        //       \"trailingStop\":\"0.0000\",\n        //       \"unrealisedPnl\":\"0.0000\",\n        //       \"createdAt\":\"1652451795305\",\n        //       \"markPrice\":\"30809.41\",\n        //       \"cumRealisedPnl\":\"0.0000\",\n        //       \"positionMM\":\"0.1541\",\n        //       \"positionIM\":\"30.8100\",\n        //       \"updatedAt\":\"1652451795305\",\n        //       \"tpSLMode\":\"UNKNOWN\",\n        //       \"side\":\"Buy\",\n        //       \"bustPrice\":\"\",\n        //       \"deleverageIndicator\":\"0\",\n        //       \"entryPrice\":\"30810.0\",\n        //       \"size\":\"0.001\",\n        //       \"sessionRPL\":\"0.0000\",\n        //       \"positionStatus\":\"NORMAL\",\n        //       \"sessionUPL\":\"-0.0006\",\n        //       \"stopLoss\":\"0.0\",\n        //       \"orderMargin\":\"0.0000\",\n        //       \"sessionAvgPrice\":\"30810.0\"\n        //    }\n        //\n        // unified margin\n        //\n        //     {\n        //         \"symbol\": \"ETHUSDT\",\n        //         \"leverage\": \"10\",\n        //         \"updatedTime\": 1657711949945,\n        //         \"side\": \"Buy\",\n        //         \"positionValue\": \"536.92500000\",\n        //         \"takeProfit\": \"\",\n        //         \"tpslMode\": \"Full\",\n        //         \"riskId\": 11,\n        //         \"trailingStop\": \"\",\n        //         \"entryPrice\": \"1073.85000000\",\n        //         \"unrealisedPnl\": \"\",\n        //         \"markPrice\": \"1080.65000000\",\n        //         \"size\": \"0.5000\",\n        //         \"positionStatus\": \"normal\",\n        //         \"stopLoss\": \"\",\n        //         \"cumRealisedPnl\": \"-0.32215500\",\n        //         \"positionMM\": \"2.97456450\",\n        //         \"createdTime\": 1657711949928,\n        //         \"positionIdx\": 0,\n        //         \"positionIM\": \"53.98243950\"\n        //     }\n        //\n        // unified account\n        //\n        //     {\n        //         \"symbol\": \"XRPUSDT\",\n        //         \"leverage\": \"10\",\n        //         \"avgPrice\": \"0.3615\",\n        //         \"liqPrice\": \"0.0001\",\n        //         \"riskLimitValue\": \"200000\",\n        //         \"takeProfit\": \"\",\n        //         \"positionValue\": \"36.15\",\n        //         \"tpslMode\": \"Full\",\n        //         \"riskId\": 41,\n        //         \"trailingStop\": \"0\",\n        //         \"unrealisedPnl\": \"-1.83\",\n        //         \"markPrice\": \"0.3432\",\n        //         \"cumRealisedPnl\": \"0.48805876\",\n        //         \"positionMM\": \"0.381021\",\n        //         \"createdTime\": \"1672121182216\",\n        //         \"positionIdx\": 0,\n        //         \"positionIM\": \"3.634521\",\n        //         \"updatedTime\": \"1672279322668\",\n        //         \"side\": \"Buy\",\n        //         \"bustPrice\": \"\",\n        //         \"size\": \"100\",\n        //         \"positionStatus\": \"Normal\",\n        //         \"stopLoss\": \"\",\n        //         \"tradeMode\": 0\n        //     }\n        //\n        // fetchPositionsHistory\n        //\n        //    {\n        //        symbol: 'XRPUSDT',\n        //        orderType: 'Market',\n        //        leverage: '10',\n        //        updatedTime: '1712717265572',\n        //        side: 'Sell',\n        //        orderId: '071749f3-a9fa-427b-b5ca-27b2f52b81de',\n        //        closedPnl: '-0.00049568',\n        //        avgEntryPrice: '0.6045',\n        //        qty: '3',\n        //        cumEntryValue: '1.8135',\n        //        createdTime: '1712717265566',\n        //        orderPrice: '0.5744',\n        //        closedSize: '3',\n        //        avgExitPrice: '0.605',\n        //        execType: 'Trade',\n        //        fillCount: '1',\n        //        cumExitValue: '1.815'\n        //    }\n        //\n        const closedSize = this.safeString (position, 'closedSize');\n        const isHistory = (closedSize !== undefined);\n        const contract = this.safeString (position, 'symbol');\n        market = this.safeMarket (contract, market, undefined, 'contract');\n        const size = Precise.stringAbs (this.safeString2 (position, 'size', 'qty'));\n        let side = this.safeString (position, 'side');\n        const positionIdx = this.safeString (position, 'positionIdx');\n        let hedged = undefined;\n        if (positionIdx !== undefined) {\n            hedged = (positionIdx !== '0');\n        }\n        if ((hedged !== undefined) && hedged) {\n            side = (positionIdx === '1') ? 'long' : 'short';\n        } else if (side !== undefined) {\n            if (side === 'Buy') {\n                side = isHistory ? 'short' : 'long';\n            } else if (side === 'Sell') {\n                side = isHistory ? 'long' : 'short';\n            } else {\n                side = undefined;\n            }\n        }\n        let notional = undefined;\n        const contractSize = this.safeString (market, 'contractSize');\n        const markPrice = this.safeString (position, 'markPrice');\n        if (market['inverse']) {\n            notional = Precise.stringDiv (Precise.stringMul (size, contractSize), markPrice);\n        } else {\n            notional = this.safeString2 (position, 'positionValue', 'cumExitValue');\n        }\n        const unrealisedPnl = this.omitZero (this.safeString (position, 'unrealisedPnl'));\n        let initialMarginString = this.safeString2 (position, 'positionIM', 'cumEntryValue');\n        let maintenanceMarginString = this.safeString (position, 'positionMM');\n        const timestamp = this.safeIntegerN (position, [ 'createdTime', 'createdAt' ]);\n        let lastUpdateTimestamp = this.parse8601 (this.safeString (position, 'updated_at'));\n        if (lastUpdateTimestamp === undefined) {\n            lastUpdateTimestamp = this.safeIntegerN (position, [ 'updatedTime', 'updatedAt', 'updatedTime' ]);\n        }\n        let collateralString = this.safeString (position, 'positionBalance');\n        const entryPrice = this.omitZero (this.safeStringN (position, [ 'entryPrice', 'avgPrice', 'avgEntryPrice' ]));\n        const liquidationPrice = this.omitZero (this.safeString (position, 'liqPrice'));\n        const leverage = this.safeString (position, 'leverage');\n        if (liquidationPrice !== undefined) {\n            if (market['settle'] === 'USDC') {\n                //  (Entry price - Liq price) * Contracts + Maintenance Margin + (unrealised pnl) = Collateral\n                const price = this.safeBool (this.options, 'useMarkPriceForPositionCollateral', false) ? markPrice : entryPrice;\n                const difference = Precise.stringAbs (Precise.stringSub (price, liquidationPrice));\n                collateralString = Precise.stringAdd (Precise.stringAdd (Precise.stringMul (difference, size), maintenanceMarginString), unrealisedPnl);\n            } else {\n                const bustPrice = this.safeString (position, 'bustPrice');\n                if (market['linear']) {\n                    // derived from the following formulas\n                    //  (Entry price - Bust price) * Contracts = Collateral\n                    //  (Entry price - Liq price) * Contracts = Collateral - Maintenance Margin\n                    // Maintenance Margin = (Bust price - Liq price) x Contracts\n                    const maintenanceMarginPriceDifference = Precise.stringAbs (Precise.stringSub (liquidationPrice, bustPrice));\n                    maintenanceMarginString = Precise.stringMul (maintenanceMarginPriceDifference, size);\n                    // Initial Margin = Contracts x Entry Price / Leverage\n                    if ((entryPrice !== undefined) && (initialMarginString === undefined)) {\n                        initialMarginString = Precise.stringDiv (Precise.stringMul (size, entryPrice), leverage);\n                    }\n                } else {\n                    // Contracts * (1 / Entry price - 1 / Bust price) = Collateral\n                    // Contracts * (1 / Entry price - 1 / Liq price) = Collateral - Maintenance Margin\n                    // Maintenance Margin = Contracts * (1 / Liq price - 1 / Bust price)\n                    // Maintenance Margin = Contracts * (Bust price - Liq price) / (Liq price x Bust price)\n                    const difference = Precise.stringAbs (Precise.stringSub (bustPrice, liquidationPrice));\n                    const multiply = Precise.stringMul (bustPrice, liquidationPrice);\n                    maintenanceMarginString = Precise.stringDiv (Precise.stringMul (size, difference), multiply);\n                    // Initial Margin = Leverage x Contracts / EntryPrice\n                    if ((entryPrice !== undefined) && (initialMarginString === undefined)) {\n                        initialMarginString = Precise.stringDiv (size, Precise.stringMul (entryPrice, leverage));\n                    }\n                }\n            }\n        }\n        const maintenanceMarginPercentage = Precise.stringDiv (maintenanceMarginString, notional);\n        const marginRatio = Precise.stringDiv (maintenanceMarginString, collateralString, 4);\n        return this.safePosition ({\n            'info': position,\n            'id': undefined,\n            'symbol': market['symbol'],\n            'timestamp': timestamp,\n            'datetime': this.iso8601 (timestamp),\n            'lastUpdateTimestamp': lastUpdateTimestamp,\n            'initialMargin': this.parseNumber (initialMarginString),\n            'initialMarginPercentage': this.parseNumber (Precise.stringDiv (initialMarginString, notional)),\n            'maintenanceMargin': this.parseNumber (maintenanceMarginString),\n            'maintenanceMarginPercentage': this.parseNumber (maintenanceMarginPercentage),\n            'entryPrice': this.parseNumber (entryPrice),\n            'notional': this.parseNumber (notional),\n            'leverage': this.parseNumber (leverage),\n            'unrealizedPnl': this.parseNumber (unrealisedPnl),\n            'realizedPnl': this.safeNumber (position, 'closedPnl'),\n            'contracts': this.parseNumber (size), // in USD for inverse swaps\n            'contractSize': this.safeNumber (market, 'contractSize'),\n            'marginRatio': this.parseNumber (marginRatio),\n            'liquidationPrice': this.parseNumber (liquidationPrice),\n            'markPrice': this.parseNumber (markPrice),\n            'lastPrice': this.safeNumber (position, 'avgExitPrice'),\n            'collateral': this.parseNumber (collateralString),\n            'marginMode': undefined, // tradeMode was deprecated\n            'side': side,\n            'percentage': undefined,\n            'stopLossPrice': this.safeNumber2 (position, 'stop_loss', 'stopLoss'),\n            'takeProfitPrice': this.safeNumber2 (position, 'take_profit', 'takeProfit'),\n            'hedged': hedged,\n        });\n    }"
+      "source" => "parsePosition (position: Dict, market: Market = undefined): Position {\n        //\n        // linear swap\n        //\n        //     {\n        //         \"positionIdx\": 0,\n        //         \"riskId\": \"11\",\n        //         \"symbol\": \"ETHUSDT\",\n        //         \"side\": \"Buy\",\n        //         \"size\": \"0.10\",\n        //         \"positionValue\": \"119.845\",\n        //         \"entryPrice\": \"1198.45\",\n        //         \"tradeMode\": 1,\n        //         \"autoAddMargin\": 0,\n        //         \"leverage\": \"4.2\",\n        //         \"positionBalance\": \"28.58931118\",\n        //         \"liqPrice\": \"919.10\",\n        //         \"bustPrice\": \"913.15\",\n        //         \"takeProfit\": \"0.00\",\n        //         \"stopLoss\": \"0.00\",\n        //         \"trailingStop\": \"0.00\",\n        //         \"unrealisedPnl\": \"0.083\",\n        //         \"createdTime\": \"1669097244192\",\n        //         \"updatedTime\": \"1669413126190\",\n        //         \"tpSlMode\": \"Full\",\n        //         \"riskLimitValue\": \"900000\",\n        //         \"activePrice\": \"0.00\"\n        //     }\n        //\n        // usdc\n        //    {\n        //       \"symbol\":\"BTCPERP\",\n        //       \"leverage\":\"1.00\",\n        //       \"occClosingFee\":\"0.0000\",\n        //       \"liqPrice\":\"\",\n        //       \"positionValue\":\"30.8100\",\n        //       \"takeProfit\":\"0.0\",\n        //       \"riskId\":\"10001\",\n        //       \"trailingStop\":\"0.0000\",\n        //       \"unrealisedPnl\":\"0.0000\",\n        //       \"createdAt\":\"1652451795305\",\n        //       \"markPrice\":\"30809.41\",\n        //       \"cumRealisedPnl\":\"0.0000\",\n        //       \"positionMM\":\"0.1541\",\n        //       \"positionIM\":\"30.8100\",\n        //       \"updatedAt\":\"1652451795305\",\n        //       \"tpSLMode\":\"UNKNOWN\",\n        //       \"side\":\"Buy\",\n        //       \"bustPrice\":\"\",\n        //       \"deleverageIndicator\":\"0\",\n        //       \"entryPrice\":\"30810.0\",\n        //       \"size\":\"0.001\",\n        //       \"sessionRPL\":\"0.0000\",\n        //       \"positionStatus\":\"NORMAL\",\n        //       \"sessionUPL\":\"-0.0006\",\n        //       \"stopLoss\":\"0.0\",\n        //       \"orderMargin\":\"0.0000\",\n        //       \"sessionAvgPrice\":\"30810.0\"\n        //    }\n        //\n        // unified margin\n        //\n        //     {\n        //         \"symbol\": \"ETHUSDT\",\n        //         \"leverage\": \"10\",\n        //         \"updatedTime\": 1657711949945,\n        //         \"side\": \"Buy\",\n        //         \"positionValue\": \"536.92500000\",\n        //         \"takeProfit\": \"\",\n        //         \"tpslMode\": \"Full\",\n        //         \"riskId\": 11,\n        //         \"trailingStop\": \"\",\n        //         \"entryPrice\": \"1073.85000000\",\n        //         \"unrealisedPnl\": \"\",\n        //         \"markPrice\": \"1080.65000000\",\n        //         \"size\": \"0.5000\",\n        //         \"positionStatus\": \"normal\",\n        //         \"stopLoss\": \"\",\n        //         \"cumRealisedPnl\": \"-0.32215500\",\n        //         \"positionMM\": \"2.97456450\",\n        //         \"createdTime\": 1657711949928,\n        //         \"positionIdx\": 0,\n        //         \"positionIM\": \"53.98243950\"\n        //     }\n        //\n        // unified account\n        //\n        //     {\n        //         \"symbol\": \"XRPUSDT\",\n        //         \"leverage\": \"10\",\n        //         \"avgPrice\": \"0.3615\",\n        //         \"liqPrice\": \"0.0001\",\n        //         \"riskLimitValue\": \"200000\",\n        //         \"takeProfit\": \"\",\n        //         \"positionValue\": \"36.15\",\n        //         \"tpslMode\": \"Full\",\n        //         \"riskId\": 41,\n        //         \"trailingStop\": \"0\",\n        //         \"unrealisedPnl\": \"-1.83\",\n        //         \"markPrice\": \"0.3432\",\n        //         \"cumRealisedPnl\": \"0.48805876\",\n        //         \"positionMM\": \"0.381021\",\n        //         \"createdTime\": \"1672121182216\",\n        //         \"positionIdx\": 0,\n        //         \"positionIM\": \"3.634521\",\n        //         \"updatedTime\": \"1672279322668\",\n        //         \"side\": \"Buy\",\n        //         \"bustPrice\": \"\",\n        //         \"size\": \"100\",\n        //         \"positionStatus\": \"Normal\",\n        //         \"stopLoss\": \"\",\n        //         \"tradeMode\": 0\n        //     }\n        //\n        // fetchPositionsHistory\n        //\n        //    {\n        //        symbol: 'XRPUSDT',\n        //        orderType: 'Market',\n        //        leverage: '10',\n        //        updatedTime: '1712717265572',\n        //        side: 'Sell',\n        //        orderId: '071749f3-a9fa-427b-b5ca-27b2f52b81de',\n        //        closedPnl: '-0.00049568',\n        //        avgEntryPrice: '0.6045',\n        //        qty: '3',\n        //        cumEntryValue: '1.8135',\n        //        createdTime: '1712717265566',\n        //        orderPrice: '0.5744',\n        //        closedSize: '3',\n        //        avgExitPrice: '0.605',\n        //        execType: 'Trade',\n        //        fillCount: '1',\n        //        cumExitValue: '1.815'\n        //    }\n        //\n        const closedSize = this.safeString (position, 'closedSize');\n        const isHistory = (closedSize !== undefined);\n        const contract = this.safeString (position, 'symbol');\n        market = this.safeMarket (contract, market, undefined, 'contract');\n        const size = Precise.stringAbs (this.safeString2 (position, 'size', 'qty'));\n        let side = this.safeString (position, 'side');\n        const positionIdx = this.safeString (position, 'positionIdx');\n        let hedged = undefined;\n        if (positionIdx !== undefined) {\n            hedged = (positionIdx !== '0');\n        }\n        if ((hedged !== undefined) && hedged) {\n            side = (positionIdx === '1') ? 'long' : 'short';\n        } else if (side !== undefined) {\n            if (side === 'Buy') {\n                side = isHistory ? 'short' : 'long';\n            } else if (side === 'Sell') {\n                side = isHistory ? 'long' : 'short';\n            } else {\n                side = undefined;\n            }\n        }\n        let notional = undefined;\n        const contractSize = this.safeString (market, 'contractSize');\n        const markPrice = this.safeString (position, 'markPrice');\n        if (market['inverse']) {\n            notional = Precise.stringDiv (Precise.stringMul (size, contractSize), markPrice);\n        } else {\n            notional = this.safeString2 (position, 'positionValue', 'cumExitValue');\n        }\n        const unrealisedPnl = this.omitZero (this.safeString (position, 'unrealisedPnl'));\n        let initialMarginString = this.safeString2 (position, 'positionIM', 'cumEntryValue');\n        let maintenanceMarginString = this.safeString (position, 'positionMM');\n        const timestamp = this.safeIntegerN (position, [ 'createdTime', 'createdAt' ]);\n        let lastUpdateTimestamp = this.parse8601 (this.safeString (position, 'updated_at'));\n        if (lastUpdateTimestamp === undefined) {\n            lastUpdateTimestamp = this.safeIntegerN (position, [ 'updatedTime', 'updatedAt', 'updatedTime' ]);\n        }\n        let collateralString = this.safeString (position, 'positionBalance');\n        const entryPrice = this.omitZero (this.safeStringN (position, [ 'entryPrice', 'avgPrice', 'avgEntryPrice' ]));\n        const liquidationPrice = this.omitZero (this.safeString (position, 'liqPrice'));\n        const leverage = this.safeString (position, 'leverage');\n        if (liquidationPrice !== undefined) {\n            if (market['settle'] === 'USDC') {\n                //  (Entry price - Liq price) * Contracts + Maintenance Margin + (unrealised pnl) = Collateral\n                const price = this.safeBool (this.options, 'useMarkPriceForPositionCollateral', false) ? markPrice : entryPrice;\n                const difference = Precise.stringAbs (Precise.stringSub (price, liquidationPrice));\n                collateralString = Precise.stringAdd (Precise.stringAdd (Precise.stringMul (difference, size), maintenanceMarginString), unrealisedPnl);\n            } else {\n                const bustPrice = this.safeString (position, 'bustPrice');\n                if (market['linear']) {\n                    // derived from the following formulas\n                    //  (Entry price - Bust price) * Contracts = Collateral\n                    //  (Entry price - Liq price) * Contracts = Collateral - Maintenance Margin\n                    // Maintenance Margin = (Bust price - Liq price) x Contracts\n                    const maintenanceMarginPriceDifference = Precise.stringAbs (Precise.stringSub (liquidationPrice, bustPrice));\n                    maintenanceMarginString = Precise.stringMul (maintenanceMarginPriceDifference, size);\n                    // Initial Margin = Contracts x Entry Price / Leverage\n                    if ((entryPrice !== undefined) && (initialMarginString === undefined)) {\n                        initialMarginString = Precise.stringDiv (Precise.stringMul (size, entryPrice), leverage);\n                    }\n                } else {\n                    // Contracts * (1 / Entry price - 1 / Bust price) = Collateral\n                    // Contracts * (1 / Entry price - 1 / Liq price) = Collateral - Maintenance Margin\n                    // Maintenance Margin = Contracts * (1 / Liq price - 1 / Bust price)\n                    // Maintenance Margin = Contracts * (Bust price - Liq price) / (Liq price x Bust price)\n                    const difference = Precise.stringAbs (Precise.stringSub (bustPrice, liquidationPrice));\n                    const multiply = Precise.stringMul (bustPrice, liquidationPrice);\n                    maintenanceMarginString = Precise.stringDiv (Precise.stringMul (size, difference), multiply);\n                    // Initial Margin = Leverage x Contracts / EntryPrice\n                    if ((entryPrice !== undefined) && (initialMarginString === undefined)) {\n                        initialMarginString = Precise.stringDiv (size, Precise.stringMul (entryPrice, leverage));\n                    }\n                }\n            }\n        }\n        const maintenanceMarginPercentage = Precise.stringDiv (maintenanceMarginString, notional);\n        const marginRatio = Precise.stringDiv (maintenanceMarginString, collateralString, 4);\n        return this.safePosition ({\n            'info': position,\n            'id': undefined,\n            'symbol': market['symbol'],\n            'timestamp': timestamp,\n            'datetime': this.iso8601 (timestamp),\n            'lastUpdateTimestamp': lastUpdateTimestamp,\n            'initialMargin': this.parseNumber (initialMarginString),\n            'initialMarginPercentage': this.parseNumber (Precise.stringDiv (initialMarginString, notional)),\n            'maintenanceMargin': this.parseNumber (maintenanceMarginString),\n            'maintenanceMarginPercentage': this.parseNumber (maintenanceMarginPercentage),\n            'entryPrice': this.parseNumber (entryPrice),\n            'notional': this.parseNumber (notional),\n            'leverage': this.parseNumber (leverage),\n            'unrealizedPnl': this.parseNumber (unrealisedPnl),\n            'realizedPnl': this.safeNumber2 (position, 'curRealisedPnl', 'closedPnl'),\n            'contracts': this.parseNumber (size), // in USD for inverse swaps\n            'contractSize': this.safeNumber (market, 'contractSize'),\n            'marginRatio': this.parseNumber (marginRatio),\n            'liquidationPrice': this.parseNumber (liquidationPrice),\n            'markPrice': this.parseNumber (markPrice),\n            'lastPrice': this.safeNumber (position, 'avgExitPrice'),\n            'collateral': this.parseNumber (collateralString),\n            'marginMode': undefined, // tradeMode was deprecated\n            'side': side,\n            'percentage': undefined,\n            'stopLossPrice': this.safeNumber2 (position, 'stop_loss', 'stopLoss'),\n            'takeProfitPrice': this.safeNumber2 (position, 'take_profit', 'takeProfit'),\n            'hedged': hedged,\n        });\n    }"
     },
     %{
       "comment" => nil,
@@ -6776,8 +6820,8 @@
         "{\n         \"symbol\": \"SOL-27JUN23-20-C\",\n         \"deliveryPrice\": \"16.62258889\",\n         \"deliveryTime\": \"1687852800000\"\n     }",
         "{\n         \"symbol\": \"SOL-27JUN23-20-C\",\n         \"deliveryPrice\": \"16.62258889\",\n         \"deliveryTime\": \"1687852800000\",\n         \"side\": \"Buy\",\n         \"strike\": \"20\",\n         \"fee\": \"0.00000000\",\n         \"position\": \"0.01\",\n         \"deliveryRpl\": \"3.5\"\n     }"
       ],
-      "line_end" => 8112,
-      "line_start" => 8080,
+      "line_end" => 8122,
+      "line_start" => 8090,
       "mappings" => [
         %{
           "comment" => nil,
@@ -6815,8 +6859,8 @@
         "[\n         {\n             \"symbol\": \"SOL-27JUN23-20-C\",\n             \"deliveryPrice\": \"16.62258889\",\n             \"deliveryTime\": \"1687852800000\"\n         }\n     ]",
         "[\n         {\n             \"symbol\": \"SOL-27JUN23-20-C\",\n             \"deliveryPrice\": \"16.62258889\",\n             \"deliveryTime\": \"1687852800000\",\n             \"side\": \"Buy\",\n             \"strike\": \"20\",\n             \"fee\": \"0.00000000\",\n             \"position\": \"0.01\",\n             \"deliveryRpl\": \"3.5\"\n         }\n     ]"
       ],
-      "line_end" => 8146,
-      "line_start" => 8114,
+      "line_end" => 8156,
+      "line_start" => 8124,
       "mappings" => [],
       "name" => "parseSettlements",
       "signature" => "parseSettlements (settlements, market)",
@@ -6829,8 +6873,8 @@
         "{\n         \"symbol\": \"BTCUSD\",\n         \"lastPrice\": \"16597.00\",\n         \"indexPrice\": \"16598.54\",\n         \"markPrice\": \"16596.00\",\n         \"prevPrice24h\": \"16464.50\",\n         \"price24hPcnt\": \"0.008047\",\n         \"highPrice24h\": \"30912.50\",\n         \"lowPrice24h\": \"15700.00\",\n         \"prevPrice1h\": \"16595.50\",\n         \"openInterest\": \"373504107\",\n         \"openInterestValue\": \"22505.67\",\n         \"turnover24h\": \"2352.94950046\",\n         \"volume24h\": \"49337318\",\n         \"fundingRate\": \"-0.001034\",\n         \"nextFundingTime\": \"1672387200000\",\n         \"predictedDeliveryPrice\": \"\",\n         \"basisRate\": \"\",\n         \"deliveryFeeRate\": \"\",\n         \"deliveryTime\": \"0\",\n         \"ask1Size\": \"1\",\n         \"bid1Price\": \"16596.00\",\n         \"ask1Price\": \"16597.50\",\n         \"bid1Size\": \"1\"\n     }",
         "{\n         \"symbol\": \"BTC-30DEC22-18000-C\",\n         \"bid1Price\": \"0\",\n         \"bid1Size\": \"0\",\n         \"bid1Iv\": \"0\",\n         \"ask1Price\": \"435\",\n         \"ask1Size\": \"0.66\",\n         \"ask1Iv\": \"5\",\n         \"lastPrice\": \"435\",\n         \"highPrice24h\": \"435\",\n         \"lowPrice24h\": \"165\",\n         \"markPrice\": \"0.00000009\",\n         \"indexPrice\": \"16600.55\",\n         \"markIv\": \"0.7567\",\n         \"underlyingPrice\": \"16590.42\",\n         \"openInterest\": \"6.3\",\n         \"turnover24h\": \"2482.73\",\n         \"volume24h\": \"0.15\",\n         \"totalVolume\": \"99\",\n         \"totalTurnover\": \"1967653\",\n         \"delta\": \"0.00000001\",\n         \"gamma\": \"0.00000001\",\n         \"vega\": \"0.00000004\",\n         \"theta\": \"-0.00000152\",\n         \"predictedDeliveryPrice\": \"0\",\n         \"change24h\": \"86\"\n     }"
       ],
-      "line_end" => 2416,
-      "line_start" => 2298,
+      "line_end" => 2418,
+      "line_start" => 2300,
       "mappings" => [
         %{
           "comment" => nil,
@@ -6950,8 +6994,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 3714,
-      "line_start" => 3706,
+      "line_end" => 3720,
+      "line_start" => 3712,
       "mappings" => [],
       "name" => "parseTimeInForce",
       "signature" => "parseTimeInForce (timeInForce: Str)",
@@ -6966,8 +7010,8 @@
         "{\n         \"symbol\": \"ETHPERP\",\n         \"orderLinkId\": \"\",\n         \"side\": \"Buy\",\n         \"orderId\": \"aad0ee44-ce12-4112-aeee-b7829f6c3a26\",\n         \"execFee\": \"0.0210\",\n         \"feeRate\": \"0.000600\",\n         \"blockTradeId\": \"\",\n         \"tradeTime\": \"1669196417930\",\n         \"execPrice\": \"1162.15\",\n         \"lastLiquidityInd\": \"TAKER\",\n         \"execValue\": \"34.8645\",\n         \"execType\": \"Trade\",\n         \"execQty\": \"0.030\",\n         \"tradeId\": \"0e94eaf5-b08e-5505-b43f-7f1f30b1ca80\"\n     }",
         "{\n         \"category\": \"linear\",\n         \"symbol\": \"ICPUSDT\",\n         \"execId\": \"3510f361-0add-5c7b-a2e7-9679810944fc\",\n         \"execPrice\": \"12.015\",\n         \"execQty\": \"3000\",\n         \"orderId\": \"443d63fa-b4c3-4297-b7b1-23bca88b04dc\",\n         \"isMaker\": false,\n         \"orderLinkId\": \"test-00001\",\n         \"side\": \"Sell\",\n         \"execTime\": \"1716800399334\",\n         \"seq\": 34771365464\n     }"
       ],
-      "line_end" => 3212,
-      "line_start" => 2977,
+      "line_end" => 3218,
+      "line_start" => 2983,
       "mappings" => [
         %{
           "comment" => nil,
@@ -7044,8 +7088,8 @@
       "examples" => [
         "{\n         \"symbol\": \"ETHUSDT\",\n         \"makerFeeRate\": 0.001,\n         \"takerFeeRate\": 0.001\n     }"
       ],
-      "line_end" => 7770,
-      "line_start" => 7751,
+      "line_end" => 7780,
+      "line_start" => 7761,
       "mappings" => [
         %{
           "comment" => nil,
@@ -7089,8 +7133,8 @@
         "{\n         \"coin\": \"USDT\",\n         \"chain\": \"TRX\",\n         \"amount\": \"44\",\n         \"txID\": \"0b038ea12fa1575e2d66693db3c346b700d4b28347afc39f80321cf089acc960\",\n         \"status\": \"3\",\n         \"toAddress\": \"TC6NCAC5WSVCCiaD3kWZXyW91ZKKhLm53b\",\n         \"tag\": \"\",\n         \"depositFee\": \"\",\n         \"successAt\": \"1665142507000\",\n         \"confirmations\": \"100\",\n         \"txIndex\": \"0\",\n         \"blockHash\": \"0000000002ac3b1064aee94bca1bd0b58c4c09c65813b084b87a2063d961129e\"\n     }",
         "{\n         \"id\": \"9377266\"\n     }"
       ],
-      "line_end" => 6074,
-      "line_start" => 5996,
+      "line_end" => 6084,
+      "line_start" => 6006,
       "mappings" => [
         %{
           "comment" => nil,
@@ -7200,8 +7244,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 5994,
-      "line_start" => 5976,
+      "line_end" => 6004,
+      "line_start" => 5986,
       "mappings" => [],
       "name" => "parseTransactionStatus",
       "signature" => "parseTransactionStatus (status: Str)",
@@ -7213,8 +7257,8 @@
         "{\n         \"transferId\": \"22c2bc11-ed5b-49a4-8647-c4e0f5f6f2b2\"\n     }",
         "{\n         \"transferId\": \"e9c421c4-b010-4b16-abd6-106179f27702\",\n         \"coin\": \"USDT\",\n         \"amount\": \"8\",\n         \"fromAccountType\": \"FUND\",\n         \"toAccountType\": \"SPOT\",\n         \"timestamp\": \"1666879426000\",\n         \"status\": \"SUCCESS\"\n      }"
       ],
-      "line_end" => 7688,
-      "line_start" => 7650,
+      "line_end" => 7698,
+      "line_start" => 7660,
       "mappings" => [
         %{
           "comment" => nil,
@@ -7269,8 +7313,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 7648,
-      "line_start" => 7641,
+      "line_end" => 7658,
+      "line_start" => 7651,
       "mappings" => [],
       "name" => "parseTransferStatus",
       "signature" => "parseTransferStatus (status: Str): Str",
@@ -7281,8 +7325,8 @@
       "examples" => [
         "{\n         \"period\": 7,\n         \"value\": \"0.23854072\",\n         \"time\": \"1690574400000\"\n     }"
       ],
-      "line_end" => 8204,
-      "line_start" => 8184,
+      "line_end" => 8214,
+      "line_start" => 8194,
       "mappings" => [
         %{
           "comment" => nil,
@@ -9549,9 +9593,9 @@
       case: :upper,
       contract: true,
       contract_size: 1,
-      expiry: 1768550400000,
-      expiry_datetime: "2026-01-16T08:00:00.000Z",
-      id: "BTCUSDT-16JAN26",
+      expiry: 1772784000000,
+      expiry_datetime: "2026-03-06T08:00:00.000Z",
+      id: "BTCUSDT-06MAR26",
       inverse: false,
       limits: %{
         "amount" => %{
@@ -9579,7 +9623,7 @@
       separator: "-",
       settle: "USDT",
       settle_id: "USDT",
-      symbol: "BTC/USDT:USDT-260116",
+      symbol: "BTC/USDT:USDT-260306",
       taker: 0.0006
     },
     option: %{
@@ -9590,7 +9634,7 @@
       contract_size: 1,
       expiry: 1798185600000,
       expiry_datetime: "2026-12-25T08:00:00.000Z",
-      id: "BTC-25DEC26-105000-P-USDT",
+      id: "BTC-25DEC26-67000-P-USDT",
       inverse: false,
       limits: %{
         "amount" => %{
@@ -9615,7 +9659,7 @@
       separator: "-",
       settle: "USDT",
       settle_id: "USDT",
-      symbol: "BTC/USDT:USDT-261225-105000-P",
+      symbol: "BTC/USDT:USDT-261225-67000-P",
       taker: 0.0006
     },
     precision_mode: 4,
@@ -9675,7 +9719,7 @@
       inverse: false,
       limits: %{
         "amount" => %{
-          "max" => 35500,
+          "max" => 350000,
           "min" => 0.1
         },
         "cost" => %{},
@@ -9769,6 +9813,13 @@
   },
   urls: %{
     api: "https://api.bybit.com",
+    api_sections: %{
+      "futures" => "https://api.bybit.com",
+      "private" => "https://api.bybit.com",
+      "public" => "https://api.bybit.com",
+      "spot" => "https://api.bybit.com",
+      "v2" => "https://api.bybit.com"
+    },
     doc: [
       "https://bybit-exchange.github.io/docs/inverse/",
       "https://bybit-exchange.github.io/docs/linear/",
@@ -9801,6 +9852,7 @@
     },
     channel_templates: %{
       watch_balance: %{
+        auth_required: true,
         market_id_format: :native,
         params: [],
         pattern: :topic_based,
@@ -9845,6 +9897,7 @@
         separator: "."
       },
       watch_my_trades: %{
+        auth_required: true,
         market_id_format: :native,
         params: [
           %{
@@ -9922,6 +9975,7 @@
         separator: "."
       },
       watch_orders: %{
+        auth_required: true,
         market_id_format: :native,
         params: [
           %{
@@ -9960,6 +10014,7 @@
         url_routed: true
       },
       watch_positions: %{
+        auth_required: true,
         market_id_format: :native,
         params: [
           %{

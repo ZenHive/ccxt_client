@@ -48,7 +48,7 @@ defmodule CCXT.WS.Patterns.OpSubscribe do
     [channel_name]
     |> Pattern.maybe_add_part(params[:timeframe])
     |> Pattern.maybe_add_part(params[:limit], &to_string/1)
-    |> Pattern.maybe_add_part(params[:symbol], &Pattern.format_market_id(&1, market_id_format))
+    |> Pattern.maybe_add_part(params[:symbol], &Pattern.format_market_id(&1, market_id_format, config[:symbol_context]))
     |> Pattern.build_channel(separator)
   end
 end

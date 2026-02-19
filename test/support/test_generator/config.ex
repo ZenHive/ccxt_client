@@ -72,6 +72,7 @@ defmodule CCXT.Test.Generator.Config do
           endpoint_defaults: %{optional(atom()) => map()},
           public_methods: map(),
           private_methods: map(),
+          no_sandbox_endpoints: [{atom(), String.t() | nil}],
           has_passphrase: boolean(),
           default_timeframe: String.t() | nil,
           default_derivatives_category: String.t() | nil,
@@ -100,15 +101,22 @@ defmodule CCXT.Test.Generator.Config do
     # Derive test symbol from spec instead of hardcoded map
     test_symbol_config = derive_test_symbol(spec)
 
+    # Build endpoint map early for efficient O(1) lookups
+    endpoint_map = Map.new(spec.endpoints, fn ep -> {ep.name, ep} end)
+
     # Build sets of public and private endpoint names
     public_endpoint_names = build_endpoint_set(spec.endpoints, false)
     private_endpoint_names = build_endpoint_set(spec.endpoints, true)
+
+    # Extract sandbox URLs for compile-time filtering
+    sandbox_urls = spec.urls[:sandbox]
 
     # Determine which methods to test based on spec capabilities
     # Task 109: Also consider market_type support via spec.features
     public_methods_to_test =
       filter_methods(@public_methods, spec.has, public_endpoint_names, spec.endpoints, spec.features)
 
+    # Task 181: Filter out private endpoints whose api_section has no sandbox URL
     private_methods_to_test =
       filter_private_methods(
         @private_methods,
@@ -116,8 +124,13 @@ defmodule CCXT.Test.Generator.Config do
         private_endpoint_names,
         spec.endpoints,
         spec.features,
-        credential_opts
+        sandbox_urls,
+        endpoint_map
       )
+
+    # Track which endpoints were excluded due to missing sandbox (for info test)
+    no_sandbox_endpoints =
+      compute_no_sandbox_endpoints(@private_methods, spec, endpoint_map, sandbox_urls, private_endpoint_names)
 
     # Check if exchange requires passphrase
     has_passphrase = spec.signing && Map.get(spec.signing, :has_passphrase, false)
@@ -135,9 +148,6 @@ defmodule CCXT.Test.Generator.Config do
 
     # API param requirements (auto-extracted from CCXT request_params)
     uses_account_type_param = Introspection.uses_account_type_param?(spec)
-
-    # Build endpoint map for efficient lookup by name
-    endpoint_map = Map.new(spec.endpoints, fn ep -> {ep.name, ep} end)
 
     # Extract default_params from each endpoint for explicit test param passing
     # Philosophy: Tests should be explicit about required params
@@ -168,6 +178,7 @@ defmodule CCXT.Test.Generator.Config do
       endpoint_defaults: endpoint_defaults,
       public_methods: public_methods_to_test,
       private_methods: private_methods_to_test,
+      no_sandbox_endpoints: no_sandbox_endpoints,
       has_passphrase: has_passphrase,
       default_timeframe: default_timeframe,
       default_derivatives_category: default_derivatives_category,
@@ -350,19 +361,74 @@ defmodule CCXT.Test.Generator.Config do
   # Filter private methods and enrich with endpoint params from spec
   # Returns map of {method => {arity, needs_symbol, read_only, endpoint_params}}
   # Task 109: Also filters out endpoints whose market_type isn't supported in features
-  # Note: testnet_blacklist removed - per-endpoint sandbox URL routing handles multi-API exchanges
-  @spec filter_private_methods(map(), map(), MapSet.t(), list(), map() | nil, keyword()) :: map()
-  defp filter_private_methods(methods, has, endpoint_names, endpoints, features, _credential_opts) do
+  # Task 181: Also filters out endpoints whose api_section has no sandbox URL
+  @spec filter_private_methods(map(), map(), MapSet.t(), list(), map() | nil, term(), map()) :: map()
+  defp filter_private_methods(methods, has, endpoint_names, endpoints, features, sandbox_urls, endpoint_map) do
     methods
     |> Enum.filter(fn {method, _} ->
       Map.get(has, method, false) &&
         MapSet.member?(endpoint_names, method) &&
-        supports_market_type?(endpoints, method, features)
+        supports_market_type?(endpoints, method, features) &&
+        endpoint_has_sandbox?(endpoint_map, method, sandbox_urls)
     end)
     |> Map.new(fn {method, {arity, needs_symbol, read_only}} ->
       endpoint_params = get_endpoint_params(endpoints, method)
       {method, {arity, needs_symbol, read_only, endpoint_params}}
     end)
+  end
+
+  # Task 181: Check if a sandbox URL exists for a given api_section.
+  # Returns true if:
+  # - api_section is nil (uses default sandbox)
+  # - sandbox_urls is not a map (single URL string, covers everything)
+  # - api_section key exists in sandbox_urls
+  # - "rest" or "default" fallback exists in sandbox_urls
+  @doc false
+  @spec has_sandbox_for_section?(term(), String.t() | nil) :: boolean()
+  def has_sandbox_for_section?(_sandbox_urls, nil), do: true
+  def has_sandbox_for_section?(sandbox_urls, _api_section) when not is_map(sandbox_urls), do: true
+
+  def has_sandbox_for_section?(sandbox_urls, api_section) do
+    Map.has_key?(sandbox_urls, api_section) or
+      Map.has_key?(sandbox_urls, "rest") or
+      Map.has_key?(sandbox_urls, "default")
+  end
+
+  # Task 181: Get the api_section for an endpoint from the endpoint map.
+  # Returns nil if endpoint not found or has no api_section.
+  @doc false
+  @spec get_api_section(map(), atom()) :: String.t() | nil
+  def get_api_section(endpoint_map, method) do
+    case Map.get(endpoint_map, method) do
+      %{api_section: section} -> section
+      _ -> nil
+    end
+  end
+
+  # Task 181: Check if an endpoint has a sandbox URL available.
+  # Uses endpoint_map for O(1) lookup of the endpoint's api_section.
+  @doc false
+  @spec endpoint_has_sandbox?(map(), atom(), term()) :: boolean()
+  def endpoint_has_sandbox?(endpoint_map, method, sandbox_urls) do
+    has_sandbox_for_section?(sandbox_urls, get_api_section(endpoint_map, method))
+  end
+
+  # Task 181: Compute the list of endpoints excluded due to missing sandbox.
+  # Returns a list of {method_name, api_section} tuples for endpoints that:
+  # 1. Exist in has (exchange supports the method)
+  # 2. Are private (auth: true)
+  # 3. Don't have a sandbox URL for their api_section
+  @spec compute_no_sandbox_endpoints(map(), Spec.t(), map(), term(), MapSet.t()) ::
+          [{atom(), String.t() | nil}]
+  defp compute_no_sandbox_endpoints(methods, spec, endpoint_map, sandbox_urls, private_endpoint_names) do
+    methods
+    |> Enum.filter(fn {method, _} ->
+      Map.get(spec.has, method, false) and
+        MapSet.member?(private_endpoint_names, method) and
+        not endpoint_has_sandbox?(endpoint_map, method, sandbox_urls)
+    end)
+    |> Enum.map(fn {method, _} -> {method, get_api_section(endpoint_map, method)} end)
+    |> Enum.sort_by(fn {method, _} -> method end)
   end
 
   # Task 109: Check if the endpoint's market_type is supported by the exchange's features

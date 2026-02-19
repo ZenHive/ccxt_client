@@ -56,7 +56,8 @@ defmodule CCXT.Test.Generator.Helpers.Signature do
     hmac_sha256_passphrase_signed: :sha256,
     hmac_sha512_nonce: :sha512,
     hmac_sha512_gate: :sha512,
-    hmac_sha384_payload: :sha384
+    hmac_sha384_payload: :sha384,
+    deribit: :sha256
   }
 
   # Map pattern to timestamp format
@@ -78,7 +79,8 @@ defmodule CCXT.Test.Generator.Helpers.Signature do
     hmac_sha256_passphrase_signed: [:api_key_header, :timestamp_header, :signature_header, :passphrase_header],
     hmac_sha512_nonce: [:api_key_header, :signature_header],
     hmac_sha512_gate: [:api_key_header, :timestamp_header, :signature_header],
-    hmac_sha384_payload: [:api_key_header, :signature_header]
+    hmac_sha384_payload: [:api_key_header, :signature_header],
+    deribit: []
   }
 
   # =============================================================================
@@ -96,6 +98,7 @@ defmodule CCXT.Test.Generator.Helpers.Signature do
   - `:hmac_sha512_nonce` - Kraken-style (nonce-based)
   - `:hmac_sha512_gate` - Gate.io-style (seconds timestamp)
   - `:hmac_sha384_payload` - Bitfinex-style (payload signing)
+  - `:deribit` - Deribit-specific Authorization header
   - `:custom` - Exchange-specific custom implementation
   """
   @type signing_pattern ::
@@ -106,6 +109,7 @@ defmodule CCXT.Test.Generator.Helpers.Signature do
           | :hmac_sha512_nonce
           | :hmac_sha512_gate
           | :hmac_sha384_payload
+          | :deribit
           | :custom
 
   @typedoc """
@@ -186,6 +190,17 @@ defmodule CCXT.Test.Generator.Helpers.Signature do
     validate_query_signature(signed, signing)
   end
 
+  def validate_signature_for_pattern(signed, _signing, :deribit) do
+    headers_map = Map.new(signed.headers)
+    auth = Map.get(headers_map, "Authorization")
+    assert auth, "Expected Authorization header for deribit signing"
+
+    assert String.starts_with?(auth, "deri-hmac-sha256 "),
+           "Expected Authorization to start with 'deri-hmac-sha256 '"
+
+    :ok
+  end
+
   def validate_signature_for_pattern(_signed, _signing, :custom) do
     # Custom signing pattern - skip standard validation
     :ok
@@ -229,6 +244,11 @@ defmodule CCXT.Test.Generator.Helpers.Signature do
 
   def validate_timestamp_format(_headers_map, _signed, _signing, pattern) when pattern in @nonce_based_patterns do
     # Nonce-based pattern - no timestamp header expected
+    :ok
+  end
+
+  def validate_timestamp_format(_headers_map, _signed, _signing, :deribit) do
+    # Deribit uses timestamp in Authorization header, not a separate header
     :ok
   end
 

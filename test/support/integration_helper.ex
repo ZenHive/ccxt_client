@@ -29,10 +29,10 @@ defmodule CCXT.Test.IntegrationHelper do
           module: module(),
           testnet: boolean(),
           passphrase: boolean(),
-          url: String.t(),
+          url: String.t() | map(),
           secret_suffix: String.t(),
           sandbox: boolean(),
-          api_url: String.t()
+          api_url: String.t() | map()
         ]
 
   @doc """
@@ -90,16 +90,11 @@ defmodule CCXT.Test.IntegrationHelper do
         """
       end
 
-    # Handle case where url is a map (multi-market exchanges like Gate.io)
-    url_string =
-      case url do
-        nil -> nil
-        %{} = map -> map |> Map.values() |> List.first()
-        url when is_binary(url) -> url
-      end
+    url_string = stringify_url(url)
+    api_url_string = stringify_url(api_url)
 
     url_line = if url_string, do: "\nGet credentials at: #{url_string}", else: ""
-    api_url_line = if api_url, do: "\nAPI URL: #{api_url}", else: ""
+    api_url_line = if api_url_string, do: "\nAPI URL: #{api_url_string}", else: ""
 
     """
     Missing #{if testnet, do: "testnet ", else: ""}credentials for #{exchange_name}!#{api_url_line}
@@ -172,6 +167,13 @@ defmodule CCXT.Test.IntegrationHelper do
 
     {:ok, credentials: credentials, api_key: api_key, secret: secret, api_url: api_url}
   end
+
+  @doc false
+  # Recursively unwraps map-type URLs (e.g., Gate.io sandbox URLs are nested maps)
+  @spec stringify_url(String.t() | map() | nil) :: String.t() | nil
+  defp stringify_url(nil), do: nil
+  defp stringify_url(url) when is_binary(url), do: url
+  defp stringify_url(%{} = map), do: map |> Map.values() |> List.first() |> stringify_url()
 
   @spec build_credentials(String.t() | nil, String.t() | nil, String.t() | nil, boolean()) ::
           CCXT.Credentials.t() | nil

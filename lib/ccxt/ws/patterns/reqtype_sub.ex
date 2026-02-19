@@ -50,7 +50,7 @@ defmodule CCXT.WS.Patterns.ReqtypeSub do
 
     case params[:symbol] do
       nil -> channel_name
-      symbol -> Pattern.format_market_id(symbol, market_id_format) <> separator <> channel_name
+      symbol -> Pattern.format_market_id(symbol, market_id_format, config[:symbol_context]) <> separator <> channel_name
     end
   end
 end

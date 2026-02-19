@@ -1,8 +1,65 @@
 {
-  "ccxt_version": "4.5.29",
-  "generated_at": "2026-01-12T07:59:18.888Z",
-  "exchange_count": 103,
+  "ccxt_version": "4.5.34",
+  "generated_at": "2026-02-18T10:29:31.834Z",
+  "exchange_count": 100,
   "formats": {
+    "alp": {
+      "spot": {
+        "separator": "_",
+        "case": "upper",
+        "id": "ADA_USDT",
+        "symbol": "ADA/USDT",
+        "base": "ADA",
+        "quote": "USDT",
+        "baseId": "ADA",
+        "quoteId": "USDT",
+        "type": "spot",
+        "spot": true,
+        "margin": false,
+        "swap": false,
+        "future": false,
+        "option": false,
+        "active": true,
+        "contract": false,
+        "taker": 0.002,
+        "maker": 0.002,
+        "precision": {
+          "amount": 0.0001,
+          "price": 0.000001
+        },
+        "limits": {
+          "leverage": {},
+          "amount": {
+            "min": 0.00001,
+            "max": 900000
+          },
+          "price": {
+            "min": 0.000001
+          },
+          "cost": {
+            "min": 1e-11
+          }
+        },
+        "marginModes": {}
+      },
+      "precision_mode": 4,
+      "sample_precision": {
+        "amount": 0.0001,
+        "price": 0.000001
+      },
+      "sample_limits": {
+        "amount": {
+          "min": 0.00001,
+          "max": 900000
+        },
+        "price": {
+          "min": 0.000001
+        },
+        "cost": {
+          "min": 1e-11
+        }
+      }
+    },
     "apex": {
       "swap": {
         "separator": "-",
@@ -91,7 +148,7 @@
             "max": 1000000
           },
           "cost": {
-            "min": 1
+            "min": 0.1
           }
         },
         "marginModes": {}
@@ -132,7 +189,7 @@
             "max": 1000000
           },
           "cost": {
-            "min": 1
+            "min": 0.1
           }
         },
         "marginModes": {}
@@ -152,7 +209,7 @@
           "max": 1000000
         },
         "cost": {
-          "min": 1
+          "min": 0.1
         }
       }
     },
@@ -260,6 +317,123 @@
           "min": 5,
           "max": 1000000
         }
+      }
+    },
+    "aster": {
+      "spot": {
+        "separator": "",
+        "case": "upper",
+        "id": "TESTUSDT",
+        "symbol": "TEST/USDT",
+        "base": "TEST",
+        "quote": "USDT",
+        "baseId": "TEST",
+        "quoteId": "USDT",
+        "type": "spot",
+        "spot": true,
+        "margin": false,
+        "swap": false,
+        "future": false,
+        "option": false,
+        "active": true,
+        "contract": false,
+        "taker": 0.00035,
+        "maker": 0.0001,
+        "percentage": true,
+        "tierBased": true,
+        "precision": {
+          "amount": 0.00001,
+          "price": 0.01,
+          "base": 1e-8,
+          "quote": 1e-8
+        },
+        "limits": {
+          "leverage": {},
+          "amount": {
+            "min": 0.00001,
+            "max": 9000
+          },
+          "price": {
+            "min": 0.01,
+            "max": 1000000
+          },
+          "cost": {},
+          "market": {
+            "min": 0.00001,
+            "max": 9000
+          }
+        },
+        "marginModes": {}
+      },
+      "swap": {
+        "separator": "",
+        "case": "upper",
+        "id": "ASTERUSDT",
+        "symbol": "ASTER/USDT:USDT",
+        "base": "ASTER",
+        "quote": "USDT",
+        "settle": "USDT",
+        "baseId": "ASTER",
+        "quoteId": "USDT",
+        "settleId": "USDT",
+        "type": "swap",
+        "spot": false,
+        "margin": false,
+        "swap": true,
+        "future": false,
+        "option": false,
+        "active": true,
+        "contract": true,
+        "linear": true,
+        "inverse": false,
+        "contractSize": 1,
+        "taker": 0.00035,
+        "maker": 0.0001,
+        "percentage": true,
+        "tierBased": true,
+        "precision": {
+          "amount": 0.01,
+          "price": 0.0001,
+          "base": 1e-8,
+          "quote": 1e-8
+        },
+        "limits": {
+          "leverage": {},
+          "amount": {
+            "min": 0.01,
+            "max": 10000000
+          },
+          "price": {
+            "min": 0.0001,
+            "max": 200
+          },
+          "cost": {
+            "min": 5
+          },
+          "market": {
+            "min": 0.01,
+            "max": 900000
+          }
+        },
+        "marginModes": {}
+      },
+      "precision_mode": 4,
+      "sample_precision": {
+        "amount": 0.00001,
+        "price": 0.01,
+        "base": 1e-8,
+        "quote": 1e-8
+      },
+      "sample_limits": {
+        "amount": {
+          "min": 0.00001,
+          "max": 9000
+        },
+        "price": {
+          "min": 0.01,
+          "max": 1000000
+        },
+        "cost": {}
       }
     },
     "backpack": {
@@ -542,7 +716,7 @@
           },
           "market": {
             "min": 0,
-            "max": 882.48768458
+            "max": 2204.96541
           }
         },
         "marginModes": {
@@ -865,7 +1039,7 @@
           },
           "market": {
             "min": 0,
-            "max": 5.47296895
+            "max": 4.1009437
           }
         },
         "marginModes": {
@@ -1036,11 +1210,11 @@
       "spot": {
         "separator": "-",
         "case": "upper",
-        "id": "MAX-USDT",
-        "symbol": "MAX/USDT",
-        "base": "MAX",
+        "id": "SEAM-USDT",
+        "symbol": "SEAM/USDT",
+        "base": "SEAM",
         "quote": "USDT",
-        "baseId": "MAX",
+        "baseId": "SEAM",
         "quoteId": "USDT",
         "type": "spot",
         "spot": true,
@@ -1054,8 +1228,8 @@
         "maker": 0.001,
         "feeSide": "get",
         "precision": {
-          "amount": 0.01,
-          "price": 0.00001
+          "amount": 0.0001,
+          "price": 0.0001
         },
         "limits": {
           "leverage": {},
@@ -1063,7 +1237,7 @@
           "price": {},
           "cost": {
             "min": 1,
-            "max": 500
+            "max": 60000
           }
         },
         "marginModes": {}
@@ -1111,15 +1285,15 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 0.01,
-        "price": 0.00001
+        "amount": 0.0001,
+        "price": 0.0001
       },
       "sample_limits": {
         "amount": {},
         "price": {},
         "cost": {
           "min": 1,
-          "max": 500
+          "max": 60000
         }
       }
     },
@@ -1176,8 +1350,8 @@
         "option": false,
         "active": true,
         "contract": false,
-        "taker": 0.0012,
-        "maker": -0.0002,
+        "taker": 0.001,
+        "maker": 0,
         "precision": {
           "amount": 0.0001,
           "price": 1
@@ -1237,16 +1411,16 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 0.00001057,
+            "min": 0.00001226,
             "max": 20
           },
           "price": {
-            "min": 2837983.194,
-            "max": 6621960.786
+            "min": 2447730.792,
+            "max": 5711371.847999999
           },
           "cost": {
             "min": 50,
-            "max": 132439215.72
+            "max": 114227436.95999998
           }
         },
         "marginModes": {}
@@ -1258,16 +1432,16 @@
       },
       "sample_limits": {
         "amount": {
-          "min": 0.00001057,
+          "min": 0.00001226,
           "max": 20
         },
         "price": {
-          "min": 2837983.194,
-          "max": 6621960.786
+          "min": 2447730.792,
+          "max": 5711371.847999999
         },
         "cost": {
           "min": 50,
-          "max": 132439215.72
+          "max": 114227436.95999998
         }
       }
     },
@@ -1279,8 +1453,8 @@
         "symbol": "AAVE/USD",
         "base": "AAVE",
         "quote": "USD",
-        "baseId": "fAAVE",
-        "quoteId": "fUSD",
+        "baseId": "AAVE",
+        "quoteId": "USD",
         "type": "spot",
         "spot": true,
         "margin": false,
@@ -1319,8 +1493,8 @@
         "base": "AAVE",
         "quote": "USDT",
         "settle": "USDT",
-        "baseId": "fAAVEF0",
-        "quoteId": "fUSTF0",
+        "baseId": "AAVEF0",
+        "quoteId": "USTF0",
         "settleId": "USDT",
         "type": "swap",
         "spot": false,
@@ -1660,7 +1834,7 @@
         "tierBased": true,
         "precision": {
           "amount": 1,
-          "price": 0.0001
+          "price": 0.00001
         },
         "limits": {
           "leverage": {},
@@ -1721,7 +1895,7 @@
       "precision_mode": 4,
       "sample_precision": {
         "amount": 1,
-        "price": 0.0001
+        "price": 0.00001
       },
       "sample_limits": {
         "amount": {
@@ -1876,11 +2050,11 @@
       "spot": {
         "separator": "_",
         "case": "lower",
-        "id": "usdt_twd",
-        "symbol": "USDT/TWD",
-        "base": "USDT",
+        "id": "bch_twd",
+        "symbol": "BCH/TWD",
+        "base": "BCH",
         "quote": "TWD",
-        "baseId": "USDT",
+        "baseId": "BCH",
         "quoteId": "TWD",
         "type": "spot",
         "spot": true,
@@ -1895,13 +2069,13 @@
         "percentage": true,
         "tierBased": true,
         "precision": {
-          "price": 0.001,
+          "price": 0.1,
           "amount": 1e-8
         },
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 1,
+            "min": 0.001,
             "max": 100000000
           },
           "price": {},
@@ -1912,11 +2086,11 @@
       "precision_mode": 4,
       "sample_precision": {
         "amount": 1e-8,
-        "price": 0.001
+        "price": 0.1
       },
       "sample_limits": {
         "amount": {
-          "min": 1,
+          "min": 0.001,
           "max": 100000000
         },
         "price": {},
@@ -1927,12 +2101,12 @@
       "spot": {
         "separator": "",
         "case": "upper",
-        "id": "SYLOUSDT",
-        "lowercaseId": "sylousdt",
-        "symbol": "SYLO/USDT",
-        "base": "SYLO",
+        "id": "LQTY3SUSDT",
+        "lowercaseId": "lqty3susdt",
+        "symbol": "LQTY3S/USDT",
+        "base": "LQTY3S",
         "quote": "USDT",
-        "baseId": "sylo",
+        "baseId": "lqty3s",
         "quoteId": "usdt",
         "type": "spot",
         "spot": true,
@@ -1948,18 +2122,18 @@
         "tierBased": false,
         "feeSide": "get",
         "precision": {
-          "amount": 0.01,
-          "price": 0.000001
+          "amount": 1e-7,
+          "price": 1e-10
         },
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 5511.81,
-            "max": 9999999999999
+            "min": 40.0861451,
+            "max": 999999999999
           },
           "price": {
-            "min": 0.0000061,
-            "max": 0.00061
+            "min": 0.00172338079,
+            "max": 0.172338079
           },
           "cost": {
             "min": 1
@@ -1969,17 +2143,17 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 0.01,
-        "price": 0.000001
+        "amount": 1e-7,
+        "price": 1e-10
       },
       "sample_limits": {
         "amount": {
-          "min": 5511.81,
-          "max": 9999999999999
+          "min": 40.0861451,
+          "max": 999999999999
         },
         "price": {
-          "min": 0.0000061,
-          "max": 0.00061
+          "min": 0.00172338079,
+          "max": 0.172338079
         },
         "cost": {
           "min": 1
@@ -2101,11 +2275,11 @@
       "spot": {
         "separator": "_",
         "case": "lower",
-        "id": "ton_rub",
-        "symbol": "TON/RUB",
-        "base": "TON",
+        "id": "btc_rub",
+        "symbol": "BTC/RUB",
+        "base": "BTC",
         "quote": "RUB",
-        "baseId": "ton",
+        "baseId": "btc",
         "quoteId": "rub",
         "type": "spot",
         "spot": true,
@@ -2145,11 +2319,11 @@
       "spot": {
         "separator": "",
         "case": "lower",
-        "id": "iostjpy",
-        "symbol": "IOST/JPY",
-        "base": "IOST",
+        "id": "sandjpy",
+        "symbol": "SAND/JPY",
+        "base": "SAND",
         "quote": "JPY",
-        "baseId": "iost",
+        "baseId": "sand",
         "quoteId": "jpy",
         "type": "spot",
         "spot": true,
@@ -2165,8 +2339,8 @@
         "tierBased": false,
         "feeSide": "get",
         "precision": {
-          "price": 0.0001,
-          "amount": 0.01,
+          "price": 0.001,
+          "amount": 0.1,
           "cost": 0.01
         },
         "limits": {
@@ -2176,8 +2350,8 @@
             "superMax": 1
           },
           "amount": {
-            "min": 1,
-            "max": 500000
+            "min": 0.1,
+            "max": 10000
           },
           "price": {},
           "cost": {
@@ -2188,13 +2362,13 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 0.01,
-        "price": 0.0001
+        "amount": 0.1,
+        "price": 0.001
       },
       "sample_limits": {
         "amount": {
-          "min": 1,
-          "max": 500000
+          "min": 0.1,
+          "max": 10000
         },
         "price": {},
         "cost": {
@@ -2206,11 +2380,11 @@
       "spot": {
         "separator": "-",
         "case": "upper",
-        "id": "MON-EUR",
-        "symbol": "MON/EUR",
-        "base": "MON",
+        "id": "FUN-EUR",
+        "symbol": "FUN/EUR",
+        "base": "FUN",
         "quote": "EUR",
-        "baseId": "MON",
+        "baseId": "FUN",
         "quoteId": "EUR",
         "type": "spot",
         "spot": true,
@@ -2225,15 +2399,15 @@
         "percentage": true,
         "tierBased": true,
         "precision": {
-          "amount": 0.0001,
-          "price": 0.000001,
+          "amount": 0.00001,
+          "price": 0.00001,
           "cost": 0.01
         },
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 236.9602,
-            "max": 473920356.2162
+            "min": 175.26982,
+            "max": 350539643.10856
           },
           "price": {},
           "cost": {
@@ -2245,13 +2419,13 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 0.0001,
-        "price": 0.000001
+        "amount": 0.00001,
+        "price": 0.00001
       },
       "sample_limits": {
         "amount": {
-          "min": 236.9602,
-          "max": 473920356.2162
+          "min": 175.26982,
+          "max": 350539643.10856
         },
         "price": {},
         "cost": {
@@ -2363,104 +2537,6 @@
         "cost": {}
       }
     },
-    "btcalpha": {
-      "spot": {
-        "separator": "_",
-        "case": "upper",
-        "id": "ADA_USDT",
-        "symbol": "ADA/USDT",
-        "base": "ADA",
-        "quote": "USDT",
-        "baseId": "ADA",
-        "quoteId": "USDT",
-        "type": "spot",
-        "spot": true,
-        "margin": false,
-        "swap": false,
-        "future": false,
-        "option": false,
-        "active": true,
-        "contract": false,
-        "taker": 0.002,
-        "maker": 0.002,
-        "precision": {
-          "amount": 0.0001,
-          "price": 0.000001
-        },
-        "limits": {
-          "leverage": {},
-          "amount": {
-            "min": 0.00001,
-            "max": 900000
-          },
-          "price": {
-            "min": 0.000001
-          },
-          "cost": {
-            "min": 1e-11
-          }
-        },
-        "marginModes": {}
-      },
-      "precision_mode": 4,
-      "sample_precision": {
-        "amount": 0.0001,
-        "price": 0.000001
-      },
-      "sample_limits": {
-        "amount": {
-          "min": 0.00001,
-          "max": 900000
-        },
-        "price": {
-          "min": 0.000001
-        },
-        "cost": {
-          "min": 1e-11
-        }
-      }
-    },
-    "btcbox": {
-      "spot": {
-        "separator": "",
-        "case": "lower",
-        "id": "btc",
-        "symbol": "BTC/JPY",
-        "base": "BTC",
-        "quote": "JPY",
-        "baseId": "btc",
-        "quoteId": "jpy",
-        "type": "spot",
-        "spot": true,
-        "margin": false,
-        "swap": false,
-        "future": false,
-        "option": false,
-        "active": true,
-        "contract": false,
-        "taker": 0.001,
-        "maker": 0.001,
-        "precision": {
-          "price": 1
-        },
-        "limits": {
-          "leverage": {},
-          "amount": {},
-          "price": {},
-          "cost": {}
-        },
-        "marginModes": {}
-      },
-      "precision_mode": 4,
-      "sample_precision": {
-        "price": 1
-      },
-      "sample_limits": {
-        "amount": {},
-        "price": {},
-        "cost": {}
-      }
-    },
     "btcmarkets": {
       "spot": {
         "separator": "-",
@@ -2567,200 +2643,6 @@
         }
       }
     },
-    "bullish": {
-      "spot": {
-        "separator": "",
-        "case": "upper",
-        "id": "AAVEAUSD",
-        "symbol": "AAVE/AUSD",
-        "base": "AAVE",
-        "quote": "AUSD",
-        "baseId": "AAVE",
-        "quoteId": "AUSD",
-        "type": "spot",
-        "spot": true,
-        "margin": true,
-        "swap": false,
-        "future": false,
-        "option": false,
-        "active": true,
-        "contract": false,
-        "taker": 0.001,
-        "maker": 0.001,
-        "percentage": true,
-        "tierBased": false,
-        "precision": {
-          "amount": 1e-8,
-          "price": 1e-8,
-          "cost": 1e-8,
-          "base": 1e-8,
-          "quote": 1e-8
-        },
-        "limits": {
-          "leverage": {},
-          "amount": {
-            "min": 0.1,
-            "max": 1000
-          },
-          "price": {},
-          "cost": {}
-        },
-        "marginModes": {}
-      },
-      "swap": {
-        "separator": "-",
-        "case": "upper",
-        "id": "ADA-USDC-PERP",
-        "symbol": "ADA/USDC:USDC",
-        "base": "ADA",
-        "quote": "USDC",
-        "settle": "USDC",
-        "baseId": "ADA",
-        "quoteId": "USDC",
-        "settleId": "USDC",
-        "type": "swap",
-        "spot": false,
-        "margin": false,
-        "swap": true,
-        "future": false,
-        "option": false,
-        "active": true,
-        "contract": true,
-        "linear": true,
-        "inverse": false,
-        "contractSize": 1,
-        "taker": 0.001,
-        "maker": 0.001,
-        "percentage": true,
-        "tierBased": false,
-        "precision": {
-          "amount": 0.00001,
-          "price": 0.0001,
-          "cost": 0.0001,
-          "base": 0.00001,
-          "quote": 0.0001
-        },
-        "limits": {
-          "leverage": {},
-          "amount": {
-            "min": 10,
-            "max": 1000000
-          },
-          "price": {},
-          "cost": {}
-        },
-        "marginModes": {}
-      },
-      "future": {
-        "separator": "-",
-        "case": "upper",
-        "id": "BTC-USDC-20260116",
-        "symbol": "BTC/USDC:USDC-20260116",
-        "base": "BTC",
-        "quote": "USDC",
-        "settle": "USDC",
-        "baseId": "BTC",
-        "quoteId": "USDC",
-        "settleId": "USDC",
-        "type": "future",
-        "spot": false,
-        "margin": false,
-        "swap": false,
-        "future": true,
-        "option": false,
-        "active": true,
-        "contract": true,
-        "linear": true,
-        "inverse": false,
-        "contractSize": 1,
-        "expiry": 1768550400000,
-        "expiryDatetime": "2026-01-16T08:00:00.000Z",
-        "taker": 0.001,
-        "maker": 0.001,
-        "percentage": true,
-        "tierBased": false,
-        "precision": {
-          "amount": 1e-8,
-          "price": 0.0001,
-          "cost": 0.0001,
-          "base": 1e-8,
-          "quote": 0.0001
-        },
-        "limits": {
-          "leverage": {},
-          "amount": {
-            "min": 0.0005,
-            "max": 200
-          },
-          "price": {},
-          "cost": {}
-        },
-        "marginModes": {}
-      },
-      "option": {
-        "separator": "-",
-        "case": "upper",
-        "id": "BTC-USDC-20260116-80000-C",
-        "symbol": "BTC/USDC:USDC-20260116-80000-C",
-        "base": "BTC",
-        "quote": "USDC",
-        "settle": "USDC",
-        "baseId": "BTC",
-        "quoteId": "USDC",
-        "settleId": "USDC",
-        "type": "option",
-        "spot": false,
-        "margin": false,
-        "swap": false,
-        "future": false,
-        "option": true,
-        "active": true,
-        "contract": true,
-        "linear": true,
-        "inverse": false,
-        "contractSize": 1,
-        "expiry": 1768550400000,
-        "expiryDatetime": "2026-01-16T08:00:00.000Z",
-        "strike": 80000,
-        "optionType": "call",
-        "taker": 0.001,
-        "maker": 0.001,
-        "percentage": true,
-        "tierBased": false,
-        "precision": {
-          "amount": 1e-8,
-          "price": 0.0001,
-          "cost": 0.0001,
-          "base": 1e-8,
-          "quote": 0.0001
-        },
-        "limits": {
-          "leverage": {},
-          "amount": {
-            "min": 0.0005,
-            "max": 200
-          },
-          "price": {},
-          "cost": {}
-        },
-        "marginModes": {}
-      },
-      "precision_mode": 4,
-      "sample_precision": {
-        "amount": 1e-8,
-        "price": 1e-8,
-        "base": 1e-8,
-        "quote": 1e-8
-      },
-      "sample_limits": {
-        "amount": {
-          "min": 0.1,
-          "max": 1000
-        },
-        "price": {},
-        "cost": {}
-      }
-    },
     "bybit": {
       "spot": {
         "separator": "",
@@ -2841,7 +2723,7 @@
           },
           "amount": {
             "min": 0.1,
-            "max": 35500
+            "max": 350000
           },
           "price": {
             "min": 0.0001,
@@ -2854,8 +2736,8 @@
       "future": {
         "separator": "-",
         "case": "upper",
-        "id": "BTCUSDT-16JAN26",
-        "symbol": "BTC/USDT:USDT-260116",
+        "id": "BTCUSDT-06MAR26",
+        "symbol": "BTC/USDT:USDT-260306",
         "base": "BTC",
         "quote": "USDT",
         "settle": "USDT",
@@ -2872,8 +2754,8 @@
         "linear": true,
         "inverse": false,
         "contractSize": 1,
-        "expiry": 1768550400000,
-        "expiryDatetime": "2026-01-16T08:00:00.000Z",
+        "expiry": 1772784000000,
+        "expiryDatetime": "2026-03-06T08:00:00.000Z",
         "taker": 0.0006,
         "maker": 0.0001,
         "percentage": true,
@@ -2903,8 +2785,8 @@
       "option": {
         "separator": "-",
         "case": "upper",
-        "id": "BTC-25DEC26-105000-P-USDT",
-        "symbol": "BTC/USDT:USDT-261225-105000-P",
+        "id": "BTC-25DEC26-67000-P-USDT",
+        "symbol": "BTC/USDT:USDT-261225-67000-P",
         "base": "BTC",
         "quote": "USDT",
         "settle": "USDT",
@@ -2924,7 +2806,7 @@
         "contractSize": 1,
         "expiry": 1798185600000,
         "expiryDatetime": "2026-12-25T08:00:00.000Z",
-        "strike": 105000,
+        "strike": 67000,
         "optionType": "put",
         "taker": 0.0006,
         "maker": 0.0001,
@@ -2966,6 +2848,63 @@
         }
       }
     },
+    "bydfi": {
+      "swap": {
+        "separator": "-",
+        "case": "upper",
+        "id": "CLANKER-USDT",
+        "symbol": "CLANKER/USDT:USDT",
+        "base": "CLANKER",
+        "quote": "USDT",
+        "settle": "USDT",
+        "baseId": "CLANKER",
+        "quoteId": "USDT",
+        "settleId": "USDT",
+        "type": "swap",
+        "spot": false,
+        "swap": true,
+        "future": false,
+        "option": false,
+        "active": true,
+        "contract": true,
+        "linear": true,
+        "inverse": false,
+        "contractSize": 0.01,
+        "taker": 0.0006,
+        "maker": 0.0002,
+        "precision": {
+          "amount": 1,
+          "price": 0.01,
+          "base": 1e-8
+        },
+        "limits": {
+          "leverage": {
+            "max": 20
+          },
+          "amount": {
+            "min": 1,
+            "max": 50000
+          },
+          "price": {},
+          "cost": {}
+        },
+        "marginModes": {}
+      },
+      "precision_mode": 4,
+      "sample_precision": {
+        "amount": 1,
+        "price": 0.01,
+        "base": 1e-8
+      },
+      "sample_limits": {
+        "amount": {
+          "min": 1,
+          "max": 50000
+        },
+        "price": {},
+        "cost": {}
+      }
+    },
     "cex": {
       "spot": {
         "separator": "-",
@@ -2992,11 +2931,11 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 67,
-            "max": 5903000
+            "min": 144,
+            "max": 12710000
           },
           "price": {
-            "min": 0.075,
+            "min": 0.0114,
             "max": 7.5
           },
           "cost": {
@@ -3015,11 +2954,11 @@
       },
       "sample_limits": {
         "amount": {
-          "min": 67,
-          "max": 5903000
+          "min": 144,
+          "max": 12710000
         },
         "price": {
-          "min": 0.075,
+          "min": 0.0114,
           "max": 7.5
         },
         "cost": {
@@ -3178,11 +3117,11 @@
       "spot": {
         "separator": "-",
         "case": "upper",
-        "id": "KNC-USD",
-        "symbol": "KNC/USD",
-        "base": "KNC",
+        "id": "OSMO-USD",
+        "symbol": "OSMO/USD",
+        "base": "OSMO",
         "quote": "USD",
-        "baseId": "KNC",
+        "baseId": "OSMO",
         "quoteId": "USD",
         "type": "spot",
         "spot": true,
@@ -3197,7 +3136,7 @@
         "percentage": true,
         "tierBased": true,
         "precision": {
-          "amount": 0.1,
+          "amount": 0.01,
           "price": 0.0001
         },
         "limits": {
@@ -3212,7 +3151,7 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 0.1,
+        "amount": 0.01,
         "price": 0.0001
       },
       "sample_limits": {
@@ -3247,7 +3186,7 @@
         "percentage": true,
         "tierBased": true,
         "precision": {
-          "amount": 0.0001,
+          "amount": 1e-8,
           "price": 0.01,
           "cost": 0.01
         },
@@ -3311,7 +3250,7 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 0.0001,
+        "amount": 1e-8,
         "price": 0.01
       },
       "sample_limits": {
@@ -3320,60 +3259,6 @@
         "cost": {
           "min": 10
         }
-      }
-    },
-    "coincatch": {
-      "swap": {
-        "separator": "_",
-        "case": "upper",
-        "id": "BTCUSDT_UMCBL",
-        "symbol": "BTC/USDT:USDT",
-        "base": "BTC",
-        "quote": "USDT",
-        "settle": "USDT",
-        "baseId": "BTC",
-        "quoteId": "USDT",
-        "settleId": "USDT",
-        "type": "swap",
-        "spot": false,
-        "swap": true,
-        "future": false,
-        "option": false,
-        "active": false,
-        "contract": true,
-        "linear": true,
-        "inverse": false,
-        "contractSize": 0.0001,
-        "taker": 0.0006,
-        "maker": 0.0002,
-        "percentage": true,
-        "tierBased": false,
-        "feeSide": "get",
-        "precision": {
-          "amount": 0.0001,
-          "price": 0.1
-        },
-        "limits": {
-          "leverage": {},
-          "amount": {
-            "min": 0.0001
-          },
-          "price": {},
-          "cost": {}
-        },
-        "marginModes": {}
-      },
-      "precision_mode": 4,
-      "sample_precision": {
-        "amount": 0.0001,
-        "price": 0.1
-      },
-      "sample_limits": {
-        "amount": {
-          "min": 0.0001
-        },
-        "price": {},
-        "cost": {}
       }
     },
     "coincheck": {
@@ -3415,15 +3300,15 @@
       "spot": {
         "separator": "",
         "case": "upper",
-        "id": "CETUSUSDT",
-        "symbol": "CETUS/USDT",
-        "base": "CETUS",
+        "id": "FOXYUSDT",
+        "symbol": "FOXY/USDT",
+        "base": "FOXY",
         "quote": "USDT",
-        "baseId": "CETUS",
+        "baseId": "FOXY",
         "quoteId": "USDT",
         "type": "spot",
         "spot": true,
-        "margin": true,
+        "margin": false,
         "swap": false,
         "future": false,
         "option": false,
@@ -3433,12 +3318,12 @@
         "maker": 0.003,
         "precision": {
           "amount": 1e-8,
-          "price": 0.000001
+          "price": 1e-8
         },
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 50
+            "min": 5000
           },
           "price": {},
           "cost": {}
@@ -3448,11 +3333,11 @@
       "precision_mode": 4,
       "sample_precision": {
         "amount": 1e-8,
-        "price": 0.000001
+        "price": 1e-8
       },
       "sample_limits": {
         "amount": {
-          "min": 50
+          "min": 5000
         },
         "price": {},
         "cost": {}
@@ -3536,7 +3421,7 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 70
+            "min": 300
           },
           "price": {},
           "cost": {
@@ -3552,7 +3437,7 @@
       },
       "sample_limits": {
         "amount": {
-          "min": 70
+          "min": 300
         },
         "price": {},
         "cost": {
@@ -3564,7 +3449,7 @@
       "spot": {
         "separator": "",
         "case": "upper",
-        "id": "1768204740002001",
+        "id": "1771410540003001",
         "symbol": "TNSR/KRW",
         "base": "TNSR",
         "quote": "KRW",
@@ -3775,8 +3660,8 @@
       "future": {
         "separator": "-",
         "case": "upper",
-        "id": "BTCUSD-260130",
-        "symbol": "BTC/USD:USD-260130",
+        "id": "BTCUSD-260227",
+        "symbol": "BTC/USD:USD-260227",
         "base": "BTC",
         "quote": "USD",
         "settle": "USD",
@@ -3794,8 +3679,8 @@
         "linear": true,
         "inverse": false,
         "contractSize": 1,
-        "expiry": 1769760000000,
-        "expiryDatetime": "2026-01-30T08:00:00.000Z",
+        "expiry": 1772179200000,
+        "expiryDatetime": "2026-02-27T08:00:00.000Z",
         "taker": 0.005,
         "maker": 0.0025,
         "precision": {
@@ -3824,6 +3709,63 @@
         "cost": {}
       }
     },
+    "cryptomus": {
+      "spot": {
+        "separator": "_",
+        "case": "upper",
+        "id": "MNT_USDT",
+        "symbol": "MNT/USDT",
+        "base": "MNT",
+        "quote": "USDT",
+        "baseId": "MNT",
+        "quoteId": "USDT",
+        "type": "spot",
+        "spot": true,
+        "margin": false,
+        "swap": false,
+        "future": false,
+        "option": false,
+        "active": true,
+        "contract": false,
+        "taker": 0.02,
+        "maker": 0.02,
+        "percentage": true,
+        "feeSide": "get",
+        "precision": {
+          "amount": 0.0001,
+          "price": 0.0001
+        },
+        "limits": {
+          "leverage": {},
+          "amount": {
+            "min": 0.6412,
+            "max": 99999999
+          },
+          "price": {
+            "min": 1,
+            "max": 10000000000
+          },
+          "cost": {}
+        },
+        "marginModes": {}
+      },
+      "precision_mode": 4,
+      "sample_precision": {
+        "amount": 0.0001,
+        "price": 0.0001
+      },
+      "sample_limits": {
+        "amount": {
+          "min": 0.6412,
+          "max": 99999999
+        },
+        "price": {
+          "min": 1,
+          "max": 10000000000
+        },
+        "cost": {}
+      }
+    },
     "deepcoin": {
       "spot": {
         "separator": "-",
@@ -3846,7 +3788,7 @@
         "maker": 0.001,
         "precision": {
           "amount": 0.001,
-          "price": 0.0001
+          "price": 0.00001
         },
         "limits": {
           "leverage": {
@@ -3907,7 +3849,7 @@
       "precision_mode": 4,
       "sample_precision": {
         "amount": 0.001,
-        "price": 0.0001
+        "price": 0.00001
       },
       "sample_limits": {
         "amount": {
@@ -3941,8 +3883,8 @@
         "linear": true,
         "inverse": false,
         "contractSize": 1,
-        "taker": 0.055,
-        "maker": 0.02,
+        "taker": 0.000001,
+        "maker": 0.000001,
         "percentage": true,
         "tierBased": true,
         "precision": {
@@ -3994,11 +3936,11 @@
       "spot": {
         "separator": "_",
         "case": "upper",
-        "id": "SOL_USDT",
-        "symbol": "SOL/USDT",
-        "base": "SOL",
+        "id": "ETH_USDT",
+        "symbol": "ETH/USDT",
+        "base": "ETH",
         "quote": "USDT",
-        "baseId": "SOL",
+        "baseId": "ETH",
         "quoteId": "USDT",
         "type": "spot",
         "spot": true,
@@ -4012,7 +3954,7 @@
         "percentage": true,
         "tierBased": true,
         "precision": {
-          "amount": 0.01,
+          "amount": 0.00001,
           "price": 0.01
         },
         "limits": {
@@ -4029,12 +3971,12 @@
       "swap": {
         "separator": "",
         "case": "upper",
-        "id": "SEIUSDT",
-        "symbol": "SEI/USDT:USDT",
-        "base": "SEI",
+        "id": "ARUSDT",
+        "symbol": "AR/USDT:USDT",
+        "base": "AR",
         "quote": "USDT",
         "settle": "USDT",
-        "baseId": "SEI",
+        "baseId": "AR",
         "quoteId": "USDT",
         "settleId": "USDT",
         "type": "swap",
@@ -4047,20 +3989,20 @@
         "contract": true,
         "linear": true,
         "inverse": false,
-        "contractSize": 10,
+        "contractSize": 1,
         "taker": 0.0003,
         "maker": 0.0003,
         "percentage": true,
         "tierBased": true,
         "precision": {
           "amount": 1,
-          "price": 0.0001
+          "price": 0.001
         },
         "limits": {
           "leverage": {},
           "amount": {
             "min": 1,
-            "max": 65000
+            "max": 15434
           },
           "price": {},
           "cost": {}
@@ -4070,12 +4012,12 @@
       "option": {
         "separator": "-",
         "case": "upper",
-        "id": "P-BTC-90800-130126",
-        "symbol": "BTC/USDT:USDT-260113-90800-P",
-        "base": "BTC",
+        "id": "C-ETH-2100-190226",
+        "symbol": "ETH/USDT:USDT-260219-2100-C",
+        "base": "ETH",
         "quote": "USDT",
         "settle": "USDT",
-        "baseId": "BTC",
+        "baseId": "ETH",
         "quoteId": "USDT",
         "settleId": "USDT",
         "type": "option",
@@ -4088,24 +4030,24 @@
         "contract": true,
         "linear": true,
         "inverse": false,
-        "contractSize": 0.001,
-        "expiry": 1768305600000,
-        "expiryDatetime": "2026-01-13T12:00:00.000Z",
-        "strike": 90800,
-        "optionType": "put",
+        "contractSize": 0.01,
+        "expiry": 1771502400000,
+        "expiryDatetime": "2026-02-19T12:00:00.000Z",
+        "strike": 2100,
+        "optionType": "call",
         "taker": 0.00015,
         "maker": 0.00015,
         "percentage": true,
         "tierBased": true,
         "precision": {
           "amount": 1,
-          "price": 0.1
+          "price": 0.01
         },
         "limits": {
           "leverage": {},
           "amount": {
             "min": 1,
-            "max": 255633
+            "max": 173467
           },
           "price": {},
           "cost": {}
@@ -4114,7 +4056,7 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 0.01,
+        "amount": 0.00001,
         "price": 0.01
       },
       "sample_limits": {
@@ -4210,8 +4152,8 @@
       "future": {
         "separator": "-",
         "case": "upper",
-        "id": "BTC-16JAN26",
-        "symbol": "BTC/USD:BTC-260116",
+        "id": "BTC-20FEB26",
+        "symbol": "BTC/USD:BTC-260220",
         "base": "BTC",
         "quote": "USD",
         "settle": "BTC",
@@ -4229,8 +4171,8 @@
         "linear": false,
         "inverse": true,
         "contractSize": 10,
-        "expiry": 1768550400000,
-        "expiryDatetime": "2026-01-16T08:00:00.000Z",
+        "expiry": 1771574400000,
+        "expiryDatetime": "2026-02-20T08:00:00.000Z",
         "taker": 0.0005,
         "maker": -0.0001,
         "precision": {
@@ -4251,15 +4193,15 @@
       },
       "option": {
         "separator": "-",
-        "case": "upper",
-        "id": "BTC-12JAN26-84000-C",
-        "symbol": "BTC/USD:BTC-260112-84000-C",
-        "base": "BTC",
-        "quote": "USD",
-        "settle": "BTC",
-        "baseId": "BTC",
-        "quoteId": "USD",
-        "settleId": "BTC",
+        "case": "mixed",
+        "id": "AVAX_USDC-19FEB26-7d4-C",
+        "symbol": "AVAX/USDC:USDC-260219-7.4-C",
+        "base": "AVAX",
+        "quote": "USDC",
+        "settle": "USDC",
+        "baseId": "AVAX",
+        "quoteId": "USDC",
+        "settleId": "USDC",
         "type": "option",
         "spot": false,
         "margin": false,
@@ -4268,26 +4210,26 @@
         "option": true,
         "active": true,
         "contract": true,
-        "linear": false,
-        "inverse": true,
-        "contractSize": 1,
-        "expiry": 1768204800000,
-        "expiryDatetime": "2026-01-12T08:00:00.000Z",
-        "strike": 84000,
+        "linear": true,
+        "inverse": false,
+        "contractSize": 100,
+        "expiry": 1771488000000,
+        "expiryDatetime": "2026-02-19T08:00:00.000Z",
+        "strike": 7.4,
         "optionType": "call",
         "taker": 0.0003,
         "maker": 0.0003,
         "precision": {
-          "amount": 0.1,
-          "price": 0.0001
+          "amount": 100,
+          "price": 0.0005
         },
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 0.1
+            "min": 100
           },
           "price": {
-            "min": 0.0001
+            "min": 0.0005
           },
           "cost": {}
         },
@@ -4385,8 +4327,8 @@
       "option": {
         "separator": "-",
         "case": "upper",
-        "id": "SOL-20260227-80-P",
-        "symbol": "SOL/USDC:USDC-260227-80-P",
+        "id": "SOL-20260327-90-P",
+        "symbol": "SOL/USDC:USDC-260327-90-P",
         "base": "SOL",
         "quote": "USDC",
         "settle": "USDC",
@@ -4404,9 +4346,9 @@
         "linear": true,
         "inverse": false,
         "contractSize": 1,
-        "expiry": 1772179200000,
-        "expiryDatetime": "2026-02-27T08:00:00.000Z",
-        "strike": 80,
+        "expiry": 1774598400000,
+        "expiryDatetime": "2026-03-27T08:00:00.000Z",
+        "strike": 90,
         "optionType": "put",
         "taker": 0.0003,
         "maker": 0.0001,
@@ -4540,6 +4482,7 @@
         "base": "BTC",
         "quote": "USDC",
         "settle": "USDC",
+        "baseId": "BTC",
         "quoteId": "USDC",
         "settleId": "USDC",
         "type": "swap",
@@ -4551,6 +4494,7 @@
         "contract": true,
         "linear": true,
         "inverse": false,
+        "contractSize": 1,
         "percentage": true,
         "tierBased": true,
         "precision": {
@@ -4593,14 +4537,14 @@
         "future": false,
         "option": false,
         "contract": false,
-        "taker": 0.002,
-        "maker": 0.002,
+        "taker": 0.001,
+        "maker": 0.001,
         "percentage": true,
         "tierBased": true,
         "feeSide": "get",
         "precision": {
           "amount": 1e-8,
-          "price": 1e-8
+          "price": 0.001
         },
         "limits": {
           "leverage": {},
@@ -4621,7 +4565,7 @@
       "precision_mode": 4,
       "sample_precision": {
         "amount": 1e-8,
-        "price": 1e-8
+        "price": 0.001
       },
       "sample_limits": {
         "amount": {
@@ -4775,7 +4719,7 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 9.1e-7
+            "min": 0.00000122
           },
           "price": {
             "min": 0.0001
@@ -4791,7 +4735,7 @@
       },
       "sample_limits": {
         "amount": {
-          "min": 9.1e-7
+          "min": 0.00000122
         },
         "price": {
           "min": 0.0001
@@ -4844,12 +4788,12 @@
       "swap": {
         "separator": "_",
         "case": "upper",
-        "id": "ZEC_USDT",
-        "symbol": "ZEC/USDT:USDT",
-        "base": "ZEC",
+        "id": "BABA_USDT",
+        "symbol": "BABA/USDT:USDT",
+        "base": "BABA",
         "quote": "USDT",
         "settle": "USDT",
-        "baseId": "ZEC",
+        "baseId": "BABA",
         "quoteId": "USDT",
         "settleId": "usdt",
         "type": "swap",
@@ -4875,15 +4819,15 @@
         "limits": {
           "leverage": {
             "min": 1,
-            "max": 50
+            "max": 25
           },
           "amount": {
             "min": 1,
-            "max": 10000000
+            "max": 32000
           },
           "price": {
-            "min": 202.18,
-            "max": 606.54
+            "min": 154.7126,
+            "max": 161.0274
           },
           "cost": {}
         },
@@ -4892,12 +4836,12 @@
       "future": {
         "separator": "_",
         "case": "upper",
-        "id": "LINK_USDT_20260123",
-        "symbol": "LINK/USDT:USDT-260123",
-        "base": "LINK",
+        "id": "XRP_USDT_20260227",
+        "symbol": "XRP/USDT:USDT-260227",
+        "base": "XRP",
         "quote": "USDT",
         "settle": "USDT",
-        "baseId": "LINK",
+        "baseId": "XRP",
         "quoteId": "USDT",
         "settleId": "usdt",
         "type": "future",
@@ -4910,9 +4854,9 @@
         "contract": true,
         "linear": true,
         "inverse": false,
-        "contractSize": 1,
-        "expiry": 1769155200000,
-        "expiryDatetime": "2026-01-23T08:00:00.000Z",
+        "contractSize": 10,
+        "expiry": 1772179200000,
+        "expiryDatetime": "2026-02-27T08:00:00.000Z",
         "taker": 0.0005,
         "maker": 0.0002,
         "percentage": true,
@@ -4920,7 +4864,7 @@
         "feeSide": "get",
         "precision": {
           "amount": 1,
-          "price": 0.001
+          "price": 0.0001
         },
         "limits": {
           "leverage": {
@@ -4932,8 +4876,8 @@
             "max": 1000000
           },
           "price": {
-            "min": 6.65,
-            "max": 19.95
+            "min": 0.74295,
+            "max": 2.22885
           },
           "cost": {}
         },
@@ -4942,8 +4886,8 @@
       "option": {
         "separator": "-",
         "case": "upper",
-        "id": "BTC_USDT-20260115-98000-P",
-        "symbol": "BTC/USDT:USDT-260115-98000-P",
+        "id": "BTC_USDT-20260221-75000-P",
+        "symbol": "BTC/USDT:USDT-260221-75000-P",
         "base": "BTC",
         "quote": "USDT",
         "settle": "USDT",
@@ -4961,9 +4905,9 @@
         "linear": true,
         "inverse": false,
         "contractSize": 1,
-        "expiry": 1768464000000,
-        "expiryDatetime": "2026-01-15T08:00:00.000Z",
-        "strike": 98000,
+        "expiry": 1771660800000,
+        "expiryDatetime": "2026-02-21T08:00:00.000Z",
+        "strike": 75000,
         "optionType": "put",
         "taker": 0.0003,
         "maker": 0.0003,
@@ -4981,8 +4925,8 @@
             "max": 10000
           },
           "price": {
-            "min": 5687.01,
-            "max": 7694.19
+            "min": 5999.13,
+            "max": 8116.47
           },
           "cost": {}
         },
@@ -5001,52 +4945,6 @@
         "cost": {
           "min": 3
         }
-      }
-    },
-    "gemini": {
-      "spot": {
-        "separator": "",
-        "case": "lower",
-        "id": "2zgusd",
-        "symbol": "2Z/GUSD",
-        "base": "2Z",
-        "quote": "GUSD",
-        "baseId": "2Z",
-        "quoteId": "GUSD",
-        "type": "spot",
-        "spot": true,
-        "margin": false,
-        "swap": false,
-        "future": false,
-        "option": false,
-        "contract": false,
-        "taker": 0.004,
-        "maker": 0.002,
-        "precision": {
-          "price": 0.000001,
-          "amount": 0.000001
-        },
-        "limits": {
-          "leverage": {},
-          "amount": {
-            "min": 0.2
-          },
-          "price": {},
-          "cost": {}
-        },
-        "marginModes": {}
-      },
-      "precision_mode": 4,
-      "sample_precision": {
-        "amount": 0.000001,
-        "price": 0.000001
-      },
-      "sample_limits": {
-        "amount": {
-          "min": 0.2
-        },
-        "price": {},
-        "cost": {}
       }
     },
     "hashkey": {
@@ -5376,12 +5274,12 @@
       "spot": {
         "separator": "",
         "case": "lower",
-        "id": "everusdt",
-        "lowercaseId": "everusdt",
-        "symbol": "EVER/USDT",
-        "base": "EVER",
+        "id": "redusdt",
+        "lowercaseId": "redusdt",
+        "symbol": "RED/USDT",
+        "base": "RED",
         "quote": "USDT",
-        "baseId": "ever",
+        "baseId": "red",
         "quoteId": "usdt",
         "type": "spot",
         "spot": true,
@@ -5398,7 +5296,7 @@
         "feeSide": "get",
         "precision": {
           "amount": 0.0001,
-          "price": 0.000001,
+          "price": 0.0001,
           "cost": 1e-8
         },
         "limits": {
@@ -5408,8 +5306,8 @@
             "superMax": 1
           },
           "amount": {
-            "min": 0.01,
-            "max": 4276410
+            "min": 0.1,
+            "max": 2000000
           },
           "price": {},
           "cost": {
@@ -5467,9 +5365,9 @@
       "future": {
         "separator": "-",
         "case": "upper",
-        "id": "BTC-USDT-260116",
-        "lowercaseId": "btc-usdt-260116",
-        "symbol": "BTC/USDT:USDT-260116",
+        "id": "BTC-USDT-260220",
+        "lowercaseId": "btc-usdt-260220",
+        "symbol": "BTC/USDT:USDT-260220",
         "base": "BTC",
         "quote": "USDT",
         "settle": "USDT",
@@ -5487,8 +5385,8 @@
         "linear": true,
         "inverse": false,
         "contractSize": 0.001,
-        "expiry": 1768550400000,
-        "expiryDatetime": "2026-01-16T08:00:00.000Z",
+        "expiry": 1771574400000,
+        "expiryDatetime": "2026-02-20T08:00:00.000Z",
         "taker": 0.0005,
         "maker": 0.0002,
         "percentage": true,
@@ -5515,12 +5413,12 @@
       "precision_mode": 4,
       "sample_precision": {
         "amount": 0.0001,
-        "price": 0.000001
+        "price": 0.0001
       },
       "sample_limits": {
         "amount": {
-          "min": 0.01,
-          "max": 4276410
+          "min": 0.1,
+          "max": 2000000
         },
         "price": {},
         "cost": {
@@ -5638,7 +5536,7 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 0.00001
+            "min": 0.000007
           },
           "price": {},
           "cost": {}
@@ -5649,7 +5547,7 @@
       "sample_precision": {},
       "sample_limits": {
         "amount": {
-          "min": 0.00001
+          "min": 0.000007
         },
         "price": {},
         "cost": {}
@@ -5685,7 +5583,7 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 0.00000649
+            "min": 0.00000869
           },
           "price": {
             "min": 10000
@@ -5701,7 +5599,7 @@
       },
       "sample_limits": {
         "amount": {
-          "min": 0.00000649
+          "min": 0.00000869
         },
         "price": {
           "min": 10000
@@ -6227,52 +6125,6 @@
         "cost": {}
       }
     },
-    "mercado": {
-      "spot": {
-        "separator": "",
-        "case": "upper",
-        "id": "BRLMBCREDIT08",
-        "symbol": "MBCREDIT08/BRL",
-        "base": "MBCREDIT08",
-        "quote": "BRL",
-        "baseId": "MBCREDIT08",
-        "quoteId": "BRL",
-        "type": "spot",
-        "spot": true,
-        "margin": false,
-        "swap": false,
-        "future": false,
-        "option": false,
-        "contract": false,
-        "taker": 0.007,
-        "maker": 0.003,
-        "precision": {
-          "amount": 1e-8,
-          "price": 0.00001
-        },
-        "limits": {
-          "leverage": {},
-          "amount": {},
-          "price": {
-            "min": 0.00001
-          },
-          "cost": {}
-        },
-        "marginModes": {}
-      },
-      "precision_mode": 4,
-      "sample_precision": {
-        "amount": 1e-8,
-        "price": 0.00001
-      },
-      "sample_limits": {
-        "amount": {},
-        "price": {
-          "min": 0.00001
-        },
-        "cost": {}
-      }
-    },
     "mexc": {
       "spot": {
         "separator": "",
@@ -6376,12 +6228,12 @@
       "swap": {
         "separator": "_",
         "case": "upper",
-        "id": "PERP_0G_USDC",
-        "symbol": "0G/USDC:USDC",
-        "base": "0G",
+        "id": "PERP_1000000MOG_USDC",
+        "symbol": "1000000MOG/USDC:USDC",
+        "base": "1000000MOG",
         "quote": "USDC",
         "settle": "USDC",
-        "baseId": "0G",
+        "baseId": "1000000MOG",
         "quoteId": "USDC",
         "settleId": "USDC",
         "type": "swap",
@@ -6399,14 +6251,14 @@
         "percentage": true,
         "tierBased": true,
         "precision": {
-          "amount": 1,
+          "amount": 0.1,
           "price": 0.0001
         },
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 1,
-            "max": 160000
+            "min": 0.1,
+            "max": 480000
           },
           "price": {
             "min": 0,
@@ -6420,13 +6272,13 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 1,
+        "amount": 0.1,
         "price": 0.0001
       },
       "sample_limits": {
         "amount": {
-          "min": 1,
-          "max": 160000
+          "min": 0.1,
+          "max": 480000
         },
         "price": {
           "min": 0,
@@ -6479,14 +6331,14 @@
       "swap": {
         "separator": "-",
         "case": "upper",
-        "id": "ZAMA-USDT-SWAP",
-        "symbol": "ZAMA/USDT:USDT",
-        "base": "ZAMA",
-        "quote": "USDT",
-        "settle": "USDT",
-        "baseId": "ZAMA",
-        "quoteId": "USDT",
-        "settleId": "USDT",
+        "id": "BTC-USD-SWAP",
+        "symbol": "BTC/USD:BTC",
+        "base": "BTC",
+        "quote": "USD",
+        "settle": "BTC",
+        "baseId": "BTC",
+        "quoteId": "USD",
+        "settleId": "BTC",
         "type": "swap",
         "spot": false,
         "margin": false,
@@ -6495,22 +6347,22 @@
         "option": false,
         "active": true,
         "contract": true,
-        "linear": true,
-        "inverse": false,
-        "contractSize": 10,
+        "linear": false,
+        "inverse": true,
+        "contractSize": 100,
         "taker": 0.0005,
         "maker": 0.0002,
         "precision": {
-          "amount": 1,
-          "price": 0.0001
+          "amount": 0.1,
+          "price": 0.1
         },
         "limits": {
           "leverage": {
             "min": 1,
-            "max": 20
+            "max": 100
           },
           "amount": {
-            "min": 1
+            "min": 0.1
           },
           "price": {},
           "cost": {}
@@ -6520,8 +6372,8 @@
       "future": {
         "separator": "-",
         "case": "upper",
-        "id": "BTC-USD-260116",
-        "symbol": "BTC/USD:BTC-260116",
+        "id": "BTC-USD-260220",
+        "symbol": "BTC/USD:BTC-260220",
         "base": "BTC",
         "quote": "USD",
         "settle": "BTC",
@@ -6539,12 +6391,12 @@
         "linear": false,
         "inverse": true,
         "contractSize": 100,
-        "expiry": 1768550400000,
-        "expiryDatetime": "2026-01-16T08:00:00.000Z",
+        "expiry": 1771574400000,
+        "expiryDatetime": "2026-02-20T08:00:00.000Z",
         "taker": 0.0005,
         "maker": 0.0002,
         "precision": {
-          "amount": 1,
+          "amount": 0.1,
           "price": 0.1
         },
         "limits": {
@@ -6553,7 +6405,7 @@
             "max": 20
           },
           "amount": {
-            "min": 1
+            "min": 0.1
           },
           "price": {},
           "cost": {}
@@ -6563,8 +6415,8 @@
       "option": {
         "separator": "-",
         "case": "upper",
-        "id": "BTC-USD-260112-80000-C",
-        "symbol": "BTC/USD:BTC-260112-80000-C",
+        "id": "BTC-USD-260219-60000-C",
+        "symbol": "BTC/USD:BTC-260219-60000-C",
         "base": "BTC",
         "quote": "USD",
         "settle": "BTC",
@@ -6582,9 +6434,9 @@
         "linear": false,
         "inverse": true,
         "contractSize": 1,
-        "expiry": 1768204800000,
-        "expiryDatetime": "2026-01-12T08:00:00.000Z",
-        "strike": 80000,
+        "expiry": 1771488000000,
+        "expiryDatetime": "2026-02-19T08:00:00.000Z",
+        "strike": 60000,
         "optionType": "call",
         "taker": 0.0015,
         "maker": 0.001,
@@ -6768,14 +6620,14 @@
       "swap": {
         "separator": "-",
         "case": "upper",
-        "id": "ZAMA-USDT-SWAP",
-        "symbol": "ZAMA/USDT:USDT",
-        "base": "ZAMA",
-        "quote": "USDT",
-        "settle": "USDT",
-        "baseId": "ZAMA",
-        "quoteId": "USDT",
-        "settleId": "USDT",
+        "id": "BTC-USD-SWAP",
+        "symbol": "BTC/USD:BTC",
+        "base": "BTC",
+        "quote": "USD",
+        "settle": "BTC",
+        "baseId": "BTC",
+        "quoteId": "USD",
+        "settleId": "BTC",
         "type": "swap",
         "spot": false,
         "margin": false,
@@ -6784,22 +6636,22 @@
         "option": false,
         "active": true,
         "contract": true,
-        "linear": true,
-        "inverse": false,
-        "contractSize": 10,
+        "linear": false,
+        "inverse": true,
+        "contractSize": 100,
         "taker": 0.0005,
         "maker": 0.0002,
         "precision": {
-          "amount": 1,
-          "price": 0.0001
+          "amount": 0.1,
+          "price": 0.1
         },
         "limits": {
           "leverage": {
             "min": 1,
-            "max": 20
+            "max": 100
           },
           "amount": {
-            "min": 1
+            "min": 0.1
           },
           "price": {},
           "cost": {}
@@ -6809,8 +6661,8 @@
       "future": {
         "separator": "-",
         "case": "upper",
-        "id": "BTC-USD-260116",
-        "symbol": "BTC/USD:BTC-260116",
+        "id": "BTC-USD-260220",
+        "symbol": "BTC/USD:BTC-260220",
         "base": "BTC",
         "quote": "USD",
         "settle": "BTC",
@@ -6828,12 +6680,12 @@
         "linear": false,
         "inverse": true,
         "contractSize": 100,
-        "expiry": 1768550400000,
-        "expiryDatetime": "2026-01-16T08:00:00.000Z",
+        "expiry": 1771574400000,
+        "expiryDatetime": "2026-02-20T08:00:00.000Z",
         "taker": 0.0005,
         "maker": 0.0002,
         "precision": {
-          "amount": 1,
+          "amount": 0.1,
           "price": 0.1
         },
         "limits": {
@@ -6842,7 +6694,7 @@
             "max": 20
           },
           "amount": {
-            "min": 1
+            "min": 0.1
           },
           "price": {},
           "cost": {}
@@ -6852,8 +6704,8 @@
       "option": {
         "separator": "-",
         "case": "upper",
-        "id": "BTC-USD-260112-80000-C",
-        "symbol": "BTC/USD:BTC-260112-80000-C",
+        "id": "BTC-USD-260219-60000-C",
+        "symbol": "BTC/USD:BTC-260219-60000-C",
         "base": "BTC",
         "quote": "USD",
         "settle": "BTC",
@@ -6871,9 +6723,9 @@
         "linear": false,
         "inverse": true,
         "contractSize": 1,
-        "expiry": 1768204800000,
-        "expiryDatetime": "2026-01-12T08:00:00.000Z",
-        "strike": 80000,
+        "expiry": 1771488000000,
+        "expiryDatetime": "2026-02-19T08:00:00.000Z",
+        "strike": 60000,
         "optionType": "call",
         "taker": 0.0015,
         "maker": 0.001,
@@ -6951,14 +6803,14 @@
       "swap": {
         "separator": "-",
         "case": "upper",
-        "id": "ZAMA-USDT-SWAP",
-        "symbol": "ZAMA/USDT:USDT",
-        "base": "ZAMA",
-        "quote": "USDT",
-        "settle": "USDT",
-        "baseId": "ZAMA",
-        "quoteId": "USDT",
-        "settleId": "USDT",
+        "id": "BTC-USD-SWAP",
+        "symbol": "BTC/USD:BTC",
+        "base": "BTC",
+        "quote": "USD",
+        "settle": "BTC",
+        "baseId": "BTC",
+        "quoteId": "USD",
+        "settleId": "BTC",
         "type": "swap",
         "spot": false,
         "margin": false,
@@ -6967,22 +6819,22 @@
         "option": false,
         "active": true,
         "contract": true,
-        "linear": true,
-        "inverse": false,
-        "contractSize": 10,
+        "linear": false,
+        "inverse": true,
+        "contractSize": 100,
         "taker": 0.0005,
         "maker": 0.0002,
         "precision": {
-          "amount": 1,
-          "price": 0.0001
+          "amount": 0.1,
+          "price": 0.1
         },
         "limits": {
           "leverage": {
             "min": 1,
-            "max": 20
+            "max": 100
           },
           "amount": {
-            "min": 1
+            "min": 0.1
           },
           "price": {},
           "cost": {}
@@ -6992,8 +6844,8 @@
       "future": {
         "separator": "-",
         "case": "upper",
-        "id": "BTC-USD-260116",
-        "symbol": "BTC/USD:BTC-260116",
+        "id": "BTC-USD-260220",
+        "symbol": "BTC/USD:BTC-260220",
         "base": "BTC",
         "quote": "USD",
         "settle": "BTC",
@@ -7011,12 +6863,12 @@
         "linear": false,
         "inverse": true,
         "contractSize": 100,
-        "expiry": 1768550400000,
-        "expiryDatetime": "2026-01-16T08:00:00.000Z",
+        "expiry": 1771574400000,
+        "expiryDatetime": "2026-02-20T08:00:00.000Z",
         "taker": 0.0005,
         "maker": 0.0002,
         "precision": {
-          "amount": 1,
+          "amount": 0.1,
           "price": 0.1
         },
         "limits": {
@@ -7025,7 +6877,7 @@
             "max": 20
           },
           "amount": {
-            "min": 1
+            "min": 0.1
           },
           "price": {},
           "cost": {}
@@ -7035,8 +6887,8 @@
       "option": {
         "separator": "-",
         "case": "upper",
-        "id": "BTC-USD-260112-80000-C",
-        "symbol": "BTC/USD:BTC-260112-80000-C",
+        "id": "BTC-USD-260219-60000-C",
+        "symbol": "BTC/USD:BTC-260219-60000-C",
         "base": "BTC",
         "quote": "USD",
         "settle": "BTC",
@@ -7054,9 +6906,9 @@
         "linear": false,
         "inverse": true,
         "contractSize": 1,
-        "expiry": 1768204800000,
-        "expiryDatetime": "2026-01-12T08:00:00.000Z",
-        "strike": 80000,
+        "expiry": 1771488000000,
+        "expiryDatetime": "2026-02-19T08:00:00.000Z",
+        "strike": 60000,
         "optionType": "call",
         "taker": 0.0015,
         "maker": 0.001,
@@ -7131,14 +6983,14 @@
       "swap": {
         "separator": "_",
         "case": "upper",
-        "id": "BTC_EUR_P",
-        "symbol": "BTC/EUR:EUR",
+        "id": "BTC_USD_P",
+        "symbol": "BTC/USD:USD",
         "base": "BTC",
-        "quote": "EUR",
-        "settle": "EUR",
+        "quote": "USD",
+        "settle": "USD",
         "baseId": "BTC",
-        "quoteId": "EUR",
-        "settleId": "EUR",
+        "quoteId": "USD",
+        "settleId": "USD",
         "type": "swap",
         "spot": false,
         "margin": false,
@@ -7185,11 +7037,11 @@
       "spot": {
         "separator": "_",
         "case": "upper",
-        "id": "YFI_BTC",
-        "symbol": "YFI/BTC",
-        "base": "YFI",
+        "id": "LTC_BTC",
+        "symbol": "LTC/BTC",
+        "base": "LTC",
         "quote": "BTC",
-        "baseId": "YFI",
+        "baseId": "LTC",
         "quoteId": "BTC",
         "type": "spot",
         "spot": true,
@@ -7294,17 +7146,17 @@
         "percentage": true,
         "tierBased": true,
         "precision": {
-          "amount": 0.00001,
-          "price": 0.0001
+          "amount": 0.001,
+          "price": 0.000001
         },
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 0.00001,
-            "max": 9000
+            "min": 0.01,
+            "max": 100000
           },
           "price": {
-            "min": 0.0001,
+            "min": 0.000001,
             "max": 100000
           },
           "cost": {}
@@ -7313,16 +7165,16 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 0.00001,
-        "price": 0.0001
+        "amount": 0.001,
+        "price": 0.000001
       },
       "sample_limits": {
         "amount": {
-          "min": 0.00001,
-          "max": 9000
+          "min": 0.01,
+          "max": 100000
         },
         "price": {
-          "min": 0.0001,
+          "min": 0.000001,
           "max": 100000
         },
         "cost": {}
@@ -7332,12 +7184,12 @@
       "swap": {
         "separator": "-",
         "case": "upper",
-        "id": "XMR-USD-PERP",
-        "symbol": "XMR/USD:USDC",
-        "base": "XMR",
+        "id": "PYTH-USD-PERP",
+        "symbol": "PYTH/USD:USDC",
+        "base": "PYTH",
         "quote": "USD",
         "settle": "USDC",
-        "baseId": "XMR",
+        "baseId": "PYTH",
         "quoteId": "USD",
         "settleId": "USDC",
         "type": "swap",
@@ -7352,13 +7204,13 @@
         "taker": 0.0003,
         "maker": -0.00005,
         "precision": {
-          "amount": 0.001,
-          "price": 0.01
+          "amount": 1,
+          "price": 0.00001
         },
         "limits": {
           "leverage": {},
           "amount": {
-            "max": 5200
+            "max": 38000000
           },
           "price": {},
           "cost": {
@@ -7369,12 +7221,12 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 0.001,
-        "price": 0.01
+        "amount": 1,
+        "price": 0.00001
       },
       "sample_limits": {
         "amount": {
-          "max": 5200
+          "max": 38000000
         },
         "price": {},
         "cost": {
@@ -7617,70 +7469,6 @@
         }
       }
     },
-    "probit": {
-      "spot": {
-        "separator": "-",
-        "case": "upper",
-        "id": "USDQ-USDC",
-        "symbol": "USDQ/USDC",
-        "base": "USDQ",
-        "quote": "USDC",
-        "baseId": "USDQ",
-        "quoteId": "USDC",
-        "type": "spot",
-        "spot": true,
-        "margin": false,
-        "swap": false,
-        "future": false,
-        "option": false,
-        "active": true,
-        "contract": false,
-        "taker": 0.002,
-        "maker": 0.002,
-        "percentage": true,
-        "tierBased": false,
-        "precision": {
-          "amount": 0.0001,
-          "price": 0.0001,
-          "cost": 0.000001
-        },
-        "limits": {
-          "leverage": {},
-          "amount": {
-            "min": 0.0001,
-            "max": 10000000000000000
-          },
-          "price": {
-            "min": 0.0001,
-            "max": 10000000000000000
-          },
-          "cost": {
-            "min": 1,
-            "max": 10000000000000000
-          }
-        },
-        "marginModes": {}
-      },
-      "precision_mode": 4,
-      "sample_precision": {
-        "amount": 0.0001,
-        "price": 0.0001
-      },
-      "sample_limits": {
-        "amount": {
-          "min": 0.0001,
-          "max": 10000000000000000
-        },
-        "price": {
-          "min": 0.0001,
-          "max": 10000000000000000
-        },
-        "cost": {
-          "min": 1,
-          "max": 10000000000000000
-        }
-      }
-    },
     "timex": {
       "spot": {
         "separator": "",
@@ -7777,7 +7565,7 @@
           "cost": {},
           "market": {
             "min": 0,
-            "max": 19334.09945833
+            "max": 47107.82033333
           }
         },
         "marginModes": {}
@@ -8014,11 +7802,11 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 0.001
+            "min": 0.0001
           },
           "price": {},
           "cost": {
-            "min": 0.000082,
+            "min": 0.000012,
             "max": 100000
           }
         },
@@ -8074,11 +7862,11 @@
       },
       "sample_limits": {
         "amount": {
-          "min": 0.001
+          "min": 0.0001
         },
         "price": {},
         "cost": {
-          "min": 0.000082,
+          "min": 0.000012,
           "max": 100000
         }
       }
@@ -8087,11 +7875,11 @@
       "spot": {
         "separator": "_",
         "case": "upper",
-        "id": "SPOT_LRC_USDT",
-        "symbol": "LRC/USDT",
-        "base": "LRC",
+        "id": "SPOT_BNB_USDT",
+        "symbol": "BNB/USDT",
+        "base": "BNB",
         "quote": "USDT",
-        "baseId": "LRC",
+        "baseId": "BNB",
         "quoteId": "USDT",
         "type": "spot",
         "spot": true,
@@ -8106,18 +7894,18 @@
         "percentage": true,
         "tierBased": true,
         "precision": {
-          "amount": 1,
-          "price": 0.00001
+          "amount": 0.001,
+          "price": 0.1
         },
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 1,
-            "max": 1000000
+            "min": 0.001,
+            "max": 2000
           },
           "price": {
             "min": 0,
-            "max": 100000
+            "max": 10000
           },
           "cost": {
             "min": 1
@@ -8128,12 +7916,12 @@
       "swap": {
         "separator": "_",
         "case": "upper",
-        "id": "PERP_POPCAT_USDT",
-        "symbol": "POPCAT/USDT:USDT",
-        "base": "POPCAT",
+        "id": "PERP_ONT_USDT",
+        "symbol": "ONT/USDT:USDT",
+        "base": "ONT",
         "quote": "USDT",
         "settle": "USDT",
-        "baseId": "POPCAT",
+        "baseId": "ONT",
         "quoteId": "USDT",
         "settleId": "USDT",
         "type": "swap",
@@ -8152,14 +7940,14 @@
         "percentage": true,
         "tierBased": true,
         "precision": {
-          "amount": 1,
-          "price": 0.0001
+          "amount": 0.1,
+          "price": 0.00001
         },
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 1,
-            "max": 300000
+            "min": 0.1,
+            "max": 500000
           },
           "price": {
             "min": 0,
@@ -8173,17 +7961,17 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 1,
-        "price": 0.00001
+        "amount": 0.001,
+        "price": 0.1
       },
       "sample_limits": {
         "amount": {
-          "min": 1,
-          "max": 1000000
+          "min": 0.001,
+          "max": 2000
         },
         "price": {
           "min": 0,
-          "max": 100000
+          "max": 10000
         },
         "cost": {
           "min": 1
@@ -8194,12 +7982,12 @@
       "swap": {
         "separator": "_",
         "case": "upper",
-        "id": "PERP_0G_USDC",
-        "symbol": "0G/USDC:USDC",
-        "base": "0G",
+        "id": "PERP_1000000MOG_USDC",
+        "symbol": "1000000MOG/USDC:USDC",
+        "base": "1000000MOG",
         "quote": "USDC",
         "settle": "USDC",
-        "baseId": "0G",
+        "baseId": "1000000MOG",
         "quoteId": "USDC",
         "settleId": "USDC",
         "type": "swap",
@@ -8217,14 +8005,14 @@
         "percentage": true,
         "tierBased": true,
         "precision": {
-          "amount": 1,
+          "amount": 0.1,
           "price": 0.0001
         },
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 1,
-            "max": 160000
+            "min": 0.1,
+            "max": 480000
           },
           "price": {
             "min": 0,
@@ -8238,13 +8026,13 @@
       },
       "precision_mode": 4,
       "sample_precision": {
-        "amount": 1,
+        "amount": 0.1,
         "price": 0.0001
       },
       "sample_limits": {
         "amount": {
-          "min": 1,
-          "max": 160000
+          "min": 0.1,
+          "max": 480000
         },
         "price": {
           "min": 0,
@@ -8455,11 +8243,11 @@
       "spot": {
         "separator": "_",
         "case": "lower",
-        "id": "mosaic.cms_btc",
-        "symbol": "MOSAIC.CMS/BTC",
-        "base": "MOSAIC.CMS",
+        "id": "polygon.mv_btc",
+        "symbol": "POLYGON.MV/BTC",
+        "base": "POLYGON.MV",
         "quote": "BTC",
-        "baseId": "MOSAIC.CMS",
+        "baseId": "POLYGON.MV",
         "quoteId": "BTC",
         "type": "spot",
         "spot": true,
@@ -8477,7 +8265,7 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 10
+            "min": 1
           },
           "price": {
             "min": 1e-8
@@ -8493,7 +8281,7 @@
       },
       "sample_limits": {
         "amount": {
-          "min": 10
+          "min": 1
         },
         "price": {
           "min": 1e-8
@@ -8575,7 +8363,7 @@
         "limits": {
           "leverage": {},
           "amount": {
-            "min": 27.9
+            "min": 45
           },
           "price": {},
           "cost": {}
@@ -8589,7 +8377,7 @@
       },
       "sample_limits": {
         "amount": {
-          "min": 27.9
+          "min": 45
         },
         "price": {},
         "cost": {}
@@ -8606,27 +8394,52 @@
       ]
     },
     {
-      "exchange": "cryptomus",
-      "error": "cryptomus GET https://api.cryptomus.com/v1/exchange/market/assets 404 Not Found {\"error\":\"Not found\"}",
+      "exchange": "btcbox",
+      "error": "btcbox {\"result\":false,\"code\":901, \"message\":\"取引が一時的に停止されています\"}",
       "type": "api_error",
       "countries": [
-        "CA"
+        "JP"
       ]
     },
     {
-      "exchange": "oceanex",
-      "error": "oceanex GET https://api.oceanex.pro/v1/markets?show_details=true request timed out (10000 ms)",
-      "type": "timeout",
+      "exchange": "bullish",
+      "error": "bullish GET https://api.exchange.bullish.com/trading-api/v1/assets 403 Forbidden <!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Bullish is a regulated and audited global cryptocurrency exchange</title><link rel=\"icon\" type=\"image/svg+xml\" href=\"https://assets.marketing.bullish.com/files/journey/images/favicon.svg\"><link rel=\"stylesheet\" href=\"https://assets.marketing.bullish.com/files/journey/style.css\"></head><body class=\"bm-scroll no-touch\"><main class=\"bmnext-0 e1nbcn9t0\"><div class=\"bmnext-gac5jg e101baz714\"><div class=\"bmnext-452gza e101baz713\"><a class=\"bullish-logo bmnext-qjbvr3 e101baz712\" href=\"https://bullish.com\"><img src=\"https://assets.marketing.bullish.com/files/journey/images/logo.svg\"></img></a></div><div class=\"bmnext-kp9xrc e101baz711\"><div class=\"bmnext-1hyws4r e101baz710\"><h4 class=\"bmnext-n5qqns e101baz79\">The Bullish platform is not currently available in your location.</h4><p class=\"bmnext-fwcipn e101baz78\">Our services are not currently provided to your geographical area.</p></div></div><div class=\"bmnext-qtzxu5 e101baz70\"></div></div></main></body></html>\n",
+      "type": "geo_blocked",
       "countries": [
-        "BS"
+        "DE"
+      ]
+    },
+    {
+      "exchange": "gemini",
+      "error": "gemini GET https://api.gemini.com/v1/symbols fetch failed",
+      "type": "api_error",
+      "countries": [
+        "US"
+      ]
+    },
+    {
+      "exchange": "mercado",
+      "error": "mercado GET https://www.mercadobitcoin.net/api/coins 403 Forbidden <!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n<title>Attention Required! | Cloudflare</title>\n<meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/cf.errors.css\" />\n<!--[if lt IE 9]><link rel=\"stylesheet\" id='cf_styles-ie-css' href=\"/cdn-cgi/styles/cf.errors.ie.css\" /><![endif]-->\n<style>body{margin:0;padding:0}</style>\n\n\n<!--[if gte IE 10]><!-->\n<script>\n  if (!navigator.cookieEnabled) {\n    window.addEventListener('DOMContentLoaded', function () {\n      var cookieEl = document.getElementById('cookie-alert');\n      cookieEl.style.display = 'block';\n    })\n  }\n</script>\n<!--<![endif]-->\n\n\n</head>\n<body>\n  <div id=\"cf-wrapper\">\n    <div class=\"cf-alert cf-alert-error cf-cookie-error\" id=\"cookie-alert\" data-translate=\"enable_cookies\">Please enable cookies.</div>\n    <div id=\"cf-error-details\" class=\"cf-error-details-wrapper\">\n      <div class=\"cf-wrapper cf-header cf-error-overview\">\n        <h1 data-translate=\"block_headline\">Sorry, you have been blocked</h1>\n        <h2 class=\"cf-subheadline\"><span data-translate=\"unable_to_access\">You are unable to access</span> mercadobitcoin.net</h2>\n      </div><!-- /.header -->\n\n      <div class=\"cf-section cf-highlight\">\n        <div class=\"cf-wrapper\">\n          <div class=\"cf-screenshot-container cf-screenshot-full\">\n            \n              <span class=\"cf-no-screenshot error\"></span>\n            \n          </div>\n        </div>\n      </div><!-- /.captcha-container -->\n\n      <div class=\"cf-section cf-wrapper\">\n        <div class=\"cf-columns two\">\n          <div class=\"cf-column\">\n            <h2 data-translate=\"blocked_why_headline\">Why have I been blocked?</h2>\n\n            <p data-translate=\"blocked_why_detail\">This website is using a security service to protect itself from online attacks. The action you just performed triggered the security solution. There are several actions that could trigger this block including submitting a certain word or phrase, a SQL command or malformed data.</p>\n          </div>\n\n          <div class=\"cf-column\">\n            <h2 data-translate=\"blocked_resolve_headline\">What can I do to resolve this?</h2>\n\n            <p data-translate=\"blocked_resolve_detail\">You can email the site owner to let them know you were blocked. Please include what you were doing when this page came up and the Cloudflare Ray ID found at the bottom of this page.</p>\n          </div>\n        </div>\n      </div><!-- /.section -->\n\n      <div class=\"cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300\">\n  <p class=\"text-13\">\n    <span class=\"cf-footer-item sm:block sm:mb-1\">Cloudflare Ray ID: <strong class=\"font-semibold\">9cfcd7d2cc7eb68d</strong></span>\n    <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n    <span id=\"cf-footer-item-ip\" class=\"cf-footer-item hidden sm:block sm:mb-1\">\n      Your IP:\n      <button type=\"button\" id=\"cf-footer-ip-reveal\" class=\"cf-footer-ip-reveal-btn\">Click to reveal</button>\n      <span class=\"hidden\" id=\"cf-footer-ip\">161.142.148.76</span>\n      <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n    </span>\n    <span class=\"cf-footer-item sm:block sm:mb-1\"><span>Performance &amp; security by</span> <a rel=\"noopener noreferrer\" href=\"https://www.cloudflare.com/5xx-error-landing\" id=\"brand_link\" target=\"_blank\">Cloudflare</a></span>\n    \n  </p>\n  <script>(function(){function d(){var b=a.getElementById(\"cf-footer-item-ip\"),c=a.getElementById(\"cf-footer-ip-reveal\");b&&\"classList\"in b&&(b.classList.remove(\"hidden\"),c.addEventListener(\"click\",function(){c.classList.add(\"hidden\");a.getElementById(\"cf-footer-ip\").classList.remove(\"hidden\")}))}var a=document;document.addEventListener&&a.addEventListener(\"DOMContentLoaded\",d)})();</script>\n</div><!-- /.error-footer -->\n\n\n    </div><!-- /#cf-error-details -->\n  </div><!-- /#cf-wrapper -->\n\n  <script>\n  window._cf_translation = {};\n  \n  \n</script>\n\n</body>\n</html>\n",
+      "type": "geo_blocked",
+      "countries": [
+        "BR"
       ]
     },
     {
       "exchange": "oxfun",
-      "error": "oxfun GET https://api.ox.fun/v3/assets 530 <none> <!doctype html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!-->\n<html class=\"no-js\" lang=\"en-US\">\n    <!--<![endif]-->\n    <head>\n        <title>Origin DNS error | api.ox.fun | Cloudflare</title>\n        <meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/main.css\" /> <script>\n  (function(){if(document.addEventListener&&window.XMLHttpRequest&&JSON&&JSON.stringify){var e=function(a){var c=document.getElementById(\"error-feedback-survey\"),d=document.getElementById(\"error-feedback-success\"),b=new XMLHttpRequest;a={event:\"feedback clicked\",properties:{errorCode: 1016 },helpful:a,version: 1 };b.open(\"POST\",\"https://sparrow.cloudflare.com/api/v1/event\");b.setRequestHeader(\"Content-Type\",\"application/json\");b.setRequestHeader(\"Sparrow-Source-Key\",\"c771f0e4b54944bebf4261d44bd79a1e\");\nb.send(JSON.stringify(a));c.classList.add(\"feedback-hidden\");d.classList.remove(\"feedback-hidden\")};document.addEventListener(\"DOMContentLoaded\",function(){var a=document.getElementById(\"error-feedback\"),c=document.getElementById(\"feedback-button-yes\"),d=document.getElementById(\"feedback-button-no\");\"classList\"in a&&(a.classList.remove(\"feedback-hidden\"),c.addEventListener(\"click\",function(){e(!0)}),d.addEventListener(\"click\",function(){e(!1)}))})}})();\n</script>\n        <script\n            defer\n            src=\"https://performance.radar.cloudflare.com/beacon.js\"\n        ></script>\n    </head>\n    <body>\n        <div id=\"cf-wrapper\">\n            <div\n                class=\"cf-alert cf-alert-error cf-cookie-error hidden\"\n                id=\"cookie-alert\"\n                data-translate=\"enable_cookies\"\n            >\n                Please enable cookies.\n            </div>\n            <div id=\"cf-error-details\" class=\"p-0\">\n                <header\n                    class=\"mx-auto pt-10 lg:pt-6 lg:px-8 w-240 lg:w-full mb-15 antialiased\"\n                >\n                    <h1\n                        class=\"inline-block md:block mr-2 md:mb-2 font-light text-60 md:text-3xl text-black-dark leading-tight\"\n                    >\n                        <span data-translate=\"error\">Error</span>\n                        <span>1016</span>\n                    </h1>\n                    <span\n                        class=\"inline-block md:block heading-ray-id font-mono text-15 lg:text-sm lg:leading-relaxed\"\n                        >Ray ID: 9bcb1ce32d067974 &bull;</span\n                    >\n                    <span\n                        class=\"inline-block md:block heading-ray-id font-mono text-15 lg:text-sm lg:leading-relaxed\"\n                        >2026-01-12 07:59:09 UTC</span\n                    >\n                    <h2\n                        class=\"text-gray-600 leading-1.3 text-3xl lg:text-2xl font-light\"\n                    >\n                        Origin DNS error\n                    </h2>\n                </header>\n                \n                \n                <section class=\"w-240 lg:w-full mx-auto mb-8 lg:px-8\">\n                    <div id=\"what-happened-section\" class=\"w-1/2 md:w-full\">\n                        <h2\n                            class=\"text-3xl leading-tight font-normal mb-4 text-black-dark antialiased\"\n                            data-translate=\"what_happened\"\n                        >\n                            What happened?\n                        </h2>\n                        \n                            <p>You've requested a page on a website (api.ox.fun) that is on the <a href=\"https://www.cloudflare.com/5xx-error-landing/\" target=\"_blank\">Cloudflare</a> network. Cloudflare is currently unable to resolve your requested domain (api.ox.fun).</p>\n                        \n                        \n                        <p>\n                            Please see\n                            <a\n                                rel=\"noopener noreferrer\"\n                                href=\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1016/\"\n                                target=\"_blank\"\n                                >https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1016/</a\n                            >\n                            for more details.\n                        </p>\n                        \n                    </div>\n\n                    \n                    <div\n                        id=\"resolution-copy-section\"\n                        class=\"w-1/2 mt-6 text-15 leading-normal\"\n                    >\n                        <h2\n                            class=\"text-3xl leading-tight font-normal mb-4 text-black-dark antialiased\"\n                            data-translate=\"what_can_i_do\"\n                        >\n                            What can I do?\n                        </h2>\n                        <p><strong>If you are a visitor of this website:</strong><br />Please try again in a few minutes.</p><p><strong>If you are the owner of this website:</strong><br />Check your DNS settings. If you are using a CNAME origin record, make sure it is valid and resolvable. <a rel=\"noopener noreferrer\" href=\"https://support.cloudflare.com/hc/en-us/articles/234979888-Error-1016-Origin-DNS-error\">Additional troubleshooting information here.</a></p>\n                    </div>\n                    \n                </section>\n                \n\n                <div class=\"feedback-hidden py-8 text-center\" id=\"error-feedback\">\n    <div id=\"error-feedback-survey\" class=\"footer-line-wrapper\">\n        Was this page helpful?\n        <button\n            class=\"border border-solid bg-white cf-button cursor-pointer ml-4 px-4 py-2 rounded\"\n            id=\"feedback-button-yes\"\n            type=\"button\"\n        >\n            Yes\n        </button>\n        <button\n            class=\"border border-solid bg-white cf-button cursor-pointer ml-4 px-4 py-2 rounded\"\n            id=\"feedback-button-no\"\n            type=\"button\"\n        >\n            No\n        </button>\n    </div>\n    <div class=\"feedback-success feedback-hidden\" id=\"error-feedback-success\">\n        Thank you for your feedback!\n    </div>\n</div> <div class=\"cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300\">\n    <p class=\"text-13\">\n      <span class=\"cf-footer-item sm:block sm:mb-1\">Cloudflare Ray ID: <strong class=\"font-semibold\">9bcb1ce32d067974</strong></span>\n      <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      <span id=\"cf-footer-item-ip\" class=\"cf-footer-item hidden sm:block sm:mb-1\">\n        Your IP:\n        <button type=\"button\" id=\"cf-footer-ip-reveal\" class=\"cf-footer-ip-reveal-btn\">Click to reveal</button>\n        <span class=\"hidden\" id=\"cf-footer-ip\">159.26.115.52</span>\n        <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      </span>\n      <span class=\"cf-footer-item sm:block sm:mb-1\"><span>Performance &amp; security by</span> <a rel=\"noopener noreferrer\" href=\"https://www.cloudflare.com/5xx-error-landing\" id=\"brand_link\" target=\"_blank\">Cloudflare</a></span>\n      \n    </p>\n    <script>(function(){function d(){var b=a.getElementById(\"cf-footer-item-ip\"),c=a.getElementById(\"cf-footer-ip-reveal\");b&&\"classList\"in b&&(b.classList.remove(\"hidden\"),c.addEventListener(\"click\",function(){c.classList.add(\"hidden\");a.getElementById(\"cf-footer-ip\").classList.remove(\"hidden\")}))}var a=document;document.addEventListener&&a.addEventListener(\"DOMContentLoaded\",d)})();</script>\n  </div><!-- /.error-footer -->\n            </div>\n            <!-- /#cf-error-details -->\n        </div>\n        <!-- /#cf-wrapper -->\n\n         <script>\n    window._cf_translation = {};\n    \n    \n  </script> \n        \n    </body>\n</html>",
+      "error": "oxfun GET https://api.ox.fun/v3/assets 530 <none> <!doctype html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!-->\n<html class=\"no-js\" lang=\"en-US\">\n    <!--<![endif]-->\n    <head>\n        <title>Origin DNS error | api.ox.fun | Cloudflare</title>\n        <meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/main.css\" /> <script>\n  (function(){if(document.addEventListener&&window.XMLHttpRequest&&JSON&&JSON.stringify){var e=function(a){var c=document.getElementById(\"error-feedback-survey\"),d=document.getElementById(\"error-feedback-success\"),b=new XMLHttpRequest;a={event:\"feedback clicked\",properties:{errorCode: 1016 },helpful:a,version: 1 };b.open(\"POST\",\"https://sparrow.cloudflare.com/api/v1/event\");b.setRequestHeader(\"Content-Type\",\"application/json\");b.setRequestHeader(\"Sparrow-Source-Key\",\"c771f0e4b54944bebf4261d44bd79a1e\");\nb.send(JSON.stringify(a));c.classList.add(\"feedback-hidden\");d.classList.remove(\"feedback-hidden\")};document.addEventListener(\"DOMContentLoaded\",function(){var a=document.getElementById(\"error-feedback\"),c=document.getElementById(\"feedback-button-yes\"),d=document.getElementById(\"feedback-button-no\");\"classList\"in a&&(a.classList.remove(\"feedback-hidden\"),c.addEventListener(\"click\",function(){e(!0)}),d.addEventListener(\"click\",function(){e(!1)}))})}})();\n</script>\n        <script\n            defer\n            src=\"https://performance.radar.cloudflare.com/beacon.js\"\n        ></script>\n    </head>\n    <body>\n        <div id=\"cf-wrapper\">\n            <div\n                class=\"cf-alert cf-alert-error cf-cookie-error hidden\"\n                id=\"cookie-alert\"\n                data-translate=\"enable_cookies\"\n            >\n                Please enable cookies.\n            </div>\n            <div id=\"cf-error-details\" class=\"p-0\">\n                <header\n                    class=\"mx-auto pt-10 lg:pt-6 lg:px-8 w-240 lg:w-full mb-15 antialiased\"\n                >\n                    <h1\n                        class=\"inline-block md:block mr-2 md:mb-2 font-light text-60 md:text-3xl text-black-dark leading-tight\"\n                    >\n                        <span data-translate=\"error\">Error</span>\n                        <span>1016</span>\n                    </h1>\n                    <span\n                        class=\"inline-block md:block heading-ray-id font-mono text-15 lg:text-sm lg:leading-relaxed\"\n                        >Ray ID: 9cfcd7dd3871328c &bull;</span\n                    >\n                    <span\n                        class=\"inline-block md:block heading-ray-id font-mono text-15 lg:text-sm lg:leading-relaxed\"\n                        >2026-02-18 10:29:24 UTC</span\n                    >\n                    <h2\n                        class=\"text-gray-600 leading-1.3 text-3xl lg:text-2xl font-light\"\n                    >\n                        Origin DNS error\n                    </h2>\n                </header>\n                \n                \n                <section class=\"w-240 lg:w-full mx-auto mb-8 lg:px-8\">\n                    <div id=\"what-happened-section\" class=\"w-1/2 md:w-full\">\n                        <h2\n                            class=\"text-3xl leading-tight font-normal mb-4 text-black-dark antialiased\"\n                            data-translate=\"what_happened\"\n                        >\n                            What happened?\n                        </h2>\n                        \n                            <p>You've requested a page on a website (api.ox.fun) that is on the <a href=\"https://www.cloudflare.com/5xx-error-landing/\" target=\"_blank\">Cloudflare</a> network. Cloudflare is currently unable to resolve your requested domain (api.ox.fun).</p>\n                        \n                        \n                        <p>\n                            Please see\n                            <a\n                                rel=\"noopener noreferrer\"\n                                href=\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1016/\"\n                                target=\"_blank\"\n                                >https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1016/</a\n                            >\n                            for more details.\n                        </p>\n                        \n                    </div>\n\n                    \n                    <div\n                        id=\"resolution-copy-section\"\n                        class=\"w-1/2 mt-6 text-15 leading-normal\"\n                    >\n                        <h2\n                            class=\"text-3xl leading-tight font-normal mb-4 text-black-dark antialiased\"\n                            data-translate=\"what_can_i_do\"\n                        >\n                            What can I do?\n                        </h2>\n                        <p><strong>If you are a visitor of this website:</strong><br />Please try again in a few minutes.</p><p><strong>If you are the owner of this website:</strong><br />Check your DNS settings. If you are using a CNAME origin record, make sure it is valid and resolvable. <a rel=\"noopener noreferrer\" href=\"https://support.cloudflare.com/hc/en-us/articles/234979888-Error-1016-Origin-DNS-error\">Additional troubleshooting information here.</a></p>\n                    </div>\n                    \n                </section>\n                \n\n                <div class=\"feedback-hidden py-8 text-center\" id=\"error-feedback\">\n    <div id=\"error-feedback-survey\" class=\"footer-line-wrapper\">\n        Was this page helpful?\n        <button\n            class=\"border border-solid bg-white cf-button cursor-pointer ml-4 px-4 py-2 rounded\"\n            id=\"feedback-button-yes\"\n            type=\"button\"\n        >\n            Yes\n        </button>\n        <button\n            class=\"border border-solid bg-white cf-button cursor-pointer ml-4 px-4 py-2 rounded\"\n            id=\"feedback-button-no\"\n            type=\"button\"\n        >\n            No\n        </button>\n    </div>\n    <div class=\"feedback-success feedback-hidden\" id=\"error-feedback-success\">\n        Thank you for your feedback!\n    </div>\n</div> <div class=\"cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300\">\n    <p class=\"text-13\">\n      <span class=\"cf-footer-item sm:block sm:mb-1\">Cloudflare Ray ID: <strong class=\"font-semibold\">9cfcd7dd3871328c</strong></span>\n      <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      <span id=\"cf-footer-item-ip\" class=\"cf-footer-item hidden sm:block sm:mb-1\">\n        Your IP:\n        <button type=\"button\" id=\"cf-footer-ip-reveal\" class=\"cf-footer-ip-reveal-btn\">Click to reveal</button>\n        <span class=\"hidden\" id=\"cf-footer-ip\">161.142.148.76</span>\n        <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      </span>\n      <span class=\"cf-footer-item sm:block sm:mb-1\"><span>Performance &amp; security by</span> <a rel=\"noopener noreferrer\" href=\"https://www.cloudflare.com/5xx-error-landing\" id=\"brand_link\" target=\"_blank\">Cloudflare</a></span>\n      \n    </p>\n    <script>(function(){function d(){var b=a.getElementById(\"cf-footer-item-ip\"),c=a.getElementById(\"cf-footer-ip-reveal\");b&&\"classList\"in b&&(b.classList.remove(\"hidden\"),c.addEventListener(\"click\",function(){c.classList.add(\"hidden\");a.getElementById(\"cf-footer-ip\").classList.remove(\"hidden\")}))}var a=document;document.addEventListener&&a.addEventListener(\"DOMContentLoaded\",d)})();</script>\n  </div><!-- /.error-footer -->\n            </div>\n            <!-- /#cf-error-details -->\n        </div>\n        <!-- /#cf-wrapper -->\n\n         <script>\n    window._cf_translation = {};\n    \n    \n  </script> \n        \n    </body>\n</html>",
       "type": "api_error",
       "countries": [
         "PA"
+      ]
+    },
+    {
+      "exchange": "probit",
+      "error": "probit not found  undefined",
+      "type": "api_error",
+      "countries": [
+        "SC",
+        "KR"
       ]
     }
   ],

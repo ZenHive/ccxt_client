@@ -104,4 +104,92 @@ defmodule CCXT.WS.PatternTest do
       assert Pattern.format_market_id(nil, :native) == ""
     end
   end
+
+  describe "format_market_id/3 with symbol_context" do
+    # OKX-style: dash separator (BTC/USDT → BTC-USDT)
+    @okx_ctx %{
+      symbol_patterns: %{
+        spot: %{case: :upper, pattern: :dash_upper, suffix: nil, separator: "-", date_format: nil, component_order: nil}
+      },
+      symbol_format: nil,
+      symbol_formats: nil,
+      currency_aliases: %{}
+    }
+
+    # Binance-style: no separator (BTC/USDT → BTCUSDT)
+    @binance_ctx %{
+      symbol_patterns: %{
+        spot: %{
+          case: :upper,
+          pattern: :no_separator_upper,
+          suffix: nil,
+          separator: "",
+          date_format: nil,
+          component_order: nil
+        }
+      },
+      symbol_format: nil,
+      symbol_formats: nil,
+      currency_aliases: %{}
+    }
+
+    # Coinbase-style: dash separator (BTC/USD → BTC-USD)
+    @coinbase_ctx %{
+      symbol_patterns: %{
+        spot: %{case: :upper, pattern: :dash_upper, suffix: nil, separator: "-", date_format: nil, component_order: nil}
+      },
+      symbol_format: nil,
+      symbol_formats: nil,
+      currency_aliases: %{}
+    }
+
+    test "OKX: produces dash-separated symbol" do
+      assert Pattern.format_market_id("BTC/USDT", :native, @okx_ctx) == "BTC-USDT"
+    end
+
+    test "OKX: casing preserved with :native format" do
+      assert Pattern.format_market_id("ETH/USDT", :native, @okx_ctx) == "ETH-USDT"
+    end
+
+    test "Binance: no separator with :lowercase applies casing after conversion" do
+      assert Pattern.format_market_id("BTC/USDT", :lowercase, @binance_ctx) == "btcusdt"
+    end
+
+    test "Binance: no separator with :native preserves case" do
+      assert Pattern.format_market_id("BTC/USDT", :native, @binance_ctx) == "BTCUSDT"
+    end
+
+    test "Coinbase: dash separator for BTC/USD" do
+      assert Pattern.format_market_id("BTC/USD", :native, @coinbase_ctx) == "BTC-USD"
+    end
+
+    test "returns empty string for nil symbol with symbol_context" do
+      assert Pattern.format_market_id(nil, :native, @okx_ctx) == ""
+    end
+
+    test "falls back to /2 behavior when symbol_context is nil" do
+      assert Pattern.format_market_id("BTC/USDT", :native, nil) == "BTCUSDT"
+    end
+
+    test "falls back to /2 behavior when symbol_context is empty map" do
+      assert Pattern.format_market_id("BTC/USDT", :lowercase, %{}) == "btcusdt"
+    end
+
+    test "falls back to /2 behavior when symbol_context has only nil fields" do
+      ctx = %{symbol_patterns: nil, symbol_format: nil, symbol_formats: nil, currency_aliases: %{}}
+      assert Pattern.format_market_id("BTC/USDT", :native, ctx) == "BTCUSDT"
+    end
+
+    test "symbol already in exchange format is not corrupted (regression: unchanged != failure)" do
+      # When to_exchange_id returns the same string as input, that's a valid result —
+      # not a signal to fall back to naive slash removal
+      assert Pattern.format_market_id("BTCUSDT", :native, @binance_ctx) == "BTCUSDT"
+      assert Pattern.format_market_id("BTCUSDT", :lowercase, @binance_ctx) == "btcusdt"
+    end
+
+    test "slash-containing symbol preserved correctly when context matches identity" do
+      # BTC/USDT with Binance context → BTCUSDT (not double-processed)
+      assert Pattern.format_market_id("BTC/USDT", :native, @binance_ctx) == "BTCUSDT"
+    end
+  end
 end

@@ -41,6 +41,14 @@ defmodule CCXT.Test.WSIntegrationGenerator do
   | `@tag :ws_private, :authenticated` | Private channel tests (balance, orders) |
   | `@tag :connection` | Connection management tests |
 
+  ## Sandbox Gating
+
+  Test generation is gated on `has_ws_sandbox` at compile time. Exchanges with a WS
+  sandbox (e.g., Binance, Bybit, OKX, Deribit) get a full test module. Exchanges
+  without a sandbox get a minimal tagged module with no tests and an additional
+  `@moduletag :no_ws_sandbox`. These appear as 0-test modules in output — this is
+  intentional and can be filtered with `--exclude no_ws_sandbox`.
+
   ## Running Tests
 
       # All WS integration tests
@@ -57,6 +65,9 @@ defmodule CCXT.Test.WSIntegrationGenerator do
 
       # Tier 1 only
       mix test --only ws_integration --only tier1
+
+      # Exclude exchanges without sandbox
+      mix test --only ws_integration --exclude no_ws_sandbox
 
   """
 
@@ -83,53 +94,64 @@ defmodule CCXT.Test.WSIntegrationGenerator do
   defmacro __generate__(exchange, opts) do
     config = Config.build(exchange, opts)
 
-    quote do
-      use ExUnit.Case, async: false
+    if config.has_ws_sandbox do
+      quote do
+        use ExUnit.Case, async: false
 
-      import CCXT.Test.WSIntegrationHelper
+        import CCXT.Test.WSIntegrationHelper
 
-      require Logger
+        require Logger
 
-      @moduletag :integration
-      @moduletag :ws_integration
-      @moduletag unquote(config.exchange_tag)
-      @moduletag unquote(config.priority_tier_tag)
+        @moduletag :integration
+        @moduletag :ws_integration
+        @moduletag unquote(config.exchange_tag)
+        @moduletag unquote(config.priority_tier_tag)
 
-      @exchange_id unquote(config.exchange_id)
-      @rest_module unquote(config.rest_module)
-      @ws_module unquote(config.ws_module)
-      @adapter_module unquote(config.adapter_module)
-      @has_ws_support unquote(config.has_ws_support)
-      @has_ws_sandbox unquote(config.has_ws_sandbox)
-      @has_private_channels unquote(config.has_private_channels)
-      @has_passphrase unquote(config.has_passphrase)
-      @public_url_path unquote(config.public_url_path)
-      @private_url_path unquote(config.private_url_path)
-      @watch_methods unquote(Macro.escape(config.watch_methods))
+        @exchange_id unquote(config.exchange_id)
+        @rest_module unquote(config.rest_module)
+        @ws_module unquote(config.ws_module)
+        @adapter_module unquote(config.adapter_module)
+        @has_ws_support unquote(config.has_ws_support)
+        @has_private_channels unquote(config.has_private_channels)
+        @has_passphrase unquote(config.has_passphrase)
+        @public_url_path unquote(config.public_url_path)
+        @private_url_path unquote(config.private_url_path)
+        @sandbox_key unquote(config.sandbox_key)
+        @watch_methods unquote(Macro.escape(config.watch_methods))
 
-      setup_all do
-        # Skip if no WS support at all
-        if @has_ws_support do
-          exchange_atom = String.to_existing_atom(@exchange_id)
+        setup_all do
+          # Skip if no WS support at all
+          if @has_ws_support do
+            exchange_atom = String.to_existing_atom(@exchange_id)
 
-          # Get credentials for private channel tests
-          credentials = CCXT.Testnet.creds(exchange_atom, :default)
+            # Get credentials for private channel tests (sandbox_key routes to correct cred set)
+            credentials = CCXT.Testnet.creds(exchange_atom, @sandbox_key)
 
-          # Warn but don't fail if no credentials - public tests can still run
-          if @has_private_channels and is_nil(credentials) do
-            Logger.warning("No testnet credentials for #{@exchange_id} - private channel tests will be skipped")
+            # Warn but don't fail if no credentials - public tests can still run
+            warn_if_missing_credentials(@exchange_id, @has_private_channels, credentials)
+
+            {:ok, exchange_atom: exchange_atom, credentials: credentials}
+          else
+            {:ok, skip: "Exchange #{@exchange_id} has no WebSocket support"}
           end
-
-          {:ok, exchange_atom: exchange_atom, credentials: credentials, has_ws_sandbox: @has_ws_sandbox}
-        else
-          {:ok, skip: "Exchange #{@exchange_id} has no WebSocket support"}
         end
-      end
 
-      unquote(generate_module_verification_tests())
-      unquote(generate_connection_tests())
-      unquote(generate_public_channel_tests(config))
-      unquote(generate_private_channel_tests(config))
+        unquote(generate_module_verification_tests())
+        unquote(generate_connection_tests())
+        unquote(generate_public_channel_tests(config))
+        unquote(generate_private_channel_tests(config))
+      end
+    else
+      # No sandbox — generate tagged module with no tests
+      quote do
+        use ExUnit.Case, async: false
+
+        @moduletag :integration
+        @moduletag :ws_integration
+        @moduletag unquote(config.exchange_tag)
+        @moduletag unquote(config.priority_tier_tag)
+        @moduletag :no_ws_sandbox
+      end
     end
   end
 
@@ -183,7 +205,6 @@ defmodule CCXT.Test.WSIntegrationGenerator do
 
         test "can connect to public endpoint", context do
           if Map.get(context, :skip), do: flunk("SKIP: #{context.skip}")
-          if not context.has_ws_sandbox, do: flunk("SKIP: No WS sandbox for #{@exchange_id}")
 
           adapter =
             start_adapter_and_wait!(@adapter_module,
@@ -199,7 +220,6 @@ defmodule CCXT.Test.WSIntegrationGenerator do
 
         test "can disconnect gracefully", context do
           if Map.get(context, :skip), do: flunk("SKIP: #{context.skip}")
-          if not context.has_ws_sandbox, do: flunk("SKIP: No WS sandbox for #{@exchange_id}")
 
           adapter =
             start_adapter_and_wait!(@adapter_module,
@@ -243,16 +263,19 @@ defmodule CCXT.Test.WSIntegrationGenerator do
         @tag :ticker
         test "can subscribe to ticker", context do
           if Map.get(context, :skip), do: flunk("SKIP: #{context.skip}")
-          if not context.has_ws_sandbox, do: flunk("SKIP: No WS sandbox for #{@exchange_id}")
+
+          url_path = CCXT.Test.WSChannelConfig.resolve_url_path(@exchange_id, :ticker, @public_url_path)
+          symbol = CCXT.Test.WSChannelConfig.resolve_symbol(@exchange_id, :ticker, test_symbol(@exchange_id))
+          timeout = CCXT.Test.WSChannelConfig.resolve_timeout(@exchange_id, :ticker, 30_000)
 
           adapter =
             start_adapter_and_wait!(@adapter_module,
-              url_path: @public_url_path,
+              url_path: url_path,
               sandbox: true
             )
 
-          assert {:ok, sub} = @ws_module.watch_ticker_subscription(test_symbol(@exchange_id))
-          message = subscribe_and_receive!(@adapter_module, adapter, sub)
+          assert {:ok, sub} = @ws_module.watch_ticker_subscription(symbol)
+          message = subscribe_and_receive!(@adapter_module, adapter, sub, timeout)
 
           assert is_map(message), "Expected map message, got: #{inspect(message)}"
           Logger.info("Received ticker message: #{inspect(Map.keys(message))}")
@@ -264,29 +287,77 @@ defmodule CCXT.Test.WSIntegrationGenerator do
   end
 
   @doc false
-  # Generates orderbook subscription test if watch_order_book is supported
+  # Generates orderbook subscription test if watch_order_book is supported.
+  # If watch_order_book is in auth_required_channels, generates an authenticated variant
+  # that passes credentials to the adapter (for inline_subscribe pattern like Coinbase).
   defp generate_orderbook_test(config) do
     if :watch_order_book in config.watch_methods do
-      quote do
-        @tag :orderbook
-        test "can subscribe to orderbook", context do
-          if Map.get(context, :skip), do: flunk("SKIP: #{context.skip}")
-          if not context.has_ws_sandbox, do: flunk("SKIP: No WS sandbox for #{@exchange_id}")
+      if :watch_order_book in config.auth_required_channels do
+        generate_authenticated_orderbook_test()
+      else
+        generate_public_orderbook_test()
+      end
+    end
+  end
 
-          adapter =
-            start_adapter_and_wait!(@adapter_module,
-              url_path: @public_url_path,
-              sandbox: true
-            )
+  @doc false
+  defp generate_public_orderbook_test do
+    quote do
+      @tag :orderbook
+      test "can subscribe to orderbook", context do
+        if Map.get(context, :skip), do: flunk("SKIP: #{context.skip}")
 
-          assert {:ok, sub} = @ws_module.watch_order_book_subscription(test_symbol(@exchange_id), nil)
-          message = subscribe_and_receive!(@adapter_module, adapter, sub)
+        url_path = CCXT.Test.WSChannelConfig.resolve_url_path(@exchange_id, :orderbook, @public_url_path)
+        symbol = CCXT.Test.WSChannelConfig.resolve_symbol(@exchange_id, :orderbook, test_symbol(@exchange_id))
+        timeout = CCXT.Test.WSChannelConfig.resolve_timeout(@exchange_id, :orderbook, 30_000)
 
-          assert is_map(message), "Expected map message, got: #{inspect(message)}"
-          Logger.info("Received orderbook message: #{inspect(Map.keys(message))}")
+        adapter =
+          start_adapter_and_wait!(@adapter_module,
+            url_path: url_path,
+            sandbox: true
+          )
 
-          close_adapter(adapter)
+        assert {:ok, sub} = @ws_module.watch_order_book_subscription(symbol, nil)
+        message = subscribe_and_receive!(@adapter_module, adapter, sub, timeout)
+
+        assert is_map(message), "Expected map message, got: #{inspect(message)}"
+        Logger.info("Received orderbook message: #{inspect(Map.keys(message))}")
+
+        close_adapter(adapter)
+      end
+    end
+  end
+
+  @doc false
+  defp generate_authenticated_orderbook_test do
+    quote do
+      @tag :orderbook
+      @tag :authenticated
+      test "can subscribe to orderbook (auth required)", context do
+        if Map.get(context, :skip), do: flunk("SKIP: #{context.skip}")
+
+        if is_nil(context.credentials) do
+          flunk(missing_ws_credentials_message(@exchange_id, passphrase: @has_passphrase, sandbox_key: @sandbox_key))
         end
+
+        url_path = CCXT.Test.WSChannelConfig.resolve_url_path(@exchange_id, :orderbook, @private_url_path)
+        symbol = CCXT.Test.WSChannelConfig.resolve_symbol(@exchange_id, :orderbook, test_symbol(@exchange_id))
+        timeout = CCXT.Test.WSChannelConfig.resolve_timeout(@exchange_id, :orderbook, 30_000)
+
+        adapter =
+          start_adapter_and_wait!(@adapter_module,
+            url_path: url_path,
+            sandbox: true,
+            credentials: context.credentials
+          )
+
+        assert {:ok, sub} = @ws_module.watch_order_book_subscription(symbol, nil)
+        message = subscribe_and_receive!(@adapter_module, adapter, sub, timeout)
+
+        assert is_map(message), "Expected map message, got: #{inspect(message)}"
+        Logger.info("Received orderbook message: #{inspect(Map.keys(message))}")
+
+        close_adapter(adapter)
       end
     end
   end
@@ -299,19 +370,29 @@ defmodule CCXT.Test.WSIntegrationGenerator do
         @tag :trades
         test "can subscribe to trades", context do
           if Map.get(context, :skip), do: flunk("SKIP: #{context.skip}")
-          if not context.has_ws_sandbox, do: flunk("SKIP: No WS sandbox for #{@exchange_id}")
+
+          # 60s default — trades channels can be slow on some testnets
+          default_timeout = 60_000
+
+          url_path = CCXT.Test.WSChannelConfig.resolve_url_path(@exchange_id, :trades, @public_url_path)
+          symbol = CCXT.Test.WSChannelConfig.resolve_symbol(@exchange_id, :trades, test_symbol(@exchange_id))
+          timeout = CCXT.Test.WSChannelConfig.resolve_timeout(@exchange_id, :trades, default_timeout)
 
           adapter =
             start_adapter_and_wait!(@adapter_module,
-              url_path: @public_url_path,
+              url_path: url_path,
               sandbox: true
             )
 
-          assert {:ok, sub} = @ws_module.watch_trades_subscription(test_symbol(@exchange_id))
-          message = subscribe_and_receive!(@adapter_module, adapter, sub, 60_000)
+          assert {:ok, sub} = @ws_module.watch_trades_subscription(symbol)
+          message = subscribe_and_receive!(@adapter_module, adapter, sub, timeout)
 
-          assert is_list(message), "Expected list of trades, got: #{inspect(message)}"
-          Logger.info("Received trades message: #{length(message)} trade(s)")
+          # Some exchanges send trade arrays, others send individual trade maps
+          assert is_list(message) or is_map(message),
+                 "Expected list or map of trade data, got: #{inspect(message)}"
+
+          trade_count = if is_list(message), do: length(message), else: 1
+          Logger.info("Received trades message: #{trade_count} trade(s)")
 
           close_adapter(adapter)
         end
@@ -366,10 +447,9 @@ defmodule CCXT.Test.WSIntegrationGenerator do
     quote do
       test "can authenticate", context do
         if Map.get(context, :skip), do: flunk("SKIP: #{context.skip}")
-        if not context.has_ws_sandbox, do: flunk("SKIP: No WS sandbox for #{@exchange_id}")
 
         if is_nil(context.credentials) do
-          flunk(missing_ws_credentials_message(@exchange_id, passphrase: @has_passphrase))
+          flunk(missing_ws_credentials_message(@exchange_id, passphrase: @has_passphrase, sandbox_key: @sandbox_key))
         end
 
         adapter =
@@ -399,10 +479,9 @@ defmodule CCXT.Test.WSIntegrationGenerator do
         @tag :balance
         test "can subscribe to balance updates", context do
           if Map.get(context, :skip), do: flunk("SKIP: #{context.skip}")
-          if not context.has_ws_sandbox, do: flunk("SKIP: No WS sandbox for #{@exchange_id}")
 
           if is_nil(context.credentials) do
-            flunk(missing_ws_credentials_message(@exchange_id, passphrase: @has_passphrase))
+            flunk(missing_ws_credentials_message(@exchange_id, passphrase: @has_passphrase, sandbox_key: @sandbox_key))
           end
 
           adapter =
@@ -438,10 +517,9 @@ defmodule CCXT.Test.WSIntegrationGenerator do
         @tag :orders
         test "can subscribe to order updates", context do
           if Map.get(context, :skip), do: flunk("SKIP: #{context.skip}")
-          if not context.has_ws_sandbox, do: flunk("SKIP: No WS sandbox for #{@exchange_id}")
 
           if is_nil(context.credentials) do
-            flunk(missing_ws_credentials_message(@exchange_id, passphrase: @has_passphrase))
+            flunk(missing_ws_credentials_message(@exchange_id, passphrase: @has_passphrase, sandbox_key: @sandbox_key))
           end
 
           adapter =
@@ -493,6 +571,9 @@ defmodule CCXT.Test.WSIntegrationGenerator.Config do
           has_passphrase: boolean(),
           public_url_path: term(),
           private_url_path: term(),
+          auth_pattern: atom() | nil,
+          auth_required_channels: [atom()],
+          sandbox_key: atom(),
           watch_methods: [atom()]
         }
 
@@ -523,11 +604,25 @@ defmodule CCXT.Test.WSIntegrationGenerator.Config do
     # Check for passphrase requirement
     has_passphrase = spec.signing && Map.get(spec.signing, :has_passphrase, false)
 
-    # Derive URL paths from spec
-    {public_url_path, private_url_path} = derive_url_paths(ws_config)
+    # Extract auth pattern for routing decisions
+    auth_pattern = if auth_config, do: auth_config[:pattern]
+
+    # Derive URL paths from spec (gated on auth pattern for listen_key routing)
+    {public_url_path, private_url_path} = derive_url_paths(ws_config, auth_config)
+
+    # Derive sandbox key for credential lookup
+    sandbox_key = derive_sandbox_key(auth_pattern, private_url_path)
 
     # Get watch methods from WS has config
     watch_methods = derive_watch_methods(ws_config)
+
+    # Extract channels that require auth (from per-channel auth_required flag)
+    channel_templates = Map.get(ws_config, :channel_templates) || %{}
+
+    auth_required_channels =
+      channel_templates
+      |> Enum.filter(fn {_method, tmpl} -> tmpl[:auth_required] == true end)
+      |> Enum.map(fn {method, _tmpl} -> method end)
 
     %{
       exchange_id: exchange_id,
@@ -543,6 +638,9 @@ defmodule CCXT.Test.WSIntegrationGenerator.Config do
       has_passphrase: has_passphrase,
       public_url_path: public_url_path,
       private_url_path: private_url_path,
+      auth_pattern: auth_pattern,
+      auth_required_channels: auth_required_channels,
+      sandbox_key: sandbox_key,
       watch_methods: watch_methods
     }
   end
@@ -579,14 +677,33 @@ defmodule CCXT.Test.WSIntegrationGenerator.Config do
   end
 
   @doc false
-  # Derives URL paths from WS config structure
-  # Returns {public_path, private_path} where paths are atoms or lists
-  defp derive_url_paths(ws_config) when is_map(ws_config) do
+  # Derives URL paths from WS config structure, gated on auth pattern.
+  # For :listen_key exchanges, routes private to :future (where listen keys work on testnet).
+  # Returns {public_path, private_path} where paths are atoms or lists.
+  defp derive_url_paths(ws_config, %{pattern: :listen_key}) when is_map(ws_config) do
+    urls = Map.get(ws_config, :urls) || Map.get(ws_config, :test_urls)
+    derive_listen_key_paths(urls)
+  end
+
+  defp derive_url_paths(ws_config, _auth_config) when is_map(ws_config) do
     urls = Map.get(ws_config, :urls) || Map.get(ws_config, :test_urls)
     derive_paths_from_urls(urls)
   end
 
-  defp derive_url_paths(_), do: {:default, :default}
+  defp derive_url_paths(_, _), do: {:default, :default}
+
+  @doc false
+  # Listen-key-specific: public=spot, private=future (where listen keys work on testnet).
+  # Spot testnet (testnet.binance.vision) returns 410 for userDataStream.
+  defp derive_listen_key_paths(%{"spot" => _, "future" => _}), do: {[:spot], [:future]}
+  defp derive_listen_key_paths(urls), do: derive_paths_from_urls(urls)
+
+  @doc false
+  # Derives the sandbox credential key based on auth pattern and private URL path.
+  # When private channels route to futures, use :futures credentials.
+  defp derive_sandbox_key(:listen_key, [:future]), do: :futures
+  defp derive_sandbox_key(:listen_key, [:delivery]), do: :coinm
+  defp derive_sandbox_key(_auth_pattern, _private_url_path), do: :default
 
   @doc false
   # Detects URL structure and returns appropriate paths

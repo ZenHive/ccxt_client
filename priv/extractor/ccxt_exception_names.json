@@ -1,6 +1,6 @@
 {
-  "ccxt_version": "4.5.29",
-  "generated_at": "2026-01-12T07:59:19.163Z",
+  "ccxt_version": "4.5.34",
+  "generated_at": "2026-02-18T00:35:27.448Z",
   "exception_count": 42,
   "exceptions": {
     "AccountNotEnabled": "account_not_enabled",

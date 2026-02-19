@@ -50,6 +50,7 @@
         :symbol
       ],
       path: "/private/cancel_all_by_instrument",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -107,6 +108,7 @@
         :price
       ],
       path: "/private/buy",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -129,6 +131,7 @@
         :price
       ],
       path: "/private/buy",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -172,6 +175,7 @@
         :price
       ],
       path: "/private/buy",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -197,6 +201,7 @@
         :triggerPrice
       ],
       path: "/private/buy",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -221,6 +226,7 @@
         :triggerPrice
       ],
       path: "/private/buy",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -246,6 +252,7 @@
         :triggerPrice
       ],
       path: "/private/buy",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -273,6 +280,7 @@
         :trailingTriggerPrice
       ],
       path: "/private/buy",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -426,6 +434,7 @@
         :symbol
       ],
       path: "/public/get_funding_rate_value",
+      response_transformer: {:extract_path_unwrap, ["result"]},
       source: :intercepted
     },
     %{
@@ -434,8 +443,7 @@
       cost: 1.0,
       default_params: %{
         "end_timestamp" => "<generated>",
-        "instrument_name" => "BTCUSDT",
-        "start_timestamp" => "<generated>"
+        "instrument_name" => "BTCUSDT"
       },
       market_type: :swap,
       method: :get,
@@ -485,6 +493,7 @@
         :limit
       ],
       path: "/public/get_order_book",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -518,6 +527,7 @@
       param_mappings: %{},
       params: [],
       path: "/public/get_instruments",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -569,8 +579,7 @@
       cost: 1.0,
       default_params: %{
         "end_timestamp" => "<generated>",
-        "resolution" => "60",
-        "start_timestamp" => "<generated>"
+        "resolution" => "60"
       },
       market_type: :swap,
       method: :get,
@@ -699,7 +708,7 @@
         :limit
       ],
       path: "/public/get_order_book",
-      response_transformer: {:extract_path, ["result"]},
+      response_transformer: {:extract_path_unwrap, ["result"]},
       source: :intercepted
     },
     %{
@@ -765,6 +774,7 @@
       param_mappings: %{},
       params: [],
       path: "/public/status",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -889,6 +899,7 @@
       },
       params: [],
       path: "/public/get_historical_volatility",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     },
     %{
@@ -948,6 +959,7 @@
         :tag
       ],
       path: "/private/withdraw",
+      response_transformer: {:extract_path, ["result"]},
       source: :intercepted
     }
   ],
@@ -3933,9 +3945,9 @@
       case: :upper,
       contract: true,
       contract_size: 10,
-      expiry: 1768550400000,
-      expiry_datetime: "2026-01-16T08:00:00.000Z",
-      id: "BTC-16JAN26",
+      expiry: 1771574400000,
+      expiry_datetime: "2026-02-20T08:00:00.000Z",
+      id: "BTC-20FEB26",
       inverse: true,
       limits: %{
         "amount" => %{
@@ -3958,41 +3970,40 @@
       separator: "-",
       settle: "BTC",
       settle_id: "BTC",
-      symbol: "BTC/USD:BTC-260116",
+      symbol: "BTC/USD:BTC-260220",
       taker: 0.0005
     },
     option: %{
-      base: "BTC",
-      base_id: "BTC",
-      case: :upper,
+      base: "AVAX",
+      base_id: "AVAX",
       contract: true,
-      contract_size: 1,
-      expiry: 1768204800000,
-      expiry_datetime: "2026-01-12T08:00:00.000Z",
-      id: "BTC-12JAN26-84000-C",
-      inverse: true,
+      contract_size: 100,
+      expiry: 1771488000000,
+      expiry_datetime: "2026-02-19T08:00:00.000Z",
+      id: "AVAX_USDC-19FEB26-7d4-C",
+      inverse: false,
       limits: %{
         "amount" => %{
-          "min" => 0.1
+          "min" => 100
         },
         "cost" => %{},
         "leverage" => %{},
         "price" => %{
-          "min" => 0.0001
+          "min" => 0.0005
         }
       },
-      linear: false,
+      linear: true,
       maker: 0.0003,
       precision: %{
-        "amount" => 0.1,
-        "price" => 0.0001
+        "amount" => 100,
+        "price" => 0.0005
       },
-      quote: "USD",
-      quote_id: "USD",
+      quote: "USDC",
+      quote_id: "USDC",
       separator: "-",
-      settle: "BTC",
-      settle_id: "BTC",
-      symbol: "BTC/USD:BTC-260112-84000-C",
+      settle: "USDC",
+      settle_id: "USDC",
+      symbol: "AVAX/USDC:USDC-260219-7.4-C",
       taker: 0.0003
     },
     precision_mode: 4,
@@ -4088,7 +4099,7 @@
       suffix: nil
     },
     option: %{
-      case: :upper,
+      case: :mixed,
       component_order: [
         :base,
         :date,
@@ -4139,6 +4150,9 @@
   },
   urls: %{
     api: "https://www.deribit.com",
+    api_sections: %{
+      "rest" => "https://www.deribit.com"
+    },
     doc: [
       "https://docs.deribit.com/v2",
       "https://github.com/deribit"
@@ -4166,6 +4180,7 @@
     },
     channel_templates: %{
       watch_balance: %{
+        auth_required: true,
         channel_name: "user.portfolio",
         market_id_format: :native,
         params: [],
@@ -4180,6 +4195,7 @@
         separator: "."
       },
       watch_my_trades: %{
+        auth_required: true,
         channel_name: "user",
         market_id_format: :native,
         params: [
@@ -4220,6 +4236,7 @@
         separator: "."
       },
       watch_order_book: %{
+        auth_required: true,
         channel_name: "book",
         market_id_format: :native,
         params: [
@@ -4236,6 +4253,7 @@
         separator: "."
       },
       watch_order_book_for_symbols: %{
+        auth_required: true,
         channel_name: "book",
         market_id_format: :native,
         params: [
@@ -4252,6 +4270,7 @@
         separator: "."
       },
       watch_orders: %{
+        auth_required: true,
         channel_name: "user",
         market_id_format: :native,
         params: [
@@ -4276,6 +4295,7 @@
         separator: "."
       },
       watch_ticker: %{
+        auth_required: true,
         channel_name: "ticker",
         market_id_format: :native,
         params: [
@@ -4288,6 +4308,7 @@
         separator: "."
       },
       watch_tickers: %{
+        auth_required: true,
         channel_name: "ticker",
         market_id_format: :native,
         params: [
@@ -4300,6 +4321,7 @@
         separator: "."
       },
       watch_trades: %{
+        auth_required: true,
         channel_name: "trades",
         market_id_format: :native,
         params: [
@@ -4316,6 +4338,7 @@
         separator: "."
       },
       watch_trades_for_symbols: %{
+        auth_required: true,
         channel_name: "trades",
         market_id_format: :native,
         params: [

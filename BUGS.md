@@ -1,6 +1,6 @@
 # Known Bugs (ccxt_client)
 
-Last verified: February 12, 2026 (via Tidewave MCP in this repo).
+Last verified: February 19, 2026.
 
 > **Upstream tracking:** All bugs below originate in `ccxt_ex` and are tracked in
 > [ccxt_ex/ROADMAP.md](../ccxt_ex/ROADMAP.md). Fixes flow downstream via
@@ -8,7 +8,7 @@ Last verified: February 12, 2026 (via Tidewave MCP in this repo).
 
 ## 1) Deribit `fetch_trades/1` Missing
 
-- Status: Open
+- Status: ✅ Fixed upstream (ccxt_ex Task 176)
 - Affected module: `CCXT.Deribit`
 - Type: API surface inconsistency (docs/examples vs generated module)
 
@@ -36,7 +36,7 @@ Raises:
 
 ## 2) Deribit WS Balance Subscription Builds Empty Channel
 
-- Status: Open
+- Status: ✅ Fixed upstream (ccxt_ex Task 177)
 - Affected module: `CCXT.Deribit.WS`
 - Type: WS channel generation issue
 
@@ -69,7 +69,7 @@ Returns:
 
 ## 3) Deribit WS Ticker Subscription Omits Required Interval Suffix
 
-- Status: Open
+- Status: ✅ Fixed upstream (ccxt_ex Task 177)
 - Affected module: `CCXT.Deribit.WS`
 - Type: WS channel generation issue
 

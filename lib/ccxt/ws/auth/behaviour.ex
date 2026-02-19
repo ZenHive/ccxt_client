@@ -67,7 +67,7 @@ defmodule CCXT.WS.Auth.Behaviour do
 
   @type pre_auth_result :: {:ok, map()} | {:error, term()}
   @type build_result :: {:ok, auth_message()} | :no_message | {:error, term()}
-  @type handle_result :: :ok | {:error, term()}
+  @type handle_result :: :ok | {:ok, map()} | {:error, term()}
 
   @doc """
   Performs pre-authentication if required (REST call for token/listen key).
@@ -101,11 +101,12 @@ defmodule CCXT.WS.Auth.Behaviour do
   @doc """
   Handles the authentication response from the server.
 
-  Returns `:ok` on successful authentication, `{:error, reason}` on failure.
+  Returns `:ok` on successful authentication, `{:ok, auth_meta}` with metadata
+  (e.g., `%{ttl_ms: 900_000}` for session expiry), or `{:error, reason}` on failure.
 
   This callback is used to:
   1. Check if auth was successful
-  2. Extract any tokens/data from the response
+  2. Extract any tokens/data from the response (including TTL for expiry scheduling)
   3. Update internal auth state if needed
   """
   @callback handle_auth_response(

@@ -52,7 +52,7 @@ defmodule CCXT.WS.Patterns.JsonRpc do
     template_params = template[:params] || []
 
     [channel_name]
-    |> Pattern.maybe_add_part(params[:symbol], &Pattern.format_market_id(&1, market_id_format))
+    |> Pattern.maybe_add_part(params[:symbol], &Pattern.format_market_id(&1, market_id_format, config[:symbol_context]))
     |> Pattern.apply_template_params(template_params, params)
     |> Pattern.build_channel(separator)
   end

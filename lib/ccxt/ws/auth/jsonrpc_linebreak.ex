@@ -76,7 +76,10 @@ defmodule CCXT.WS.Auth.JsonrpcLinebreak do
   def handle_auth_response(response, _state) do
     cond do
       response["result"] && response["result"]["access_token"] ->
-        :ok
+        case parse_expires_in(response["result"]["expires_in"]) do
+          ttl_ms when is_integer(ttl_ms) and ttl_ms > 0 -> {:ok, %{ttl_ms: ttl_ms}}
+          _ -> :ok
+        end
 
       response["error"] ->
         {:error, {:auth_failed, response["error"]}}
@@ -85,4 +88,20 @@ defmodule CCXT.WS.Auth.JsonrpcLinebreak do
         {:error, {:auth_failed, response}}
     end
   end
+
+  @ms_per_second 1_000
+
+  @doc false
+  # Parses expires_in (seconds) from Deribit auth response into milliseconds.
+  # Accepts integer or numeric string. Returns nil for non-numeric values.
+  defp parse_expires_in(seconds) when is_integer(seconds), do: seconds * @ms_per_second
+
+  defp parse_expires_in(seconds) when is_binary(seconds) do
+    case Integer.parse(seconds) do
+      {value, ""} -> value * @ms_per_second
+      _ -> nil
+    end
+  end
+
+  defp parse_expires_in(_), do: nil
 end

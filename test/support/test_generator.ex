@@ -114,6 +114,7 @@ defmodule CCXT.Test.Generator do
       @endpoint_map unquote(Macro.escape(config.endpoint_map))
       @endpoint_defaults unquote(Macro.escape(config.endpoint_defaults))
       @test_currency unquote(config.test_currency)
+      @no_sandbox_endpoints unquote(Macro.escape(config.no_sandbox_endpoints))
 
       unquote(generate_symbol_resolution_helpers())
 
@@ -157,6 +158,7 @@ defmodule CCXT.Test.Generator do
       unquote(SigningTests.generate(config.signing_pattern, config.has_passphrase))
       unquote(PublicTests.generate(config.public_methods))
       unquote(AuthenticatedTests.generate(config.private_methods, config.has_passphrase))
+      unquote(generate_no_sandbox_info_test(config.no_sandbox_endpoints, config.exchange_id))
     end
   end
 
@@ -633,6 +635,33 @@ defmodule CCXT.Test.Generator do
           export #{env_prefix}_API_KEY="your_key"
           export #{env_prefix}_API_SECRET="your_secret"
         """
+      end
+    end
+  end
+
+  # Generate an informational test documenting endpoints excluded due to missing sandbox.
+  # Only generates when no_sandbox_endpoints is non-empty. Always passes.
+  defp generate_no_sandbox_info_test([], _exchange_id), do: nil
+
+  defp generate_no_sandbox_info_test(no_sandbox_endpoints, exchange_id) do
+    endpoint_lines =
+      Enum.map_join(no_sandbox_endpoints, "\n", fn {method, section} ->
+        "  - #{method} (api_section: #{section})"
+      end)
+
+    count = length(no_sandbox_endpoints)
+
+    quote do
+      describe "sandbox coverage" do
+        @tag :introspection
+        test "documents endpoints excluded from integration tests (no sandbox)" do
+          Logger.info("""
+          #{unquote(exchange_id)}: #{unquote(count)} endpoint(s) excluded - no sandbox URL for their api_section:
+          #{unquote(endpoint_lines)}
+          """)
+
+          assert length(@no_sandbox_endpoints) == unquote(count)
+        end
       end
     end
   end

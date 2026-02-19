@@ -43,27 +43,43 @@ defmodule CCXT.WS.Generator.Functions do
   require Logger
 
   # Watch methods that require authentication
+  # Primary auth mechanism is per-channel extraction (Task 191).
+  # This list is a defensive fallback for exchanges where extraction misses auth.
   @private_watch_methods ~w(
     watch_balance watch_orders watch_my_trades watch_positions
+    watch_orders_for_symbols watch_my_trades_for_symbols
+    watch_my_liquidations watch_my_liquidations_for_symbols
   )a
 
   # Parameter specifications for each watch method
   # Format: {[params], "doc_string"}
   @method_param_specs %{
     watch_balance: {[], ""},
+    watch_heartbeat: {[], ""},
+    watch_private: {[], ""},
     watch_ticker: {[:symbol], "symbol"},
     watch_tickers: {[:symbols], "symbols"},
     watch_order_book: {[:symbol, :limit], "symbol, limit"},
+    watch_order_book_snapshot: {[:symbol, :limit], "symbol, limit"},
     watch_order_book_for_symbols: {[:symbols], "symbols"},
     watch_trades: {[:symbol], "symbol"},
     watch_trades_for_symbols: {[:symbols], "symbols"},
     watch_ohlcv: {[:symbol, :timeframe], "symbol, timeframe"},
     watch_ohlcv_for_symbols: {[:symbols], "symbols"},
     watch_orders: {[:symbol], "symbol"},
+    watch_orders_for_symbols: {[:symbols], "symbols"},
     watch_my_trades: {[:symbol], "symbol"},
+    watch_my_trades_for_symbols: {[:symbols], "symbols"},
     watch_positions: {[:symbols], "symbols"},
     watch_bids_asks: {[:symbols], "symbols"},
     watch_liquidations: {[:symbol], "symbol"},
+    watch_liquidations_for_symbols: {[:symbols], "symbols"},
+    watch_my_liquidations: {[:symbol], "symbol"},
+    watch_my_liquidations_for_symbols: {[:symbols], "symbols"},
+    watch_funding_rate: {[:symbol], "symbol"},
+    watch_funding_rates: {[:symbols], "symbols"},
+    watch_mark_price: {[:symbol], "symbol"},
+    watch_mark_prices: {[:symbols], "symbols"},
     watch_topics: {[:symbol], "symbol"}
   }
 
@@ -157,6 +173,22 @@ defmodule CCXT.WS.Generator.Functions do
   end
 
   @doc false
+  # For dual-field patterns (Coinbase), injects the template's channel_name into
+  # subscription_config so that subscribe/2 can populate the channels field.
+  # No-op when channels_field is absent (most exchanges).
+  @spec inject_channel_name(map(), map()) :: map()
+  defp inject_channel_name(ws_config, template) do
+    sub_config = ws_config[:subscription_config] || %{}
+    channel_name = template[:channel_name]
+
+    if sub_config[:channels_field] && channel_name do
+      put_in(ws_config, [:subscription_config, :channel_name], channel_name)
+    else
+      ws_config
+    end
+  end
+
+  @doc false
   # Generates a single watch_*_subscription function based on method type.
   # Dispatches to specialized generators (no-param, symbol, symbols, ohlcv, orderbook).
   # For URL-routed channels, generates functions that require URL parameter.
@@ -167,11 +199,15 @@ defmodule CCXT.WS.Generator.Functions do
     # Safe: method comes from CCXT spec channel_templates, not user input
     func_name = :"#{method}_subscription"
 
-    # Determine if auth is required
-    auth_required = method in @private_watch_methods
+    # Determine if auth is required (hardcoded private methods OR per-channel extraction)
+    auth_required = method in @private_watch_methods or template[:auth_required] == true
 
     # Determine parameters based on method name
     {params, param_doc} = method_params(method)
+
+    # For dual-field patterns (Coinbase): inject template's channel_name
+    # into subscription_config so subscribe/2 can populate the channels field
+    ws_config = inject_channel_name(ws_config, template)
 
     # Check if this is a URL-routed channel (Bybit-style)
     url_routed = template[:url_routed] == true

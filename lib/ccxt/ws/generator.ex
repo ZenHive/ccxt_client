@@ -96,6 +96,31 @@ defmodule CCXT.WS.Generator do
   end
 
   @doc false
+  # Builds symbol_context from spec and injects it into ws_config.
+  # symbol_context enables exchange-aware symbol formatting in WS patterns
+  # (e.g., "BTC/USDT" → "BTC-USDT" for OKX instead of naive "BTCUSDT").
+  @spec inject_symbol_context(map(), map()) :: map()
+  def inject_symbol_context(ws_config, spec) do
+    symbol_context = %{
+      symbol_patterns: Map.get(spec, :symbol_patterns),
+      symbol_format: Map.get(spec, :symbol_format),
+      symbol_formats: Map.get(spec, :symbol_formats),
+      currency_aliases: Map.get(spec, :currency_aliases, %{})
+    }
+
+    has_symbol_data =
+      symbol_context.symbol_patterns ||
+        symbol_context.symbol_format ||
+        symbol_context.symbol_formats
+
+    if has_symbol_data do
+      Map.put(ws_config, :symbol_context, symbol_context)
+    else
+      ws_config
+    end
+  end
+
+  @doc false
   @spec __generate__(String.t() | nil, String.t() | nil) :: Macro.t()
   defmacro __generate__(spec_id, spec_path) do
     # Resolve spec path at compile time
@@ -107,8 +132,9 @@ defmodule CCXT.WS.Generator do
     # Extract WS config (use Map.get for struct access)
     ws_config = Map.get(spec, :ws) || %{}
 
-    # Skip generation if no WS support
-    if ws_config == %{} or ws_config == nil do
+    # Skip generation if no WS support (check BEFORE injecting symbol_context,
+    # which would make an empty map non-empty and bypass this check)
+    if ws_config == %{} do
       quote do
         @moduledoc "WebSocket not supported for this exchange."
         def __ccxt_ws_spec__, do: nil
@@ -116,6 +142,9 @@ defmodule CCXT.WS.Generator do
         def __ccxt_ws_channels__, do: nil
       end
     else
+      # Inject symbol context for exchange-aware symbol formatting
+      ws_config = inject_symbol_context(ws_config, spec)
+
       # Generate moduledoc
       moduledoc = Functions.generate_moduledoc(spec)
 

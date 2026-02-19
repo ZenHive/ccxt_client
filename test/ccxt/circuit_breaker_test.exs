@@ -1,10 +1,18 @@
 defmodule CCXT.CircuitBreakerTest do
   use ExUnit.Case, async: false
 
+  import ExUnit.CaptureLog
+
   alias CCXT.CircuitBreaker
 
   # Use unique exchange names per test to avoid cross-test pollution
   # Since fuses are global state, we need isolation
+
+  @doc false
+  defp blow_circuit(exchange, failure_count \\ 5) do
+    CircuitBreaker.check(exchange)
+    for _ <- 1..failure_count, do: CircuitBreaker.record_failure(exchange)
+  end
 
   setup do
     # Generate a unique exchange name for this test
@@ -36,16 +44,15 @@ defmodule CCXT.CircuitBreakerTest do
     end
 
     test "returns :blown after circuit opens from failures", %{exchange: exchange} do
-      # Install fuse first
-      CircuitBreaker.check(exchange)
+      log =
+        capture_log(fn ->
+          blow_circuit(exchange)
 
-      # Record failures to trip the circuit (default: 5 failures in 10s)
-      for _ <- 1..5 do
-        CircuitBreaker.record_failure(exchange)
-      end
+          assert CircuitBreaker.check(exchange) == :blown
+          assert CircuitBreaker.status(exchange) == :blown
+        end)
 
-      assert CircuitBreaker.check(exchange) == :blown
-      assert CircuitBreaker.status(exchange) == :blown
+      assert log =~ "Circuit OPEN"
     end
   end
 
@@ -55,18 +62,17 @@ defmodule CCXT.CircuitBreakerTest do
     end
 
     test "resets a blown circuit", %{exchange: exchange} do
-      # Install and blow the fuse
-      CircuitBreaker.check(exchange)
+      log =
+        capture_log(fn ->
+          blow_circuit(exchange)
+          assert CircuitBreaker.status(exchange) == :blown
 
-      for _ <- 1..5 do
-        CircuitBreaker.record_failure(exchange)
-      end
+          # Reset should restore it
+          assert CircuitBreaker.reset(exchange) == :ok
+          assert CircuitBreaker.status(exchange) == :ok
+        end)
 
-      assert CircuitBreaker.status(exchange) == :blown
-
-      # Reset should restore it
-      assert CircuitBreaker.reset(exchange) == :ok
-      assert CircuitBreaker.status(exchange) == :ok
+      assert log =~ "Circuit OPEN"
     end
   end
 
@@ -83,27 +89,31 @@ defmodule CCXT.CircuitBreakerTest do
     end
 
     test "opens circuit after threshold failures", %{exchange: exchange} do
-      CircuitBreaker.check(exchange)
+      log =
+        capture_log(fn ->
+          blow_circuit(exchange)
+          assert CircuitBreaker.status(exchange) == :blown
+        end)
 
-      # Record exactly 5 failures (default threshold)
-      for _ <- 1..5 do
-        CircuitBreaker.record_failure(exchange)
-      end
-
-      assert CircuitBreaker.status(exchange) == :blown
+      assert log =~ "Circuit OPEN"
     end
 
     test "installs fuse and records failure when called before check/1", %{exchange: exchange} do
-      # Verify fuse doesn't exist yet
-      assert CircuitBreaker.status(exchange) == :not_installed
+      log =
+        capture_log(fn ->
+          # Verify fuse doesn't exist yet
+          assert CircuitBreaker.status(exchange) == :not_installed
 
-      # Record failures WITHOUT calling check/1 first
-      for _ <- 1..5 do
-        CircuitBreaker.record_failure(exchange)
-      end
+          # Record failures WITHOUT calling check/1 first
+          for _ <- 1..5 do
+            CircuitBreaker.record_failure(exchange)
+          end
 
-      # Fuse should be installed AND blown
-      assert CircuitBreaker.status(exchange) == :blown
+          # Fuse should be installed AND blown
+          assert CircuitBreaker.status(exchange) == :blown
+        end)
+
+      assert log =~ "Circuit OPEN"
     end
   end
 
@@ -234,15 +244,15 @@ defmodule CCXT.CircuitBreakerTest do
     end
 
     test "resets a blown circuit without error", %{exchange: exchange} do
-      CircuitBreaker.check(exchange)
+      log =
+        capture_log(fn ->
+          blow_circuit(exchange)
+          assert CircuitBreaker.status(exchange) == :blown
+          assert CircuitBreaker.reset!(exchange) == :ok
+          assert CircuitBreaker.status(exchange) == :ok
+        end)
 
-      for _ <- 1..5 do
-        CircuitBreaker.record_failure(exchange)
-      end
-
-      assert CircuitBreaker.status(exchange) == :blown
-      assert CircuitBreaker.reset!(exchange) == :ok
-      assert CircuitBreaker.status(exchange) == :ok
+      assert log =~ "Circuit OPEN"
     end
   end
 
@@ -255,26 +265,25 @@ defmodule CCXT.CircuitBreakerTest do
 
   describe "idempotent check/1" do
     test "calling check on already-installed fuse is idempotent", %{exchange: exchange} do
-      # First install
-      CircuitBreaker.check(exchange)
-      assert CircuitBreaker.status(exchange) == :ok
+      log =
+        capture_log(fn ->
+          # First install
+          CircuitBreaker.check(exchange)
+          assert CircuitBreaker.status(exchange) == :ok
 
-      # Record some failures
-      for _ <- 1..3 do
-        CircuitBreaker.record_failure(exchange)
-      end
+          # Record some failures (under threshold)
+          for _ <- 1..3, do: CircuitBreaker.record_failure(exchange)
+          assert CircuitBreaker.status(exchange) == :ok
 
-      assert CircuitBreaker.status(exchange) == :ok
+          # Re-calling check is idempotent
+          assert CircuitBreaker.check(exchange) == :ok
 
-      # Force re-install by calling check again (fuse is already installed, returns :ok path)
-      assert CircuitBreaker.check(exchange) == :ok
+          # Can still blow after re-check
+          blow_circuit(exchange)
+          assert CircuitBreaker.status(exchange) == :blown
+        end)
 
-      # Can still record failures and eventually blow
-      for _ <- 1..5 do
-        CircuitBreaker.record_failure(exchange)
-      end
-
-      assert CircuitBreaker.status(exchange) == :blown
+      assert log =~ "Circuit OPEN"
     end
   end
 
@@ -283,16 +292,15 @@ defmodule CCXT.CircuitBreakerTest do
       exchange1 = :"isolated_test_1_#{System.unique_integer([:positive])}"
       exchange2 = :"isolated_test_2_#{System.unique_integer([:positive])}"
 
-      # Install fuses for both
-      CircuitBreaker.check(exchange1)
+      # Install exchange2 separately (blow_circuit installs exchange1)
       CircuitBreaker.check(exchange2)
 
-      # Blow only exchange1
-      for _ <- 1..5 do
-        CircuitBreaker.record_failure(exchange1)
-      end
+      log =
+        capture_log(fn ->
+          blow_circuit(exchange1)
+        end)
 
-      # exchange1 should be blown, exchange2 should be ok
+      assert log =~ "Circuit OPEN"
       assert CircuitBreaker.status(exchange1) == :blown
       assert CircuitBreaker.status(exchange2) == :ok
     end
@@ -366,14 +374,14 @@ defmodule CCXT.CircuitBreakerTest do
 
   describe "record_result/2" do
     test "records failure for 500+ responses", %{exchange: exchange} do
-      CircuitBreaker.check(exchange)
+      log =
+        capture_log(fn ->
+          CircuitBreaker.check(exchange)
+          for _ <- 1..5, do: CircuitBreaker.record_result(exchange, {:ok, %Req.Response{status: 500}})
+          assert CircuitBreaker.status(exchange) == :blown
+        end)
 
-      # Record 5 server errors
-      for _ <- 1..5 do
-        CircuitBreaker.record_result(exchange, {:ok, %Req.Response{status: 500}})
-      end
-
-      assert CircuitBreaker.status(exchange) == :blown
+      assert log =~ "Circuit OPEN"
     end
 
     test "records success for 2xx responses", %{exchange: exchange} do
@@ -410,25 +418,25 @@ defmodule CCXT.CircuitBreakerTest do
     end
 
     test "records failure for transport errors", %{exchange: exchange} do
-      CircuitBreaker.check(exchange)
+      log =
+        capture_log(fn ->
+          CircuitBreaker.check(exchange)
+          for _ <- 1..5, do: CircuitBreaker.record_result(exchange, {:error, %Req.TransportError{reason: :timeout}})
+          assert CircuitBreaker.status(exchange) == :blown
+        end)
 
-      # Transport errors should blow the circuit
-      for _ <- 1..5 do
-        CircuitBreaker.record_result(exchange, {:error, %Req.TransportError{reason: :timeout}})
-      end
-
-      assert CircuitBreaker.status(exchange) == :blown
+      assert log =~ "Circuit OPEN"
     end
 
     test "records failure for generic errors", %{exchange: exchange} do
-      CircuitBreaker.check(exchange)
+      log =
+        capture_log(fn ->
+          CircuitBreaker.check(exchange)
+          for _ <- 1..5, do: CircuitBreaker.record_result(exchange, {:error, :some_error})
+          assert CircuitBreaker.status(exchange) == :blown
+        end)
 
-      # Generic errors should blow the circuit
-      for _ <- 1..5 do
-        CircuitBreaker.record_result(exchange, {:error, :some_error})
-      end
-
-      assert CircuitBreaker.status(exchange) == :blown
+      assert log =~ "Circuit OPEN"
     end
   end
 
@@ -459,20 +467,17 @@ defmodule CCXT.CircuitBreakerTest do
 
     @tag :slow
     test "circuit auto-resets after reset_ms timeout", %{exchange: exchange} do
-      # Install fuse and blow it
-      CircuitBreaker.check(exchange)
+      log =
+        capture_log(fn ->
+          blow_circuit(exchange, 2)
+          assert CircuitBreaker.status(exchange) == :blown
 
-      for _ <- 1..2 do
-        CircuitBreaker.record_failure(exchange)
-      end
+          # Wait for auto-reset (100ms + buffer)
+          Process.sleep(150)
+          assert CircuitBreaker.status(exchange) == :ok
+        end)
 
-      assert CircuitBreaker.status(exchange) == :blown
-
-      # Wait for auto-reset (100ms + buffer)
-      Process.sleep(150)
-
-      # Circuit should be ok again
-      assert CircuitBreaker.status(exchange) == :ok
+      assert log =~ "Circuit OPEN"
     end
   end
 
@@ -492,13 +497,9 @@ defmodule CCXT.CircuitBreakerTest do
 
       on_exit(fn -> :telemetry.detach(handler_id) end)
 
-      CircuitBreaker.check(exchange)
+      log = capture_log(fn -> blow_circuit(exchange) end)
 
-      # Blow the circuit
-      for _ <- 1..5 do
-        CircuitBreaker.record_failure(exchange)
-      end
-
+      assert log =~ "Circuit OPEN"
       assert_receive {:telemetry_event, [:ccxt, :circuit_breaker, :open], _measurements, %{exchange: ^exchange}}
     end
 
@@ -517,15 +518,13 @@ defmodule CCXT.CircuitBreakerTest do
 
       on_exit(fn -> :telemetry.detach(handler_id) end)
 
-      CircuitBreaker.check(exchange)
+      log =
+        capture_log(fn ->
+          blow_circuit(exchange)
+          CircuitBreaker.reset(exchange)
+        end)
 
-      # Blow and reset
-      for _ <- 1..5 do
-        CircuitBreaker.record_failure(exchange)
-      end
-
-      CircuitBreaker.reset(exchange)
-
+      assert log =~ "Circuit OPEN"
       assert_receive {:telemetry_event, [:ccxt, :circuit_breaker, :closed], _measurements, %{exchange: ^exchange}}
     end
 
@@ -544,16 +543,14 @@ defmodule CCXT.CircuitBreakerTest do
 
       on_exit(fn -> :telemetry.detach(handler_id) end)
 
-      CircuitBreaker.check(exchange)
+      log =
+        capture_log(fn ->
+          blow_circuit(exchange)
+          # This check should be rejected
+          CircuitBreaker.check(exchange)
+        end)
 
-      # Blow the circuit
-      for _ <- 1..5 do
-        CircuitBreaker.record_failure(exchange)
-      end
-
-      # This check should be rejected
-      CircuitBreaker.check(exchange)
-
+      assert log =~ "Circuit OPEN"
       assert_receive {:telemetry_event, [:ccxt, :circuit_breaker, :rejected], _measurements, %{exchange: ^exchange}}
     end
   end

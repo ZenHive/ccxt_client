@@ -49,7 +49,9 @@ defmodule CCXT.WS.Patterns.SubBased do
 
       symbol ->
         # HTX format: market.{symbol}.{channel}
-        "market" <> separator <> Pattern.format_market_id(symbol, market_id_format) <> separator <> channel_name
+        "market" <>
+          separator <>
+          Pattern.format_market_id(symbol, market_id_format, config[:symbol_context]) <> separator <> channel_name
     end
   end
 

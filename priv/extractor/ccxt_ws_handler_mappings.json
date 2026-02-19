@@ -1,13 +1,14 @@
 {
-  "generated_at": "2026-02-14T10:39:52.766Z",
-  "exchange_count": 48,
+  "generated_at": "2026-02-18T05:19:29.818Z",
+  "exchange_count": 47,
   "exchanges": [
     {
       "exchange": "apex",
       "envelope": {
         "pattern": "topic_data",
         "discriminator_field": "topic",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": false
       },
       "match_type": "exact_then_substring",
       "discriminators": [
@@ -92,7 +93,8 @@
       "envelope": {
         "pattern": "channel_data",
         "discriminator_field": "channel",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": false
       },
       "match_type": "exact",
       "discriminators": [
@@ -901,6 +903,11 @@
           "channel": "position",
           "handler": "handlePositions",
           "dict_name": "methods"
+        },
+        {
+          "channel": "authKeyExpires",
+          "handler": "handleAuthenticationMessage",
+          "dict_name": "_conditional"
         }
       ]
     },
@@ -1136,7 +1143,8 @@
       "envelope": {
         "pattern": "channel_data",
         "discriminator_field": "channel",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": false
       },
       "match_type": "exact",
       "discriminators": [
@@ -1195,7 +1203,8 @@
       "envelope": {
         "pattern": "topic_data",
         "discriminator_field": "topic",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": false
       },
       "match_type": "exact_then_substring",
       "discriminators": [
@@ -1530,6 +1539,11 @@
           "channel": "error",
           "handler": "handleErrorMessage",
           "dict_name": "methods"
+        },
+        {
+          "channel": "match",
+          "handler": "handleMyTrade",
+          "dict_name": "_conditional"
         }
       ]
     },
@@ -1784,7 +1798,8 @@
       "envelope": {
         "pattern": "jsonrpc_subscription",
         "discriminator_field": "params.channel",
-        "data_field": "params.data"
+        "data_field": "params.data",
+        "unwrap_list": false
       },
       "match_type": "split",
       "discriminators": [
@@ -1902,7 +1917,8 @@
       "envelope": {
         "pattern": "channel_data",
         "discriminator_field": "channel",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": false
       },
       "match_type": "exact",
       "discriminators": [
@@ -1941,7 +1957,8 @@
       "envelope": {
         "pattern": "topic_data",
         "discriminator_field": "topic",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": false
       },
       "match_type": "exact",
       "discriminators": [
@@ -2035,7 +2052,8 @@
       "envelope": {
         "pattern": "channel_result",
         "discriminator_field": "channel",
-        "data_field": "result"
+        "data_field": "result",
+        "unwrap_list": false
       },
       "match_type": "split",
       "discriminators": [
@@ -2425,7 +2443,8 @@
       "envelope": {
         "pattern": "channel_data",
         "discriminator_field": "channel",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": true
       },
       "match_type": "exact",
       "discriminators": [
@@ -2628,7 +2647,8 @@
       "envelope": {
         "pattern": "channel_data",
         "discriminator_field": "channel",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": false
       },
       "match_type": "exact",
       "discriminators": [
@@ -2737,7 +2757,8 @@
       "envelope": {
         "pattern": "topic_data",
         "discriminator_field": "topic",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": false
       },
       "match_type": "exact",
       "discriminators": [
@@ -2895,7 +2916,8 @@
       "envelope": {
         "pattern": "arg_data",
         "discriminator_field": "arg.channel",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": true
       },
       "match_type": "exact",
       "discriminators": [
@@ -3312,7 +3334,8 @@
       "envelope": {
         "pattern": "channel_data",
         "discriminator_field": "channel",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": true
       },
       "match_type": "exact",
       "discriminators": [
@@ -3452,65 +3475,12 @@
       ]
     },
     {
-      "exchange": "probit",
-      "envelope": {
-        "pattern": "channel_data",
-        "discriminator_field": "channel",
-        "data_field": "data"
-      },
-      "match_type": "exact",
-      "discriminators": [
-        {
-          "variable": "errorCode",
-          "field": "errorCode",
-          "method": "safeString"
-        },
-        {
-          "variable": "type",
-          "field": "type",
-          "method": "safeString"
-        },
-        {
-          "variable": "channel",
-          "field": "channel",
-          "method": "safeString"
-        }
-      ],
-      "dict_count": 1,
-      "handlers": [
-        {
-          "channel": "marketdata",
-          "handler": "handleMarketData",
-          "dict_name": "handlers"
-        },
-        {
-          "channel": "balance",
-          "handler": "handleBalance",
-          "dict_name": "handlers"
-        },
-        {
-          "channel": "trade_history",
-          "handler": "handleMyTrades",
-          "dict_name": "handlers"
-        },
-        {
-          "channel": "open_order",
-          "handler": "handleOrders",
-          "dict_name": "handlers"
-        },
-        {
-          "channel": "order_history",
-          "handler": "handleOrders",
-          "dict_name": "handlers"
-        }
-      ]
-    },
-    {
       "exchange": "toobit",
       "envelope": {
         "pattern": "topic_data",
         "discriminator_field": "topic",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": true
       },
       "match_type": "exact",
       "discriminators": [
@@ -3702,7 +3672,8 @@
       "envelope": {
         "pattern": "topic_data",
         "discriminator_field": "topic",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": false
       },
       "match_type": "exact",
       "discriminators": [
@@ -3806,7 +3777,8 @@
       "envelope": {
         "pattern": "topic_data",
         "discriminator_field": "topic",
-        "data_field": "data"
+        "data_field": "data",
+        "unwrap_list": false
       },
       "match_type": "exact",
       "discriminators": [

@@ -69,6 +69,7 @@ defmodule CCXT.Spec do
 
   @type url_map :: %{
           required(:api) => url_value(),
+          optional(:api_sections) => %{String.t() => String.t()} | nil,
           optional(:sandbox) => url_value() | nil,
           optional(:www) => url_value() | nil,
           optional(:doc) => url_value() | [url_value()] | nil,
@@ -810,6 +811,48 @@ defmodule CCXT.Spec do
       _ ->
         # No sandbox URL available
         nil
+    end
+  end
+
+  @doc """
+  Resolves REST API base URL for a specific API section.
+
+  Multi-API exchanges (Binance) have per-section URLs (e.g., `fapiPrivate` → futures,
+  `sapi` → margin). This function resolves the correct base URL for a given section,
+  handling both sandbox and production environments.
+
+  ## Parameters
+
+  - `spec` - The exchange specification
+  - `api_section` - The API section name (e.g., "sapi", "fapiPrivate")
+  - `sandbox?` - Whether to use sandbox/testnet URLs
+
+  ## Examples
+
+      iex> CCXT.Spec.rest_api_url(spec, "sapi", false)
+      "https://api.binance.com"
+
+      iex> CCXT.Spec.rest_api_url(spec, "sapi", true)
+      "https://testnet.binance.vision"
+
+  """
+  @spec rest_api_url(t(), String.t(), boolean()) :: String.t() | nil
+  def rest_api_url(spec, api_section, sandbox?)
+
+  def rest_api_url(%__MODULE__{urls: urls}, api_section, true) do
+    case urls[:sandbox] do
+      # Intentional fallback: section-specific → default key
+      sandbox when is_map(sandbox) -> sandbox[api_section] || sandbox["default"]
+      sandbox when is_binary(sandbox) -> sandbox
+      _ -> nil
+    end
+  end
+
+  def rest_api_url(%__MODULE__{urls: urls}, api_section, false) do
+    case urls[:api_sections] do
+      # Intentional fallback: section-specific → default api URL
+      sections when is_map(sections) -> sections[api_section] || urls[:api]
+      _ -> urls[:api]
     end
   end
 
