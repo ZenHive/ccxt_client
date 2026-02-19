@@ -2,6 +2,7 @@ defmodule CCXT.Generator.HelpersTest do
   use ExUnit.Case, async: true
 
   alias CCXT.Generator.Helpers
+  alias CCXT.Generator.HelpersTest.OkTupleCoercer
 
   describe "apply_endpoint_mappings/2" do
     test "maps atom param keys using string-keyed mappings" do
@@ -271,4 +272,176 @@ defmodule CCXT.Generator.HelpersTest do
       assert result == %{symbol: "", limit: 100}
     end
   end
+
+  # ===========================================================================
+  # Task 208: execute_request/9 coercer pipeline tests
+  # ===========================================================================
+
+  describe "execute_request/9 coercer pipeline" do
+    @test_spec %CCXT.Spec{
+      id: "test",
+      name: "Test",
+      urls: %{api: "https://test.example.com"}
+    }
+
+    setup do
+      stub_name = :"helpers_test_#{System.unique_integer([:positive])}"
+      %{stub_name: stub_name}
+    end
+
+    test "without coercer — returns raw transformed response", %{stub_name: stub_name} do
+      Req.Test.stub(stub_name, fn conn ->
+        Req.Test.json(conn, %{"price" => "50000", "symbol" => "BTC/USDT"})
+      end)
+
+      assert {:ok, %{"price" => "50000", "symbol" => "BTC/USDT"}} =
+               Helpers.execute_request(
+                 @test_spec,
+                 :get,
+                 "/ticker",
+                 [plug: {Req.Test, stub_name}],
+                 nil,
+                 nil,
+                 nil,
+                 []
+               )
+    end
+
+    test "without coercer (explicit nil 9th arg) — same as default", %{stub_name: stub_name} do
+      Req.Test.stub(stub_name, fn conn ->
+        Req.Test.json(conn, %{"data" => [1, 2, 3]})
+      end)
+
+      assert {:ok, %{"data" => [1, 2, 3]}} =
+               Helpers.execute_request(
+                 @test_spec,
+                 :get,
+                 "/data",
+                 [plug: {Req.Test, stub_name}],
+                 nil,
+                 nil,
+                 nil,
+                 [],
+                 nil
+               )
+    end
+
+    test "with coercer — delegates to coercer.coerce/4", %{stub_name: stub_name} do
+      Req.Test.stub(stub_name, fn conn ->
+        Req.Test.json(conn, %{"price" => "50000"})
+      end)
+
+      assert {:ok, {:coerced, %{"price" => "50000"}, :ticker, [], :parser_fn}} =
+               Helpers.execute_request(
+                 @test_spec,
+                 :get,
+                 "/ticker",
+                 [plug: {Req.Test, stub_name}],
+                 nil,
+                 :ticker,
+                 :parser_fn,
+                 [],
+                 OkTupleCoercer
+               )
+    end
+
+    test "with coercer, nil parser_mapping — coercer receives nil", %{stub_name: stub_name} do
+      Req.Test.stub(stub_name, fn conn ->
+        Req.Test.json(conn, %{"balance" => "100"})
+      end)
+
+      assert {:ok, {:coerced, %{"balance" => "100"}, :balance, [format: :raw], nil}} =
+               Helpers.execute_request(
+                 @test_spec,
+                 :get,
+                 "/balance",
+                 [plug: {Req.Test, stub_name}],
+                 nil,
+                 :balance,
+                 nil,
+                 [format: :raw],
+                 OkTupleCoercer
+               )
+    end
+
+    test "coercer returning bare value gets wrapped in {:ok, ...}", %{stub_name: stub_name} do
+      Req.Test.stub(stub_name, fn conn ->
+        Req.Test.json(conn, %{"price" => "50000"})
+      end)
+
+      assert {:ok, :bare_result} =
+               Helpers.execute_request(
+                 @test_spec,
+                 :get,
+                 "/ticker",
+                 [plug: {Req.Test, stub_name}],
+                 nil,
+                 :ticker,
+                 nil,
+                 [],
+                 CCXT.Generator.HelpersTest.BareValueCoercer
+               )
+    end
+
+    test "coercer returning {:error, reason} propagates error", %{stub_name: stub_name} do
+      Req.Test.stub(stub_name, fn conn ->
+        Req.Test.json(conn, %{"price" => "50000"})
+      end)
+
+      assert {:error, :coerce_failed} =
+               Helpers.execute_request(
+                 @test_spec,
+                 :get,
+                 "/ticker",
+                 [plug: {Req.Test, stub_name}],
+                 nil,
+                 :ticker,
+                 nil,
+                 [],
+                 CCXT.Generator.HelpersTest.ErrorCoercer
+               )
+    end
+
+    test "HTTP error propagates without coercer involvement", %{stub_name: stub_name} do
+      Req.Test.stub(stub_name, fn conn ->
+        conn
+        |> Plug.Conn.put_status(500)
+        |> Req.Test.json(%{"error" => "internal"})
+      end)
+
+      result =
+        Helpers.execute_request(
+          @test_spec,
+          :get,
+          "/ticker",
+          [plug: {Req.Test, stub_name}],
+          nil,
+          :ticker,
+          nil,
+          [],
+          OkTupleCoercer
+        )
+
+      # HTTP errors are handled by Client before reaching coercer
+      assert {:error, _} = result
+    end
+  end
+end
+
+# Test coercer modules — defined outside the test module for clean module naming
+defmodule CCXT.Generator.HelpersTest.OkTupleCoercer do
+  @moduledoc false
+  def coerce(data, response_type, user_opts, parser_mapping) do
+    {:ok, {:coerced, data, response_type, user_opts, parser_mapping}}
+  end
+end
+
+defmodule CCXT.Generator.HelpersTest.BareValueCoercer do
+  @moduledoc false
+  def coerce(_data, _response_type, _user_opts, _parser_mapping), do: :bare_result
+end
+
+defmodule CCXT.Generator.HelpersTest.ErrorCoercer do
+  @moduledoc false
+  def coerce(_data, _response_type, _user_opts, _parser_mapping), do: {:error, :coerce_failed}
 end

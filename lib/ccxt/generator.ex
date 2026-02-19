@@ -112,7 +112,7 @@ defmodule CCXT.Generator do
   @doc """
   Checks if an exchange is enabled based on compile-time config.
 
-  When `config :ccxt_client, exchanges: [...]` is set, only listed exchanges
+  When `config :your_app, exchanges: [...]` is set, only listed exchanges
   generate full modules. Others get a stub with `@moduledoc false`.
 
   Default `:all` enables every exchange (backward compatible).
@@ -151,8 +151,11 @@ defmodule CCXT.Generator do
   @spec __generate__(String.t() | nil, String.t() | nil) :: Macro.t()
   defmacro __generate__(spec_id, spec_path) do
     # Read config at macro expansion time (runs during caller's compilation).
+    # Mix.Project.config() is available because this runs during compilation.
     # Uses get_env because compile_env can only be called in module body.
-    configured = Application.get_env(:ccxt_client, :exchanges, :all)
+    app = Mix.Project.config()[:app]
+    configured = Application.get_env(app, :exchanges, :all)
+    pipeline = Application.get_env(app, :pipeline, [])
 
     # Check if this exchange is enabled before loading the spec
     if exchange_enabled?(spec_id, configured) do
@@ -206,11 +209,11 @@ defmodule CCXT.Generator do
         # Generate escape hatches
         unquote(Functions.generate_escape_hatches())
 
-        # Generate response parser mappings (before endpoints so @ccxt_parser_* attrs are available)
-        unquote(Functions.generate_parsers(spec))
+        # Conditional: generate parser mappings when parsers module configured
+        unquote(if pipeline[:parsers], do: pipeline[:parsers].generate_parsers(spec))
 
-        # Generate endpoint functions
-        unquote(Functions.generate_endpoints(spec))
+        # Generate endpoint functions (pipeline flows down for coercion)
+        unquote(Functions.generate_endpoints(spec, pipeline))
 
         # Generate convenience methods (balance partials, etc.)
         unquote(Functions.generate_convenience_methods(spec))

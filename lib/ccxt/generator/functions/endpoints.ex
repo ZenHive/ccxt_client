@@ -7,7 +7,6 @@ defmodule CCXT.Generator.Functions.Endpoints do
   """
 
   alias CCXT.Generator.Functions.Docs
-  alias CCXT.Generator.Functions.Parsers
   alias CCXT.Generator.Functions.Typespecs
   alias CCXT.Spec
 
@@ -27,7 +26,7 @@ defmodule CCXT.Generator.Functions.Endpoints do
   # (which would cause cascading recompilation of ~200 exchange modules)
   # Method signatures loaded at compile time for generating extraction failure stubs
   # Use stdlib JSON (Elixir 1.18+) at compile time to avoid Jason dependency ordering issues
-  @method_signatures_path (case :code.priv_dir(:ccxt_client) do
+  @method_signatures_path (case :code.priv_dir(Mix.Project.config()[:app]) do
                              {:error, :bad_name} ->
                                [__DIR__, "..", "..", "..", "priv", "extractor/ccxt_method_signatures.json"]
                                |> Path.join()
@@ -60,7 +59,7 @@ defmodule CCXT.Generator.Functions.Endpoints do
   # Inline priv path resolution to avoid compile-time dependency on CCXT.Priv
   # Emulated method list loaded at compile time for generating emulation stubs
   # Use stdlib JSON (Elixir 1.18+) at compile time to avoid Jason dependency ordering issues
-  @emulated_methods_path (case :code.priv_dir(:ccxt_client) do
+  @emulated_methods_path (case :code.priv_dir(Mix.Project.config()[:app]) do
                             {:error, :bad_name} ->
                               [__DIR__, "..", "..", "..", "priv", "extractor/ccxt_emulated_methods.json"]
                               |> Path.join()
@@ -102,11 +101,11 @@ defmodule CCXT.Generator.Functions.Endpoints do
   for methods that failed during extraction (e.g., inherited methods that don't
   work for this exchange class).
   """
-  @spec generate_endpoints(Spec.t()) :: Macro.t()
-  def generate_endpoints(spec) do
+  @spec generate_endpoints(Spec.t(), keyword()) :: Macro.t()
+  def generate_endpoints(spec, pipeline \\ []) do
     endpoint_fns =
       spec.endpoints
-      |> Enum.map(&generate_endpoint_function(&1, spec))
+      |> Enum.map(&generate_endpoint_function(&1, spec, pipeline))
       |> List.flatten()
 
     # Generate stubs for extraction failures
@@ -120,8 +119,8 @@ defmodule CCXT.Generator.Functions.Endpoints do
 
   # Generate a function for a single endpoint
   @doc false
-  @spec generate_endpoint_function(map(), Spec.t()) :: Macro.t() | []
-  defp generate_endpoint_function(endpoint, spec) do
+  @spec generate_endpoint_function(map(), Spec.t(), keyword()) :: Macro.t() | []
+  defp generate_endpoint_function(endpoint, spec, pipeline) do
     name = endpoint[:name]
     auth = endpoint[:auth]
     params = Map.get(endpoint, :params, [])
@@ -130,10 +129,9 @@ defmodule CCXT.Generator.Functions.Endpoints do
     has_capability = Map.get(spec.has, name, true)
 
     if has_capability do
-      # Build endpoint options map to reduce arity
-      # Infer response_type from endpoint name if not explicitly set
-      response_type =
-        endpoint[:response_type] || CCXT.ResponseCoercer.infer_response_type(name)
+      # Conditional response_type inference via pipeline coercer
+      coercer = pipeline[:coercer]
+      response_type = if coercer, do: coercer.infer_response_type(name)
 
       endpoint_opts = %{
         method: endpoint[:method],
@@ -149,7 +147,7 @@ defmodule CCXT.Generator.Functions.Endpoints do
         response_type: response_type
       }
 
-      generate_endpoint(name, endpoint_opts, spec)
+      generate_endpoint(name, endpoint_opts, spec, pipeline)
     else
       # Generate a stub that returns {:error, :not_supported}
       generate_unsupported_endpoint(name, auth, params)
@@ -159,8 +157,8 @@ defmodule CCXT.Generator.Functions.Endpoints do
   # Shared endpoint generation logic for public and private endpoints.
   # Uses an options map to keep arity low while supporting many configuration options.
   @doc false
-  @spec generate_endpoint(atom(), map(), Spec.t()) :: Macro.t()
-  defp generate_endpoint(name, opts, spec) do
+  @spec generate_endpoint(atom(), map(), Spec.t(), keyword()) :: Macro.t()
+  defp generate_endpoint(name, opts, spec, pipeline) do
     %{
       method: method,
       path: path,
@@ -180,12 +178,7 @@ defmodule CCXT.Generator.Functions.Endpoints do
     param_mappings_ast = Macro.escape(param_mappings)
     # Convert default_params to compile-time value (e.g., %{"type" => "step0"} for HTX order book)
     default_params_ast = Macro.escape(default_params)
-    # Convert response_type for compile-time injection in coercion
     response_type_ast = Macro.escape(response_type)
-    # Look up the parser module attribute name for this response type (e.g., :ccxt_parser_ticker)
-    # Generate AST to reference the attribute at compile time, or nil if no parser exists
-    parser_attr = Parsers.parser_attr_for_type(CCXT.ResponseCoercer.singularize(response_type))
-    parser_ast = if parser_attr, do: {:@, [], [{parser_attr, [], Elixir}]}
     doc = Docs.generate_doc(name, params, auth, spec)
     spec_signature = Typespecs.generate_typespec_signature(name, params, auth, required_params)
     return_type_ast = Typespecs.ok_error_return_type_ast(name)
@@ -199,6 +192,16 @@ defmodule CCXT.Generator.Functions.Endpoints do
     client_opts_ast = build_client_opts_ast(opts_var, creds_var, auth, base_url)
     # Convert market_type to compile-time value for symbol format lookup
     market_type_ast = Macro.escape(market_type)
+
+    # Conditional parser lookup via pipeline
+    coercer = pipeline[:coercer]
+    parsers_mod = pipeline[:parsers]
+
+    parser_ast =
+      if parsers_mod && response_type do
+        parser_attr = parsers_mod.parser_attr_for_type(coercer.singularize(response_type))
+        if parser_attr, do: {:@, [], [{parser_attr, [], Elixir}]}
+      end
 
     quote do
       @spec unquote(spec_signature) :: unquote(return_type_ast)
@@ -236,7 +239,7 @@ defmodule CCXT.Generator.Functions.Endpoints do
             params = CCXT.Generator.Helpers.apply_endpoint_mappings(params, unquote(param_mappings_ast))
             path = unquote(build_prefixed_path_ast(spec.path_prefix, path))
 
-            # Execute HTTP request with response transformation
+            # Execute HTTP request with response transformation and optional coercion
             client_opts = unquote(client_opts_ast)
             # credo:disable-for-next-line Credo.Check.Design.AliasUsage
             CCXT.Generator.Helpers.execute_request(
@@ -247,7 +250,8 @@ defmodule CCXT.Generator.Functions.Endpoints do
               unquote(response_transformer),
               unquote(response_type_ast),
               unquote(parser_ast),
-              unquote(opts_var)
+              unquote(opts_var),
+              unquote(Macro.escape(coercer))
             )
 
           {:ok, result} ->

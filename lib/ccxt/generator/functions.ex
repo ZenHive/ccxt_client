@@ -58,7 +58,6 @@ defmodule CCXT.Generator.Functions do
   """
 
   alias CCXT.Generator.Functions.Endpoints
-  alias CCXT.Generator.Functions.Parsers
   alias CCXT.Generator.IntrospectionMeta
   alias CCXT.Spec
 
@@ -577,20 +576,12 @@ defmodule CCXT.Generator.Functions do
 
   Returns AST for all functions defined in `spec.endpoints`.
 
-  Delegates to `CCXT.Generator.Functions.Endpoints.generate_endpoints/1`.
+  Delegates to `CCXT.Generator.Functions.Endpoints.generate_endpoints/2`.
   """
-  @spec generate_endpoints(Spec.t()) :: Macro.t()
-  defdelegate generate_endpoints(spec), to: Endpoints
-
-  @doc """
-  Generates parser mapping attributes and introspection for the exchange module.
-
-  Returns AST for parser module attributes and `__ccxt_parsers__/0`.
-
-  Delegates to `CCXT.Generator.Functions.Parsers.generate_parsers/1`.
-  """
-  @spec generate_parsers(Spec.t()) :: Macro.t()
-  defdelegate generate_parsers(spec), to: Parsers
+  @spec generate_endpoints(Spec.t(), keyword()) :: Macro.t()
+  def generate_endpoints(spec, pipeline \\ []) do
+    Endpoints.generate_endpoints(spec, pipeline)
+  end
 
   @doc """
   Generates convenience methods that wrap core endpoint functions.

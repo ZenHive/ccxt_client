@@ -140,14 +140,15 @@ defmodule CCXT.Generator.Functions.EndpointsTest do
       refute 1 in arities, "fetch_trades/1 should NOT exist when all params required"
     end
 
-    test "endpoint with response_type passes through to generated code" do
+    test "endpoint response_type is nil after normalization removal (RN-2)" do
       endpoint = Map.put(ticker_endpoint(), :response_type, :ticker)
       spec = build_spec(endpoints: [endpoint])
       ast = Endpoints.generate_endpoints(spec)
       code = ast_to_string(ast)
 
       assert code =~ "def fetch_ticker"
-      assert code =~ ":ticker"
+      # response_type is always nil now — normalization moved to ccxt_client
+      refute code =~ ":ticker"
     end
   end
 
@@ -319,6 +320,107 @@ defmodule CCXT.Generator.Functions.EndpointsTest do
 
       # Should just use base_path (path already includes prefix)
       assert code =~ "base_path"
+    end
+  end
+
+  # ===========================================================================
+  # Version override in path prefix
+  # ===========================================================================
+
+  describe "generate_endpoints/1 version override path prefix" do
+    test "version override replaces prefix version (KuCoin /v2/ symbols)" do
+      endpoint = %{
+        name: :fetch_markets,
+        method: :get,
+        path: "/v2/symbols",
+        auth: false,
+        params: []
+      }
+
+      spec =
+        build_spec(
+          endpoints: [endpoint],
+          path_prefix: "/api/v1/"
+        )
+
+      ast = Endpoints.generate_endpoints(spec)
+      code = ast_to_string(ast)
+
+      # The generated code should reference "/api/v2/" (version replaced)
+      assert code =~ "/api/v2/",
+             "Expected version-replaced prefix '/api/v2/' in generated code, got:\n#{code}"
+
+      # Should NOT have the double-version pattern
+      refute code =~ "/api/v1/v2/",
+             "Must not have double-versioned path '/api/v1/v2/' in generated code"
+    end
+
+    test "matching versions still handled by starts_with clause" do
+      endpoint = %{
+        name: :fetch_ticker,
+        method: :get,
+        path: "/v5/market/tickers",
+        auth: false,
+        params: [:symbol]
+      }
+
+      spec =
+        build_spec(
+          endpoints: [endpoint],
+          path_prefix: "/v5/"
+        )
+
+      ast = Endpoints.generate_endpoints(spec)
+      code = ast_to_string(ast)
+
+      # Path starts with prefix → should use base_path directly
+      assert code =~ "base_path"
+    end
+
+    test "no version in prefix passes through normally" do
+      endpoint = %{
+        name: :fetch_ticker,
+        method: :get,
+        path: "/v2/symbols",
+        auth: false,
+        params: []
+      }
+
+      spec =
+        build_spec(
+          endpoints: [endpoint],
+          path_prefix: ""
+        )
+
+      ast = Endpoints.generate_endpoints(spec)
+      code = ast_to_string(ast)
+
+      # Empty prefix → just base_path
+      assert code =~ "base_path"
+    end
+
+    test "version override with /v3/ path and /v1/ prefix" do
+      endpoint = %{
+        name: :fetch_currencies,
+        method: :get,
+        path: "/v3/currencies",
+        auth: false,
+        params: []
+      }
+
+      spec =
+        build_spec(
+          endpoints: [endpoint],
+          path_prefix: "/api/v1/"
+        )
+
+      ast = Endpoints.generate_endpoints(spec)
+      code = ast_to_string(ast)
+
+      assert code =~ "/api/v3/",
+             "Expected version-replaced prefix '/api/v3/' for /v3/ path"
+
+      refute code =~ "/api/v1/v3/"
     end
   end
 
@@ -555,12 +657,6 @@ defmodule CCXT.Generator.Functions.EndpointsTest do
         module_name,
         quote do
           @ccxt_spec unquote(Macro.escape(spec))
-          # Pre-define parser attributes as nil to suppress warnings —
-          # generated endpoints reference @ccxt_parser_* that only exist
-          # in real exchange modules produced by the full Generator.
-          @ccxt_parser_trade nil
-          @ccxt_parser_ticker nil
-          @ccxt_parser_balance nil
           unquote_splicing(List.flatten(ast))
         end,
         Macro.Env.location(__ENV__)

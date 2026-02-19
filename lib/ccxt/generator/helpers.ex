@@ -6,7 +6,6 @@ defmodule CCXT.Generator.Helpers do
   """
 
   alias CCXT.HTTP.Client
-  alias CCXT.ResponseCoercer
   alias CCXT.ResponseTransformer
 
   @doc """
@@ -186,11 +185,20 @@ defmodule CCXT.Generator.Helpers do
   end
 
   @doc """
-  Executes HTTP request and transforms/coerces the response.
+  Executes HTTP request and transforms the response.
 
-  Handles the common pattern of making an HTTP request, applying response transformation,
-  and coercing to typed structs. Optionally applies parser mappings to convert
-  exchange-specific field names to unified names before coercion.
+  Handles the common pattern of making an HTTP request and applying response
+  transformation (envelope unwrapping). When a coercer module is provided,
+  delegates to it for type coercion after transformation. Returns raw maps
+  when no coercer is configured.
+
+  ## Pipeline parameters
+
+  The last 4 parameters support the optional normalization pipeline:
+  - `response_type` - atom identifying the response type (e.g., `:ticker`)
+  - `parser_mapping` - parser function for this type (from module attribute)
+  - `user_opts` - user-provided keyword opts passed through to coercer
+  - `coercer` - module implementing `coerce/4`, or nil for raw output
   """
   @spec execute_request(
           CCXT.Spec.t(),
@@ -199,23 +207,46 @@ defmodule CCXT.Generator.Helpers do
           keyword(),
           term(),
           term(),
-          [{atom(), atom(), [String.t()]}] | nil,
-          keyword()
+          term(),
+          keyword(),
+          module() | nil
         ) ::
           {:ok, term()} | {:error, CCXT.Error.t()}
-  def execute_request(spec, method, path, client_opts, response_transformer, response_type, parser_mapping, user_opts) do
+  # credo:disable-for-next-line Credo.Check.Refactor.FunctionArity
+  def execute_request(
+        spec,
+        method,
+        path,
+        client_opts,
+        response_transformer,
+        response_type,
+        parser_mapping,
+        user_opts,
+        coercer \\ nil
+      ) do
     case Client.request(spec, method, path, client_opts) do
       {:ok, %{body: body}} ->
         transformed = ResponseTransformer.transform(body, response_transformer)
-
-        case ResponseCoercer.coerce(transformed, response_type, user_opts, parser_mapping) do
-          {:ok, coerced} -> {:ok, coerced}
-          {:error, _} = error -> error
-          coerced -> {:ok, coerced}
-        end
+        maybe_coerce(transformed, response_type, parser_mapping, user_opts, coercer)
 
       {:error, _} = error ->
         error
+    end
+  end
+
+  @doc false
+  # Applies coercion when a coercer module is configured, otherwise wraps raw result.
+  @spec maybe_coerce(term(), term(), term(), keyword(), module() | nil) ::
+          {:ok, term()} | {:error, CCXT.Error.t()}
+  defp maybe_coerce(transformed, _response_type, _parser_mapping, _user_opts, nil) do
+    {:ok, transformed}
+  end
+
+  defp maybe_coerce(transformed, response_type, parser_mapping, user_opts, coercer) do
+    case coercer.coerce(transformed, response_type, user_opts, parser_mapping) do
+      {:ok, _} = ok -> ok
+      {:error, _} = error -> error
+      coerced -> {:ok, coerced}
     end
   end
 end
