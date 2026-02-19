@@ -59,20 +59,7 @@ defmodule CCXT.HTTP.Client do
 
   ## Telemetry Events
 
-  The following telemetry events are emitted:
-
-  - `[:ccxt, :request, :start]` - Before request
-    - Measurements: `%{system_time: integer()}`
-    - Metadata: `%{exchange: atom(), method: atom(), path: String.t()}`
-
-  - `[:ccxt, :request, :stop]` - After successful request
-    - Measurements: `%{duration: integer()}`
-    - Metadata: `%{exchange: atom(), method: atom(), path: String.t(), status: integer()}`
-    - Optional: `rate_limit: %CCXT.HTTP.RateLimitInfo{}` when exchange returns rate limit headers
-
-  - `[:ccxt, :request, :exception]` - On error
-    - Measurements: `%{duration: integer()}`
-    - Metadata: `%{exchange: atom(), method: atom(), path: String.t(), kind: atom(), reason: term()}`
+  See `CCXT.Telemetry` for the full event contract.
 
   """
 
@@ -892,7 +879,7 @@ defmodule CCXT.HTTP.Client do
 
   defp emit_start(exchange, method, path) do
     :telemetry.execute(
-      [:ccxt, :request, :start],
+      CCXT.Telemetry.request_start(),
       %{system_time: System.system_time()},
       %{exchange: exchange, method: method, path: path}
     )
@@ -911,7 +898,7 @@ defmodule CCXT.HTTP.Client do
       end
 
     :telemetry.execute(
-      [:ccxt, :request, :stop],
+      CCXT.Telemetry.request_stop(),
       %{duration: duration},
       metadata
     )
@@ -921,7 +908,7 @@ defmodule CCXT.HTTP.Client do
     duration = System.monotonic_time() - start_time
 
     :telemetry.execute(
-      [:ccxt, :request, :exception],
+      CCXT.Telemetry.request_exception(),
       %{duration: duration},
       %{exchange: exchange, method: method, path: path, kind: kind, reason: reason}
     )

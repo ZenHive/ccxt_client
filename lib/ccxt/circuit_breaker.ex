@@ -36,11 +36,7 @@ defmodule CCXT.CircuitBreaker do
 
   ## Telemetry Events
 
-      [:ccxt, :circuit_breaker, :open]     # Circuit opened after failures
-      [:ccxt, :circuit_breaker, :closed]   # Circuit reset and closed
-      [:ccxt, :circuit_breaker, :rejected] # Request rejected by open circuit
-
-  All events include metadata: `%{exchange: atom()}`
+  See `CCXT.Telemetry` for the full event contract.
 
   ## Usage
 
@@ -425,7 +421,7 @@ defmodule CCXT.CircuitBreaker do
   @doc false
   defp emit_open(exchange_id) do
     :telemetry.execute(
-      [:ccxt, :circuit_breaker, :open],
+      CCXT.Telemetry.circuit_breaker_open(),
       %{system_time: System.system_time()},
       %{exchange: exchange_id}
     )
@@ -436,7 +432,7 @@ defmodule CCXT.CircuitBreaker do
   @doc false
   defp emit_closed(exchange_id) do
     :telemetry.execute(
-      [:ccxt, :circuit_breaker, :closed],
+      CCXT.Telemetry.circuit_breaker_closed(),
       %{system_time: System.system_time()},
       %{exchange: exchange_id}
     )
@@ -447,7 +443,7 @@ defmodule CCXT.CircuitBreaker do
   @doc false
   defp emit_rejected(exchange_id) do
     :telemetry.execute(
-      [:ccxt, :circuit_breaker, :rejected],
+      CCXT.Telemetry.circuit_breaker_rejected(),
       %{system_time: System.system_time()},
       %{exchange: exchange_id}
     )
