@@ -70,7 +70,6 @@ Each exchange module: `use CCXT.Generator, spec: "bybit"` — this expands into 
 | **Resilience** | `CCXT.CircuitBreaker`, `CCXT.Recovery` | Per-exchange circuit breakers via req_fuse |
 | **Observability** | `CCXT.Telemetry` | Centralized telemetry contract (6 events), `attach/2`/`detach/1`, contract versioning |
 | **Types** | `CCXT.Types.*` | Response structs (Order, Ticker, Balance, etc.) |
-| **Trading** | `CCXT.Trading.*` (Funding, Greeks, Risk, Basis, Sizing, Volatility, Options, Portfolio, PowerLaw) | Analytics and trading helpers — hand-written, survive `--output --force` |
 
 ### Signing Patterns (7 parameterized patterns)
 
@@ -115,38 +114,14 @@ Do not manually edit generated exchange modules or spec files — changes will b
 
 ## Rebuild Safety
 
-The `--output --force` sync from ccxt_ex **preserves hand-written directories**:
+The `--output --force` sync from ccxt_ex regenerates exchange modules and spec files:
 
 | Directory | Contents | Survives rebuild? |
 |-----------|----------|-------------------|
-| `lib/ccxt/trading/` | Trading DX modules (`CCXT.Trading.*`) | Yes |
-| `test/ccxt/trading/` | Trading tests | Yes |
 | `lib/ccxt/exchanges/` | Generated exchange modules | No (regenerated) |
 | `priv/specs/` | Exchange spec files | No (regenerated) |
 
-**Safe to edit**: Anything in `lib/ccxt/trading/` and `test/ccxt/trading/`. These are backed up before clean and restored after.
-
 **Do NOT edit**: Generated exchange modules, spec files, or core runtime modules — these are overwritten on every sync.
-
-## Trading Modules (`CCXT.Trading.*`)
-
-Hand-written pure-function modules for trading analytics and helpers. These live in ccxt_client (not ccxt_ex) because they are consumer-facing features with zero coupling to extraction infrastructure.
-
-| Module | Purpose |
-|--------|---------|
-| `CCXT.Trading.Funding` | Funding rate calculations, annualized APR/APY |
-| `CCXT.Trading.Greeks` | Options greeks (delta, gamma, theta, vega, rho) via Black-Scholes |
-| `CCXT.Trading.Risk` | Position risk metrics (Kelly criterion, Sharpe, Sortino, drawdown) |
-| `CCXT.Trading.Basis` | Futures basis/premium calculations, annualized carry |
-| `CCXT.Trading.Sizing` | Position sizing strategies (fixed, percent equity, volatility-based) |
-| `CCXT.Trading.Volatility` | Volatility estimators (realized, Parkinson, Garman-Klass, Yang-Zhang) |
-| `CCXT.Trading.Options` | Options strategy analysis, payoff diagrams, breakeven |
-| `CCXT.Trading.Options.Deribit` | Deribit-specific option instrument parsing |
-| `CCXT.Trading.PowerLaw` | Bitcoin power law model calculations |
-| `CCXT.Trading.Portfolio` | Portfolio analytics (correlation, beta, VaR) |
-| `CCXT.Trading.Helpers.Funding` | Funding rate display formatting |
-| `CCXT.Trading.Helpers.Greeks` | Greeks display formatting |
-| `CCXT.Trading.Helpers.Risk` | Risk metrics display formatting |
 
 ## Git Commit Configuration
 

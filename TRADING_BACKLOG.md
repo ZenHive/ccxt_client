@@ -1,8 +1,10 @@
 # Trading Features Backlog
 
-> **For the Claude instance reading this:** This is raw material for building a roadmap when the trading project starts. D/B scores, task descriptions, and domain groupings are portable. Reorganize and phase as appropriate for the project's architecture. Start by exploring what's already built — 85+ functions across 13 modules are ready to extract from ccxt_client.
+> **For the Claude instance reading this:** This is the feature backlog for trading analytics. The already-built modules have been extracted to **quantex** (`../quantex`) — a standalone trading analytics library. Remaining tasks here are future work for quantex.
 
 **Origin:** Extracted from ccxt_client's ROADMAP.md on 2026-02-20. These features were originally planned alongside exchange access but are trading analytics and stateful coordination — not core exchange functionality.
+
+**Status:** The 13 already-built modules (85+ functions) were extracted to quantex in February 2026. They now live at `../quantex/lib/quantex/`. quantex is a private library and is not publicly available.
 
 **Architecture direction:** May be delivered as an EIP-8004 agent service rather than a traditional Hex library. Delivery mechanism TBD — what matters here is the feature inventory.
 
@@ -14,9 +16,9 @@
 
 ---
 
-## Already Built (Extraction Inventory)
+## Already Built (Extracted to quantex)
 
-These modules currently live in ccxt_client at `lib/ccxt/trading/` (tests at `test/ccxt/trading/`). They survive `--output --force` rebuilds and are ready to extract.
+These modules now live in **quantex** at `../quantex/lib/quantex/` (tests at `../quantex/test/quantex/`). Previously in ccxt_client at `lib/ccxt/trading/`, they were extracted in February 2026.
 
 | Module | Key Functions |
 |--------|---------------|
