@@ -4,6 +4,20 @@ Completed roadmap tasks. For upcoming work, see [ROADMAP.md](ROADMAP.md).
 
 ---
 
+## ccxt_ex Sync (2026-02-20)
+
+**What was synced:**
+- **Bug #1 resolved:** `CCXT.Deribit.fetch_trades/1` now exists (optional param arity fix, Task 176)
+- **Bug #2 resolved:** Deribit WS balance subscription builds correct channel (Task 177)
+- **Bug #3 resolved:** Deribit WS ticker subscription includes interval suffix (Task 177)
+- **Adapter refactor:** Monolithic generator functions decomposed into focused sub-generators (`_ast` naming convention)
+- **Deribit spec updates:** `response_transformer` added to ~12 endpoints, `auth_required: true` on all private WS channel templates, updated symbol format samples, `api_sections` map
+- **Generator updates:** Pipeline-based coercer/parser decoupling, version-override path prefix handling, dynamic app name resolution
+
+**Verified:** 3380 tests, 0 code failures (15 failures + 178 invalid all credential-related)
+
+---
+
 ## Phase 1: Response Quality & Documentation
 
 ### Feature #2: Symbol Precision Metadata

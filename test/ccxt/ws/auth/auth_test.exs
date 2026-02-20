@@ -246,7 +246,9 @@ defmodule CCXT.WS.AuthTest do
 
       config = %{pre_auth: %{endpoints: endpoints}}
 
-      assert {:error, {:no_endpoint_for_market_type, %{requested: :inverse, normalized: :inverse, available: [:linear]}}} =
+      expected = %{requested: :inverse, normalized: :inverse, available: [:linear]}
+
+      assert {:error, {:no_endpoint_for_market_type, ^expected}} =
                ListenKey.pre_auth(@test_credentials, config, market_type: :inverse)
     end
 

@@ -20,6 +20,7 @@
 
 | Task | Description | Notes |
 |------|-------------|-------|
+| ccxt_ex Sync | Synced upstream fixes + adapter refactor | 3 bugs resolved, response_transformers, auth_required flags, adapter decomposition |
 | Feature #2: Symbol Precision Metadata | `CCXT.MarketPrecision` module | `from_market/2`, `from_markets/2`, `tradingview_price_format/1`, 3 precision modes |
 | WS Reconnection Tests | Reconnect config + subscription restoration tests | 15 behavioral tests, auth expiry scheduling |
 | Auth Expiry Scheduling | Deribit WS token auto-refresh at 80% TTL | Manually ported to preserved adapter file |
@@ -42,15 +43,9 @@ mix dialyzer.json --quiet                          # Type checking
 
 ---
 
-## Pending Sync from ccxt_ex
+## ~~Pending Sync from ccxt_ex~~ ✅ Synced 2026-02-20
 
-All 3 bugs in [BUGS.md](BUGS.md) are fixed upstream. Run `mix ccxt.sync --output --force` from ccxt_ex to pull fixes:
-
-| Bug | Fix | ccxt_ex Task |
-|-----|-----|-------------|
-| Deribit `fetch_trades/1` missing | Optional param arity fix | Task 176 |
-| Deribit WS balance empty channel | Pattern 7 + `apply_template_params` | Task 177 |
-| Deribit WS ticker missing interval | Template param application | Task 177 |
+All 3 bugs synced and verified. See [BUGS.md](BUGS.md) for details. Also included: adapter structural refactor, response_transformers on ~12 Deribit endpoints, `auth_required` flags on all private WS channel templates, updated symbol format samples.
 
 ---
 

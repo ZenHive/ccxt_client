@@ -72,6 +72,7 @@ defmodule CCXT.Test.WSIntegrationGenerator do
   """
 
   alias CCXT.Exchange.Classification
+  alias CCXT.Test.WSChannelConfig
   alias CCXT.Test.WSIntegrationGenerator.Config
 
   @doc """
@@ -264,9 +265,9 @@ defmodule CCXT.Test.WSIntegrationGenerator do
         test "can subscribe to ticker", context do
           if Map.get(context, :skip), do: flunk("SKIP: #{context.skip}")
 
-          url_path = CCXT.Test.WSChannelConfig.resolve_url_path(@exchange_id, :ticker, @public_url_path)
-          symbol = CCXT.Test.WSChannelConfig.resolve_symbol(@exchange_id, :ticker, test_symbol(@exchange_id))
-          timeout = CCXT.Test.WSChannelConfig.resolve_timeout(@exchange_id, :ticker, 30_000)
+          url_path = WSChannelConfig.resolve_url_path(@exchange_id, :ticker, @public_url_path)
+          symbol = WSChannelConfig.resolve_symbol(@exchange_id, :ticker, test_symbol(@exchange_id))
+          timeout = WSChannelConfig.resolve_timeout(@exchange_id, :ticker, 30_000)
 
           adapter =
             start_adapter_and_wait!(@adapter_module,
@@ -307,9 +308,9 @@ defmodule CCXT.Test.WSIntegrationGenerator do
       test "can subscribe to orderbook", context do
         if Map.get(context, :skip), do: flunk("SKIP: #{context.skip}")
 
-        url_path = CCXT.Test.WSChannelConfig.resolve_url_path(@exchange_id, :orderbook, @public_url_path)
-        symbol = CCXT.Test.WSChannelConfig.resolve_symbol(@exchange_id, :orderbook, test_symbol(@exchange_id))
-        timeout = CCXT.Test.WSChannelConfig.resolve_timeout(@exchange_id, :orderbook, 30_000)
+        url_path = WSChannelConfig.resolve_url_path(@exchange_id, :orderbook, @public_url_path)
+        symbol = WSChannelConfig.resolve_symbol(@exchange_id, :orderbook, test_symbol(@exchange_id))
+        timeout = WSChannelConfig.resolve_timeout(@exchange_id, :orderbook, 30_000)
 
         adapter =
           start_adapter_and_wait!(@adapter_module,
@@ -340,9 +341,9 @@ defmodule CCXT.Test.WSIntegrationGenerator do
           flunk(missing_ws_credentials_message(@exchange_id, passphrase: @has_passphrase, sandbox_key: @sandbox_key))
         end
 
-        url_path = CCXT.Test.WSChannelConfig.resolve_url_path(@exchange_id, :orderbook, @private_url_path)
-        symbol = CCXT.Test.WSChannelConfig.resolve_symbol(@exchange_id, :orderbook, test_symbol(@exchange_id))
-        timeout = CCXT.Test.WSChannelConfig.resolve_timeout(@exchange_id, :orderbook, 30_000)
+        url_path = WSChannelConfig.resolve_url_path(@exchange_id, :orderbook, @private_url_path)
+        symbol = WSChannelConfig.resolve_symbol(@exchange_id, :orderbook, test_symbol(@exchange_id))
+        timeout = WSChannelConfig.resolve_timeout(@exchange_id, :orderbook, 30_000)
 
         adapter =
           start_adapter_and_wait!(@adapter_module,
@@ -374,9 +375,9 @@ defmodule CCXT.Test.WSIntegrationGenerator do
           # 60s default — trades channels can be slow on some testnets
           default_timeout = 60_000
 
-          url_path = CCXT.Test.WSChannelConfig.resolve_url_path(@exchange_id, :trades, @public_url_path)
-          symbol = CCXT.Test.WSChannelConfig.resolve_symbol(@exchange_id, :trades, test_symbol(@exchange_id))
-          timeout = CCXT.Test.WSChannelConfig.resolve_timeout(@exchange_id, :trades, default_timeout)
+          url_path = WSChannelConfig.resolve_url_path(@exchange_id, :trades, @public_url_path)
+          symbol = WSChannelConfig.resolve_symbol(@exchange_id, :trades, test_symbol(@exchange_id))
+          timeout = WSChannelConfig.resolve_timeout(@exchange_id, :trades, default_timeout)
 
           adapter =
             start_adapter_and_wait!(@adapter_module,

@@ -86,9 +86,13 @@ defmodule CCXT.WS.Generator.Adapter do
       unquote(generate_init_callback(rest_module, normalizer))
       unquote(generate_handle_call_callbacks())
       unquote(generate_handle_cast_callbacks())
-      unquote(generate_handle_info_callbacks(normalizer))
+      unquote(generate_connect_info_ast(normalizer))
+      unquote(generate_monitor_info_ast())
+      unquote(generate_auth_info_ast())
       unquote(generate_private_helpers(spec_id, normalizer, contract))
-      unquote(generate_authenticate_logic())
+      unquote(generate_initial_auth_ast())
+      unquote(generate_re_auth_ast())
+      unquote(generate_auth_expiry_ast())
     end
   end
 
@@ -524,10 +528,9 @@ defmodule CCXT.WS.Generator.Adapter do
   end
 
   @doc false
-  # Generates authentication logic as private functions
-  # The complexity warning is for the generator, not the generated code
+  # Generates initial authentication functions (do_authenticate, send_auth_message, etc.)
   # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
-  defp generate_authenticate_logic do
+  defp generate_initial_auth_ast do
     quote do
       @doc false
       defp do_authenticate(config, state) do
@@ -611,7 +614,14 @@ defmodule CCXT.WS.Generator.Adapter do
 
         {:reply, :ok, new_state}
       end
+    end
+  end
 
+  @doc false
+  # Generates re-authentication functions (do_re_authenticate, send_re_auth_message, etc.)
+  # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
+  defp generate_re_auth_ast do
+    quote do
       # For re-authentication (async from handle_info)
       @doc false
       defp do_re_authenticate(config, state) do
@@ -684,7 +694,13 @@ defmodule CCXT.WS.Generator.Adapter do
              auth_expires_at: expires_at
          }}
       end
+    end
+  end
 
+  @doc false
+  # Generates auth expiry scheduling function
+  defp generate_auth_expiry_ast do
+    quote do
       @doc false
       # Computes and schedules auth expiry timer via Expiry pure functions.
       # Returns {timer_ref, expires_at} or {nil, nil} when no TTL available.
@@ -721,9 +737,9 @@ defmodule CCXT.WS.Generator.Adapter do
   end
 
   @doc false
-  # Generates GenServer handle_info/2 callbacks for connect, reconnect, monitor DOWN
+  # Generates handle_info callbacks for :connect and connect_result messages
   # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
-  defp generate_handle_info_callbacks(normalizer) do
+  defp generate_connect_info_ast(normalizer) do
     build_handler_ast =
       if normalizer do
         quote do: build_handler(state.handler, state.normalize, state.validate)
@@ -834,7 +850,14 @@ defmodule CCXT.WS.Generator.Adapter do
             {:noreply, state}
         end
       end
+    end
+  end
 
+  @doc false
+  # Generates handle_info callbacks for :DOWN, :restore_subscriptions, :reconnect
+  # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
+  defp generate_monitor_info_ast do
+    quote do
       # Connect worker crashed before sending result
       def handle_info({:DOWN, down_ref, :process, _pid, reason}, %{connect_task: {_tag, down_ref}} = state) do
         Logger.warning("[#{inspect(__MODULE__)}] Connect worker crashed: #{inspect(reason)}")
@@ -889,7 +912,13 @@ defmodule CCXT.WS.Generator.Adapter do
           {:stop, :max_reconnection_attempts, state}
         end
       end
+    end
+  end
 
+  @doc false
+  # Generates handle_info callbacks for :re_authenticate, :auth_expired, catch-all
+  defp generate_auth_info_ast do
+    quote do
       # W11: Re-authenticate after reconnect
       def handle_info(:re_authenticate, %{client: nil} = state) do
         # Not connected yet, will be triggered again on next connect
@@ -935,100 +964,118 @@ defmodule CCXT.WS.Generator.Adapter do
   end
 
   @doc false
-  # Generates private helper functions for reconnection and message handling.
-  # Conditionally generates deliver_message/N based on envelope config:
-  # - WITH envelope: full routing + normalization + validation pipeline
-  # - WITHOUT envelope: simple raw passthrough (avoids dead code warnings)
-  # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
+  # Assembles private helper functions from sub-generators.
+  # Conditionally generates deliver_message/N based on envelope config.
   defp generate_private_helpers(spec_id, normalizer, _contract) do
-    # Compute envelope at macro expansion time to decide which deliver_message to generate
     envelope = WsHandlerMappings.envelope_pattern(spec_id)
+    deliver_message_ast = generate_deliver_message_ast(envelope, normalizer)
 
-    # Four-case branching on {envelope != nil, normalizer != nil}
-    deliver_message_ast =
-      case {envelope != nil, normalizer != nil} do
-        {true, true} ->
-          # Full routing + normalization + validation pipeline
-          quote do
-            @doc false
-            # Bypass normalization when normalize=false — raw passthrough
-            defp deliver_message(decoded, user_handler, false, _validate) do
-              user_handler.({:raw, decoded})
-            end
+    quote do
+      unquote(generate_reconnect_helpers_ast())
+      unquote(generate_market_type_helpers_ast())
+      unquote(generate_listen_key_helpers_ast())
+      unquote(generate_auth_enrichment_ast())
+      unquote(deliver_message_ast)
+      unquote(generate_build_handler_ast(normalizer))
+    end
+  end
 
-            defp deliver_message(decoded, user_handler, true, validate) do
-              case MessageRouter.route(decoded, @ws_envelope, @ws_exchange_id) do
-                {:routed, family, payload} ->
-                  case Normalizer.normalize(family, payload, @ws_exchange_module) do
-                    {:ok, normalized} ->
-                      maybe_validate(family, normalized, validate)
-                      user_handler.({family, normalized})
+  @doc false
+  # Generates the appropriate deliver_message/N variant based on envelope and normalizer config
+  # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
+  defp generate_deliver_message_ast(envelope, normalizer) do
+    case {envelope != nil, normalizer != nil} do
+      {true, true} ->
+        # Full routing + normalization + validation pipeline
+        quote do
+          @doc false
+          # Bypass normalization when normalize=false — raw passthrough
+          defp deliver_message(decoded, user_handler, false, _validate) do
+            user_handler.({:raw, decoded})
+          end
 
-                    {:error, _reason} ->
-                      user_handler.({family, payload})
-                  end
+          defp deliver_message(decoded, user_handler, true, validate) do
+            case MessageRouter.route(decoded, @ws_envelope, @ws_exchange_id) do
+              {:routed, family, payload} ->
+                normalize_and_deliver(family, payload, user_handler, validate)
 
-                {:system, _msg} ->
-                  user_handler.({:system, decoded})
+              {:system, _msg} ->
+                user_handler.({:system, decoded})
 
-                {:unknown, _msg} ->
-                  user_handler.({:raw, decoded})
-              end
-            end
-
-            @doc false
-            defp maybe_validate(_family, _normalized, false), do: :ok
-
-            defp maybe_validate(family, normalized, true) do
-              case Contract.validate(family, normalized) do
-                {:ok, _} ->
-                  :ok
-
-                {:error, violations} ->
-                  Logger.warning("[WS.Adapter] Contract violation for #{family}: #{inspect(violations)}")
-              end
+              {:unknown, _msg} ->
+                user_handler.({:raw, decoded})
             end
           end
 
-        {true, false} ->
-          # Routing only, raw family+payload delivery (current ccxt_ex default)
-          quote do
-            @doc false
-            # Routes via MessageRouter when envelope config is available
-            defp deliver_message(decoded, user_handler) do
-              case MessageRouter.route(decoded, @ws_envelope, @ws_exchange_id) do
-                {:routed, family, payload} ->
-                  user_handler.({family, payload})
+          @doc false
+          defp normalize_and_deliver(family, payload, user_handler, validate) do
+            case Normalizer.normalize(family, payload, @ws_exchange_module) do
+              {:ok, normalized} ->
+                maybe_validate(family, normalized, validate)
+                user_handler.({family, normalized})
 
-                {:system, _msg} ->
-                  user_handler.({:system, decoded})
-
-                {:unknown, _msg} ->
-                  user_handler.({:raw, decoded})
-              end
+              {:error, _reason} ->
+                user_handler.({family, payload})
             end
           end
 
-        {false, true} ->
-          # No envelope, but normalizer present — passthrough with /4 arity
-          quote do
-            @doc false
-            defp deliver_message(decoded, user_handler, _normalize, _validate) do
-              user_handler.({:raw, decoded})
+          @doc false
+          defp maybe_validate(_family, _normalized, false), do: :ok
+
+          defp maybe_validate(family, normalized, true) do
+            case Contract.validate(family, normalized) do
+              {:ok, _} ->
+                :ok
+
+              {:error, violations} ->
+                Logger.warning("[WS.Adapter] Contract violation for #{family}: #{inspect(violations)}")
             end
           end
+        end
 
-        {false, false} ->
-          # No envelope, no normalizer — simple passthrough
-          quote do
-            @doc false
-            # No envelope config — pass raw decoded messages directly
-            defp deliver_message(decoded, user_handler) do
-              user_handler.({:raw, decoded})
+      {true, false} ->
+        # Routing only, raw family+payload delivery (current ccxt_ex default)
+        quote do
+          @doc false
+          # Routes via MessageRouter when envelope config is available
+          defp deliver_message(decoded, user_handler) do
+            case MessageRouter.route(decoded, @ws_envelope, @ws_exchange_id) do
+              {:routed, family, payload} ->
+                user_handler.({family, payload})
+
+              {:system, _msg} ->
+                user_handler.({:system, decoded})
+
+              {:unknown, _msg} ->
+                user_handler.({:raw, decoded})
             end
           end
-      end
+        end
 
+      {false, true} ->
+        # No envelope, but normalizer present — passthrough with /4 arity
+        quote do
+          @doc false
+          defp deliver_message(decoded, user_handler, _normalize, _validate) do
+            user_handler.({:raw, decoded})
+          end
+        end
+
+      {false, false} ->
+        # No envelope, no normalizer — simple passthrough
+        quote do
+          @doc false
+          # No envelope config — pass raw decoded messages directly
+          defp deliver_message(decoded, user_handler) do
+            user_handler.({:raw, decoded})
+          end
+        end
+    end
+  end
+
+  @doc false
+  # Generates schedule_reconnect and schedule_re_auth_retry helpers
+  defp generate_reconnect_helpers_ast do
     quote do
       # =====================================================================
       # Private Helpers
@@ -1056,7 +1103,13 @@ defmodule CCXT.WS.Generator.Adapter do
           {:noreply, %{state | auth_state: :unauthenticated, re_auth_attempts: attempts}}
         end
       end
+    end
+  end
 
+  @doc false
+  # Generates resolve_market_type and derive_market_type_from_url_path helpers
+  defp generate_market_type_helpers_ast do
+    quote do
       @doc false
       # Resolves market type from auth_context, url_path derivation, or :spot default
       defp resolve_market_type(state) do
@@ -1074,7 +1127,14 @@ defmodule CCXT.WS.Generator.Adapter do
       end
 
       defp derive_market_type_from_url_path(_), do: nil
+    end
+  end
 
+  @doc false
+  # Generates listen key acquisition functions (maybe_listen_key_connect, etc.)
+  # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
+  defp generate_listen_key_helpers_ast do
+    quote do
       @doc false
       # Checks if auth pattern is :listen_key with credentials, and if so,
       # acquires listen key via REST before connecting. Otherwise, normal connect.
@@ -1159,7 +1219,13 @@ defmodule CCXT.WS.Generator.Adapter do
           _ -> {:error, {:listen_key_parse_error, body}}
         end
       end
+    end
+  end
 
+  @doc false
+  # Generates maybe_enrich_with_auth for inline_subscribe pattern
+  defp generate_auth_enrichment_ast do
+    quote do
       @doc false
       # For inline_subscribe pattern: merge auth data into subscribe message
       # when the subscription requires authentication.
@@ -1178,91 +1244,92 @@ defmodule CCXT.WS.Generator.Adapter do
       end
 
       defp maybe_enrich_with_auth(sub, _state), do: sub
+    end
+  end
 
-      unquote(deliver_message_ast)
+  @doc false
+  # Generates build_handler and safe_decode_and_deliver, conditioned on normalizer
+  # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
+  defp generate_build_handler_ast(normalizer) do
+    if normalizer do
+      quote do
+        @doc false
+        defp build_handler(nil, _normalize, _validate), do: nil
 
-      unquote(
-        if normalizer do
-          quote do
-            @doc false
-            defp build_handler(nil, _normalize, _validate), do: nil
+        defp build_handler(user_handler, normalize, validate)
+             when is_function(user_handler, 1) do
+          # Wrap the user handler to decode, optionally route+normalize, then deliver
+          fn
+            {:message, {:text, data}} ->
+              safe_decode_and_deliver(data, user_handler, normalize, validate)
 
-            defp build_handler(user_handler, normalize, validate)
-                 when is_function(user_handler, 1) do
-              # Wrap the user handler to decode, optionally route+normalize, then deliver
-              fn
-                {:message, {:text, data}} ->
-                  safe_decode_and_deliver(data, user_handler, normalize, validate)
+            {:message, {:binary, data}} ->
+              user_handler.(data)
 
-                {:message, {:binary, data}} ->
-                  user_handler.(data)
+            {:message, data} when is_binary(data) ->
+              safe_decode_and_deliver(data, user_handler, normalize, validate)
 
-                {:message, data} when is_binary(data) ->
-                  safe_decode_and_deliver(data, user_handler, normalize, validate)
+            {:message, data} when is_map(data) ->
+              deliver_message(data, user_handler, normalize, validate)
 
-                {:message, data} when is_map(data) ->
-                  deliver_message(data, user_handler, normalize, validate)
-
-                other ->
-                  user_handler.(other)
-              end
-            end
-
-            @doc false
-            # Decodes JSON safely, falling back to raw delivery on malformed data
-            defp safe_decode_and_deliver(data, user_handler, normalize, validate) do
-              case Jason.decode(data) do
-                {:ok, decoded} ->
-                  deliver_message(decoded, user_handler, normalize, validate)
-
-                {:error, _reason} ->
-                  Logger.warning("[#{inspect(__MODULE__)}] Failed to decode WS message as JSON")
-
-                  user_handler.({:raw, data})
-              end
-            end
-          end
-        else
-          quote do
-            @doc false
-            defp build_handler(nil), do: nil
-
-            defp build_handler(user_handler) when is_function(user_handler, 1) do
-              # Wrap the user handler to decode, route via MessageRouter, then deliver
-              fn
-                {:message, {:text, data}} ->
-                  safe_decode_and_deliver(data, user_handler)
-
-                {:message, {:binary, data}} ->
-                  user_handler.(data)
-
-                {:message, data} when is_binary(data) ->
-                  safe_decode_and_deliver(data, user_handler)
-
-                {:message, data} when is_map(data) ->
-                  deliver_message(data, user_handler)
-
-                other ->
-                  user_handler.(other)
-              end
-            end
-
-            @doc false
-            # Decodes JSON safely, falling back to raw delivery on malformed data
-            defp safe_decode_and_deliver(data, user_handler) do
-              case Jason.decode(data) do
-                {:ok, decoded} ->
-                  deliver_message(decoded, user_handler)
-
-                {:error, _reason} ->
-                  Logger.warning("[#{inspect(__MODULE__)}] Failed to decode WS message as JSON")
-
-                  user_handler.({:raw, data})
-              end
-            end
+            other ->
+              user_handler.(other)
           end
         end
-      )
+
+        @doc false
+        # Decodes JSON safely, falling back to raw delivery on malformed data
+        defp safe_decode_and_deliver(data, user_handler, normalize, validate) do
+          case Jason.decode(data) do
+            {:ok, decoded} ->
+              deliver_message(decoded, user_handler, normalize, validate)
+
+            {:error, _reason} ->
+              Logger.warning("[#{inspect(__MODULE__)}] Failed to decode WS message as JSON")
+
+              user_handler.({:raw, data})
+          end
+        end
+      end
+    else
+      quote do
+        @doc false
+        defp build_handler(nil), do: nil
+
+        defp build_handler(user_handler) when is_function(user_handler, 1) do
+          # Wrap the user handler to decode, route via MessageRouter, then deliver
+          fn
+            {:message, {:text, data}} ->
+              safe_decode_and_deliver(data, user_handler)
+
+            {:message, {:binary, data}} ->
+              user_handler.(data)
+
+            {:message, data} when is_binary(data) ->
+              safe_decode_and_deliver(data, user_handler)
+
+            {:message, data} when is_map(data) ->
+              deliver_message(data, user_handler)
+
+            other ->
+              user_handler.(other)
+          end
+        end
+
+        @doc false
+        # Decodes JSON safely, falling back to raw delivery on malformed data
+        defp safe_decode_and_deliver(data, user_handler) do
+          case Jason.decode(data) do
+            {:ok, decoded} ->
+              deliver_message(decoded, user_handler)
+
+            {:error, _reason} ->
+              Logger.warning("[#{inspect(__MODULE__)}] Failed to decode WS message as JSON")
+
+              user_handler.({:raw, data})
+          end
+        end
+      end
     end
   end
 

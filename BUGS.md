@@ -1,14 +1,15 @@
 # Known Bugs (ccxt_client)
 
-Last verified: February 19, 2026.
+Last verified: February 20, 2026.
 
-> **Upstream tracking:** All bugs below originate in `ccxt_ex` and are tracked in
-> [ccxt_ex/ROADMAP.md](../ccxt_ex/ROADMAP.md). Fixes flow downstream via
-> `mix ccxt.sync --output --force`.
+No known bugs. All previously tracked issues have been resolved and synced.
 
-## 1) Deribit `fetch_trades/1` Missing
+> **History:** All bugs below were fixed upstream in `ccxt_ex` and synced to
+> ccxt_client via `mix ccxt.sync --output --force` on 2026-02-20.
 
-- Status: ✅ Fixed upstream (ccxt_ex Task 176)
+## ~~1) Deribit `fetch_trades/1` Missing~~ ✅ Resolved
+
+- Status: ✅ Fixed and synced (ccxt_ex Task 176, synced 2026-02-20)
 - Affected module: `CCXT.Deribit`
 - Type: API surface inconsistency (docs/examples vs generated module)
 
@@ -34,9 +35,9 @@ Raises:
 - Root fix likely belongs in `ccxt_ex` generation/spec logic if `/1` is intended to exist.
 - **ccxt_ex:** Tracked as Task 176 (Generator Optional Param Arity) [D:2/B:8 -> 4.0]
 
-## 2) Deribit WS Balance Subscription Builds Empty Channel
+## ~~2) Deribit WS Balance Subscription Builds Empty Channel~~ ✅ Resolved
 
-- Status: ✅ Fixed upstream (ccxt_ex Task 177)
+- Status: ✅ Fixed and synced (ccxt_ex Task 177, synced 2026-02-20)
 - Affected module: `CCXT.Deribit.WS`
 - Type: WS channel generation issue
 
@@ -67,9 +68,9 @@ Returns:
 - Most likely a `ccxt_ex` WS extraction/template issue propagated into generated `ccxt_client` code.
 - **ccxt_ex:** Tracked as Task 177 (WS Channel Template Param Application) [D:3/B:9 -> 3.0]
 
-## 3) Deribit WS Ticker Subscription Omits Required Interval Suffix
+## ~~3) Deribit WS Ticker Subscription Omits Required Interval Suffix~~ ✅ Resolved
 
-- Status: ✅ Fixed upstream (ccxt_ex Task 177)
+- Status: ✅ Fixed and synced (ccxt_ex Task 177, synced 2026-02-20)
 - Affected module: `CCXT.Deribit.WS`
 - Type: WS channel generation issue
 
