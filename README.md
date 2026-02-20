@@ -29,7 +29,7 @@ Every exchange you test helps the whole community.
 ```elixir
 def deps do
   [
-    {:ccxt_client, "~> 0.1"}
+    {:ccxt_client, "~> 0.2"}
   ]
 end
 ```
