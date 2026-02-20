@@ -73,7 +73,7 @@
     %{
       api_section: "private/account",
       auth: true,
-      cost: 1.0,
+      cost: 1.3333333333333333,
       market_type: :spot,
       method: :get,
       name: :borrow_cross_margin,
@@ -88,7 +88,7 @@
     %{
       api_section: "private/margin",
       auth: true,
-      cost: 1.0,
+      cost: 1.3333333333333333,
       default_params: %{
         "type" => "borrow"
       },
@@ -110,7 +110,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 0.26666666666666666,
       default_params: %{
         "account" => "spot"
       },
@@ -129,7 +129,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 0.26666666666666666,
       default_params: %{
         "account" => "spot"
       },
@@ -150,7 +150,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       market_type: :spot,
       method: :post,
       name: :cancel_orders,
@@ -165,7 +165,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 0.26666666666666666,
       market_type: :spot,
       method: :post,
       name: :cancel_orders_for_symbols,
@@ -179,7 +179,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "account" => "spot",
         "type" => "limit"
@@ -202,7 +202,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "account" => "spot",
         "side" => "buy",
@@ -226,7 +226,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "account" => "spot",
         "time_in_force" => "ioc",
@@ -250,7 +250,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "account" => "spot"
       },
@@ -273,7 +273,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       market_type: :spot,
       method: :post,
       name: :create_orders,
@@ -287,7 +287,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "account" => "spot",
         "time_in_force" => "poc"
@@ -311,7 +311,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "contract" => "BTCUSDT",
         "reduce_only" => true,
@@ -337,7 +337,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "initial" => %{
           "contract" => "BTCUSDT",
@@ -369,7 +369,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "initial" => %{
           "contract" => "BTCUSDT",
@@ -402,7 +402,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "initial" => %{
           "contract" => "BTCUSDT",
@@ -435,7 +435,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "initial" => %{
           "contract" => "BTCUSDT",
@@ -468,7 +468,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "initial" => %{
           "contract" => "BTCUSDT",
@@ -501,7 +501,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "account" => "spot"
       },
@@ -526,7 +526,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_balance,
@@ -538,7 +538,7 @@
     %{
       api_section: "private/margin",
       auth: true,
-      cost: 1.0,
+      cost: 1.3333333333333333,
       market_type: :spot,
       method: :get,
       name: :fetch_borrow_interest,
@@ -557,7 +557,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "account" => "spot",
         "status" => "finished"
@@ -579,7 +579,7 @@
     %{
       api_section: "public/spot",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_currencies,
@@ -591,7 +591,7 @@
     %{
       api_section: "private/wallet",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_deposit_address,
@@ -607,7 +607,7 @@
     %{
       api_section: "private/wallet",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_deposit_addresses_by_network,
@@ -623,7 +623,7 @@
     %{
       api_section: "private/wallet",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_deposit_withdraw_fees,
@@ -637,7 +637,7 @@
     %{
       api_section: "private/wallet",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_deposits,
@@ -655,7 +655,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "BTCUSDT",
         "settle" => "USDT",
@@ -676,7 +676,7 @@
     %{
       api_section: "public/futures",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "BTCUSDT",
         "settle" => "USDT"
@@ -694,7 +694,7 @@
     %{
       api_section: "public/futures",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "BTCUSDT",
         "settle" => "USDT"
@@ -714,7 +714,7 @@
     %{
       api_section: "public/futures",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "BTCUSDT",
         "settle" => "USDT"
@@ -732,7 +732,7 @@
     %{
       api_section: "public/options",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :option,
       method: :get,
       name: :fetch_greeks,
@@ -746,7 +746,7 @@
     %{
       api_section: "public/futures",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "index_BTCUSDT",
         "interval" => "1m",
@@ -771,7 +771,7 @@
     %{
       api_section: "public/spot",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "with_id" => true
       },
@@ -791,7 +791,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_ledger,
@@ -809,7 +809,7 @@
     %{
       api_section: "public/margin",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_leverage,
@@ -825,7 +825,7 @@
     %{
       api_section: "public/margin",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_leverages,
@@ -839,7 +839,7 @@
     %{
       api_section: "public/futures",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "BTCUSDT",
         "settle" => "USDT"
@@ -859,7 +859,7 @@
     %{
       api_section: "public/futures",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "mark_BTCUSDT",
         "interval" => "1m",
@@ -884,7 +884,7 @@
     %{
       api_section: "public/futures",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "BTCUSDT",
         "settle" => "USDT"
@@ -902,7 +902,7 @@
     %{
       api_section: "public/margin",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_markets,
@@ -914,7 +914,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "BTCUSDT",
         "settle" => "USDT"
@@ -934,7 +934,7 @@
     %{
       api_section: "private/options",
       auth: true,
-      cost: 1.0,
+      cost: 1.3333333333333333,
       default_params: %{
         "contract" => "BTC-250103-100000-C",
         "underlying" => "BTC"
@@ -951,7 +951,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "account" => "spot"
       },
@@ -972,7 +972,7 @@
     %{
       api_section: "private/wallet",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_network_deposit_address,
@@ -984,7 +984,7 @@
     %{
       api_section: "public/spot",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "to" => "<generated>"
       },
@@ -1008,7 +1008,7 @@
     %{
       api_section: "public/futures",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "BTCUSDT",
         "interval" => "5m",
@@ -1032,7 +1032,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "account" => "spot",
         "status" => "open"
@@ -1054,7 +1054,7 @@
     %{
       api_section: "public/options",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "BTC-250103-100000-C"
       },
@@ -1071,7 +1071,7 @@
     %{
       api_section: "public/options",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "underlying" => "BTC_USDT"
       },
@@ -1088,7 +1088,7 @@
     %{
       api_section: "private/spot",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "account" => "spot"
       },
@@ -1109,7 +1109,7 @@
     %{
       api_section: "public/spot",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "with_id" => true
       },
@@ -1129,7 +1129,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "BTCUSDT",
         "settle" => "USDT"
@@ -1147,7 +1147,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "settle" => "usdt"
       },
@@ -1164,7 +1164,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "BTCUSDT",
         "settle" => "USDT"
@@ -1184,7 +1184,7 @@
     %{
       api_section: "public/options",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "underlying" => "BTC"
       },
@@ -1199,7 +1199,7 @@
     %{
       api_section: "public/spot",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_ticker,
@@ -1216,7 +1216,7 @@
     %{
       api_section: "public/spot",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "timezone" => "utc0"
       },
@@ -1233,7 +1233,7 @@
     %{
       api_section: "public/spot",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_time,
@@ -1246,7 +1246,7 @@
     %{
       api_section: "public/spot",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_trades,
@@ -1264,7 +1264,7 @@
     %{
       api_section: "private/wallet",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_trading_fee,
@@ -1280,7 +1280,7 @@
     %{
       api_section: "private/wallet",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_trading_fees,
@@ -1292,7 +1292,7 @@
     %{
       api_section: "private/wallet",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_transaction_fees,
@@ -1306,7 +1306,7 @@
     %{
       api_section: "public/options",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_underlying_assets,
@@ -1318,7 +1318,7 @@
     %{
       api_section: "private/wallet",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_withdrawals,
@@ -1336,7 +1336,7 @@
     %{
       api_section: "private/margin",
       auth: true,
-      cost: 1.0,
+      cost: 1.3333333333333333,
       market_type: :spot,
       method: :post,
       name: :repay_cross_margin,
@@ -1353,7 +1353,7 @@
     %{
       api_section: "private/margin",
       auth: true,
-      cost: 1.0,
+      cost: 1.3333333333333333,
       default_params: %{
         "type" => "repay"
       },
@@ -1375,7 +1375,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "BTCUSDT",
         "settle" => "USDT"
@@ -1394,7 +1394,7 @@
     %{
       api_section: "private/futures",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "contract" => "BTCUSDT",
         "settle" => "USDT"
@@ -1415,7 +1415,7 @@
     %{
       api_section: "private/wallet",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "to" => "<generated>"
       },
@@ -1437,7 +1437,7 @@
     %{
       api_section: "private/withdrawals",
       auth: true,
-      cost: 1.0,
+      cost: 20,
       market_type: :spot,
       method: :post,
       name: :withdraw,

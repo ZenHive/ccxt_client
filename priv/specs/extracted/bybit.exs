@@ -59,7 +59,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       market_type: :spot,
       method: :post,
       name: :borrow_cross_margin,
@@ -77,7 +77,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 50,
       default_params: %{
         "category" => "spot"
       },
@@ -95,7 +95,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "product" => "DERIVATIVES",
         "timeWindow" => 1
@@ -114,7 +114,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "spot",
         "orderFilter" => "Order"
@@ -136,7 +136,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "request" => [
@@ -161,7 +161,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "request" => [
@@ -185,7 +185,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :post,
       name: :create_convert_trade,
@@ -205,7 +205,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "spot",
         "orderType" => "Limit"
@@ -229,7 +229,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "spot",
         "orderType" => "Market",
@@ -252,7 +252,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "spot",
         "marketUnit" => "baseCoin",
@@ -277,7 +277,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "spot",
         "marketUnit" => "quoteCoin",
@@ -301,7 +301,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "spot"
       },
@@ -326,7 +326,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "linear",
         "symbol" => "BTCUSDT"
@@ -354,7 +354,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "request" => [
@@ -381,7 +381,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "spot",
         "timeInForce" => "PostOnly"
@@ -407,7 +407,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "linear",
         "reduceOnly" => true,
@@ -434,7 +434,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "linear",
         "orderType" => "Limit",
@@ -461,7 +461,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "linear",
         "reduceOnly" => true,
@@ -491,7 +491,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "linear",
         "orderType" => "Market",
@@ -517,7 +517,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "linear",
         "symbol" => "BTCUSDT",
@@ -545,7 +545,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "linear",
         "reduceOnly" => true,
@@ -575,7 +575,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "symbol" => "BTCUSDT"
@@ -603,7 +603,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 2.5,
       default_params: %{
         "category" => "linear",
         "symbol" => "BTCUSDT",
@@ -631,7 +631,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot"
       },
@@ -657,7 +657,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot",
         "request" => [
@@ -683,7 +683,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "baseCoin" => "BTC",
         "category" => "option"
@@ -702,7 +702,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "accountType" => "UNIFIED"
       },
@@ -718,7 +718,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot"
       },
@@ -738,7 +738,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot",
         "orderStatus" => "Cancelled"
@@ -759,7 +759,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot",
         "orderStatus" => "Filled"
@@ -779,7 +779,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot",
         "orderStatus" => "Filled"
@@ -800,7 +800,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.5,
       default_params: %{
         "accountType" => "unified"
       },
@@ -816,7 +816,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "accountType" => "unified"
       },
@@ -839,7 +839,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.5,
       default_params: %{
         "accountType" => "unified"
       },
@@ -860,7 +860,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.5,
       market_type: :spot,
       method: :get,
       name: :fetch_convert_trade_history,
@@ -877,7 +877,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_cross_borrow_rate,
@@ -894,7 +894,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 28,
       market_type: :spot,
       method: :get,
       name: :fetch_currencies,
@@ -907,7 +907,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 10,
       market_type: :spot,
       method: :get,
       name: :fetch_deposit_address,
@@ -924,7 +924,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 10,
       market_type: :spot,
       method: :get,
       name: :fetch_deposit_addresses_by_network,
@@ -941,7 +941,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 28,
       market_type: :spot,
       method: :get,
       name: :fetch_deposit_withdraw_fees,
@@ -956,7 +956,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 10,
       market_type: :spot,
       method: :get,
       name: :fetch_deposits,
@@ -975,7 +975,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "execType" => "Funding",
@@ -998,7 +998,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "limit" => 200,
@@ -1021,7 +1021,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "settleCoin" => "USDT",
@@ -1041,7 +1041,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "option",
         "symbol" => "BTC-250103-100000-C"
@@ -1060,7 +1060,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "interval" => "1",
@@ -1086,7 +1086,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot",
         "limit" => 50
@@ -1106,7 +1106,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "accountType" => "UNIFIED"
       },
@@ -1128,7 +1128,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "symbol" => "BTCUSDT"
@@ -1147,7 +1147,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear"
       },
@@ -1165,7 +1165,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "period" => "1d",
@@ -1190,7 +1190,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "interval" => "1",
@@ -1216,7 +1216,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "symbol" => "BTCUSDT"
@@ -1235,7 +1235,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot"
       },
@@ -1251,7 +1251,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "execType" => "BustTrade",
@@ -1273,7 +1273,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "symbol" => "BTCUSDT"
@@ -1290,7 +1290,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot",
         "execType" => "Trade"
@@ -1311,7 +1311,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot",
         "interval" => "60"
@@ -1336,7 +1336,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "intervalTime" => "1h",
@@ -1357,7 +1357,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "intervalTime" => "1h",
@@ -1381,7 +1381,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot"
       },
@@ -1400,7 +1400,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot"
       },
@@ -1420,7 +1420,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "option",
         "symbol" => "BTC-250103-100000-C"
@@ -1439,7 +1439,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "option"
       },
@@ -1459,7 +1459,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot"
       },
@@ -1480,7 +1480,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot"
       },
@@ -1499,7 +1499,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot",
         "execType" => "Trade"
@@ -1523,7 +1523,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "settleCoin" => "USDT",
@@ -1543,7 +1543,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "limit" => 200,
@@ -1564,7 +1564,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "symbol" => "BTCUSDT"
@@ -1585,7 +1585,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "interval" => "1",
@@ -1611,7 +1611,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "symbol" => "BTCUSDT"
@@ -1628,7 +1628,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot"
       },
@@ -1646,7 +1646,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot"
       },
@@ -1664,7 +1664,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       market_type: :spot,
       method: :get,
       name: :fetch_time,
@@ -1677,7 +1677,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "spot"
       },
@@ -1697,7 +1697,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 10,
       default_params: %{
         "category" => "spot"
       },
@@ -1715,7 +1715,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 10,
       market_type: :spot,
       method: :get,
       name: :fetch_trading_fees,
@@ -1728,7 +1728,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 50,
       market_type: :spot,
       method: :get,
       name: :fetch_transfers,
@@ -1747,7 +1747,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "option"
       },
@@ -1765,7 +1765,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 10,
       market_type: :spot,
       method: :get,
       name: :fetch_withdrawals,
@@ -1784,7 +1784,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       market_type: :spot,
       method: :post,
       name: :repay_cross_margin,
@@ -1802,7 +1802,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "symbol" => "BTCUSDT"
@@ -1822,7 +1822,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "setMarginMode" => "ISOLATED_MARGIN"
       },
@@ -1841,7 +1841,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "category" => "linear",
         "mode" => 3,
@@ -1862,7 +1862,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 50,
       default_params: %{
         "toAccountType" => "CONTRACT",
         "transferId" => "<generated>"
@@ -1887,7 +1887,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 50,
       default_params: %{
         "accountType" => "unified",
         "timestamp" => "<generated>"

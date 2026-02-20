@@ -39,7 +39,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       market_type: :swap,
       method: :get,
       name: :cancel_all_orders,
@@ -56,7 +56,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       market_type: :swap,
       method: :get,
       name: :cancel_order,
@@ -74,7 +74,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :create_deposit_address,
@@ -91,7 +91,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       default_params: %{
         "type" => "limit"
       },
@@ -114,7 +114,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       default_params: %{
         "type" => "market"
       },
@@ -137,7 +137,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       market_type: :swap,
       method: :get,
       name: :create_order,
@@ -158,7 +158,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       default_params: %{
         "instrument_name" => "BTCUSDT",
         "reduce_only" => true
@@ -181,7 +181,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       default_params: %{
         "instrument_name" => "BTCUSDT",
         "triggerDirection" => "below",
@@ -207,7 +207,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       default_params: %{
         "instrument_name" => "BTCUSDT",
         "triggerDirection" => "below",
@@ -232,7 +232,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       default_params: %{
         "instrument_name" => "BTCUSDT",
         "triggerDirection" => "below"
@@ -258,7 +258,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       default_params: %{
         "instrument_name" => "BTCUSDT",
         "trigger" => "last_price",
@@ -286,7 +286,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       market_type: :swap,
       method: :get,
       name: :edit_order,
@@ -308,7 +308,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_accounts,
@@ -321,7 +321,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_balance,
@@ -334,7 +334,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "count" => 1000
       },
@@ -356,7 +356,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_currencies,
@@ -369,7 +369,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_deposit_address,
@@ -386,7 +386,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_deposit_withdraw_fees,
@@ -401,7 +401,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_deposits,
@@ -420,7 +420,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "end_timestamp" => "<generated>",
         "instrument_name" => "BTCUSDT",
@@ -440,7 +440,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "end_timestamp" => "<generated>",
         "instrument_name" => "BTCUSDT"
@@ -463,7 +463,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "instrument_name" => "BTC-250103-100000-C"
       },
@@ -481,7 +481,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_l2_order_book,
@@ -499,7 +499,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "instrument_name" => "BTCUSDT",
         "type" => "bankruptcy"
@@ -520,7 +520,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_markets,
@@ -533,7 +533,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "instrument_name" => "BTCUSDT",
         "type" => "bankruptcy"
@@ -554,7 +554,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "include_old" => true
       },
@@ -576,7 +576,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "end_timestamp" => "<generated>",
         "resolution" => "60"
@@ -602,7 +602,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "instrument_name" => "BTCUSDT"
       },
@@ -620,7 +620,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_open_orders,
@@ -639,7 +639,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "instrument_name" => "BTC-250103-100000-C"
       },
@@ -657,7 +657,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "kind" => "option"
       },
@@ -677,7 +677,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_order,
@@ -695,7 +695,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_order_book,
@@ -714,7 +714,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_order_trades,
@@ -734,7 +734,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "instrument_name" => "BTCUSDT"
       },
@@ -752,7 +752,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_positions,
@@ -767,7 +767,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_status,
@@ -780,7 +780,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_ticker,
@@ -797,7 +797,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "currency" => "BTC",
         "kind" => "spot"
@@ -816,7 +816,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_time,
@@ -829,7 +829,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "end_timestamp" => "<generated>",
         "include_old" => true
@@ -854,7 +854,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "currency" => "BTC",
         "extended" => true
@@ -871,7 +871,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_transfers,
@@ -890,7 +890,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :option,
       method: :get,
       name: :fetch_volatility_history,
@@ -905,7 +905,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_withdrawals,
@@ -924,7 +924,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :transfer,
@@ -945,7 +945,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :withdraw,

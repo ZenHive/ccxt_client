@@ -68,7 +68,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       market_type: :spot,
       method: :post,
       name: :cancel_all_orders,
@@ -83,7 +83,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       default_params: %{
         "timeout" => 1
       },
@@ -101,7 +101,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0,
       market_type: :spot,
       method: :post,
       name: :cancel_order,
@@ -119,7 +119,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0,
       default_params: %{
         "orders" => [
           "test-order-id"
@@ -140,7 +140,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       default_params: %{
         "method" => "Bitcoin",
         "new" => "true"
@@ -161,7 +161,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0,
       default_params: %{
         "ordertype" => "limit"
       },
@@ -186,7 +186,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0,
       default_params: %{
         "oflags" => "viqc",
         "ordertype" => "market",
@@ -210,7 +210,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0,
       default_params: %{
         "ordertype" => "market"
       },
@@ -235,7 +235,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0,
       market_type: :spot,
       method: :post,
       name: :create_order,
@@ -259,7 +259,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0,
       default_params: %{
         "orders" => [
           %{
@@ -285,7 +285,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0,
       default_params: %{
         "ordertype" => "limit",
         "pair" => "BTCUSDT",
@@ -313,7 +313,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0,
       default_params: %{
         "ordertype" => "market",
         "pair" => "BTCUSDT",
@@ -340,7 +340,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0,
       default_params: %{
         "pair" => "BTCUSDT",
         "triggerDirection" => "below"
@@ -369,7 +369,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0,
       default_params: %{
         "ordertype" => "trailing-stop-limit",
         "pair" => "BTCUSDT",
@@ -398,7 +398,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0,
       default_params: %{
         "ordertype" => "trailing-stop-limit",
         "pair" => "BTCUSDT",
@@ -427,7 +427,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0,
       market_type: :spot,
       method: :post,
       name: :edit_order,
@@ -451,7 +451,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       market_type: :spot,
       method: :post,
       name: :fetch_balance,
@@ -464,7 +464,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       market_type: :spot,
       method: :post,
       name: :fetch_closed_orders,
@@ -481,7 +481,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_currencies,
@@ -494,7 +494,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       default_params: %{
         "method" => "Bitcoin"
       },
@@ -514,7 +514,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       market_type: :spot,
       method: :post,
       name: :fetch_deposits,
@@ -533,7 +533,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1.2,
       market_type: :spot,
       method: :get,
       name: :fetch_l2_order_book,
@@ -551,7 +551,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 6,
       market_type: :spot,
       method: :post,
       name: :fetch_ledger,
@@ -570,7 +570,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       market_type: :spot,
       method: :post,
       name: :fetch_ledger_entry,
@@ -586,7 +586,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_markets,
@@ -599,7 +599,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 6,
       market_type: :spot,
       method: :post,
       name: :fetch_my_trades,
@@ -616,7 +616,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1.2,
       default_params: %{
         "interval" => 60,
         "since" => "1704063600"
@@ -641,7 +641,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       market_type: :spot,
       method: :post,
       name: :fetch_open_orders,
@@ -658,7 +658,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       default_params: %{
         "trades" => true
       },
@@ -679,7 +679,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1.2,
       market_type: :spot,
       method: :get,
       name: :fetch_order_book,
@@ -698,7 +698,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       default_params: %{
         "consolidation" => "market",
         "docalcs" => "true"
@@ -717,7 +717,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_status,
@@ -730,7 +730,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_ticker,
@@ -747,7 +747,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "pair" => "BTCUSDT"
       },
@@ -765,7 +765,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_time,
@@ -778,7 +778,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1.2,
       market_type: :spot,
       method: :get,
       name: :fetch_trades,
@@ -798,7 +798,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       default_params: %{
         "fee-info" => true
       },
@@ -818,7 +818,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       market_type: :spot,
       method: :post,
       name: :fetch_withdrawals,
@@ -837,7 +837,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       default_params: %{
         "from" => "<generated>",
         "to" => "<generated>"
@@ -861,7 +861,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 3,
       default_params: %{
         "key" => "test-withdrawal-key"
       },

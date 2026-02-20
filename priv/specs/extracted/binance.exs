@@ -93,7 +93,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 20.001,
       default_params: %{
         "isIsolated" => "FALSE",
         "type" => "BORROW"
@@ -115,7 +115,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 20.001,
       default_params: %{
         "isIsolated" => "TRUE",
         "type" => "BORROW"
@@ -137,7 +137,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       market_type: :spot,
       method: :delete,
       name: :cancel_all_orders,
@@ -151,7 +151,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       market_type: :spot,
       method: :delete,
       name: :cancel_order,
@@ -168,7 +168,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "orderidlist" => [
           "test-order-id"
@@ -190,7 +190,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 3.3335,
       market_type: :spot,
       method: :post,
       name: :create_convert_trade,
@@ -209,7 +209,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -234,7 +234,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -259,7 +259,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -284,7 +284,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -307,7 +307,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -330,7 +330,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -354,7 +354,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -377,7 +377,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -400,7 +400,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -423,7 +423,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -448,7 +448,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "batchOrders" => [
           %{
@@ -476,7 +476,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -501,7 +501,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "RESULT",
@@ -528,7 +528,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -556,7 +556,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -585,7 +585,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -614,7 +614,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -643,7 +643,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -671,7 +671,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "FULL",
@@ -700,7 +700,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.2,
       default_params: %{
         "cancelReplaceMode" => "STOP_ON_FAILURE",
         "newClientOrderId" => "<generated>",
@@ -729,7 +729,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "batchOrders" => [
           %{
@@ -754,7 +754,7 @@
     %{
       api_section: "eapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       market_type: :option,
       method: :get,
       name: :fetch_all_greeks,
@@ -768,7 +768,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       market_type: :spot,
       method: :get,
       name: :fetch_balance,
@@ -780,7 +780,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "symbols" => "[\"BTCUSDT\"]"
       },
@@ -798,7 +798,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 0.1,
       market_type: :spot,
       method: :get,
       name: :fetch_borrow_interest,
@@ -819,7 +819,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 0.1,
       default_params: %{
         "limit" => 93
       },
@@ -837,7 +837,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 10,
       market_type: :spot,
       method: :get,
       name: :fetch_convert_currencies,
@@ -850,7 +850,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 1.3334,
       market_type: :spot,
       method: :post,
       name: :fetch_convert_quote,
@@ -871,7 +871,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 0.6667,
       market_type: :spot,
       method: :get,
       name: :fetch_convert_trade,
@@ -890,7 +890,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 20.001,
       default_params: %{
         "endTime" => "<generated>"
       },
@@ -912,7 +912,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 0.1,
       market_type: :spot,
       method: :get,
       name: :fetch_cross_borrow_rate,
@@ -929,7 +929,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_currencies,
@@ -942,7 +942,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_deposit_address,
@@ -959,7 +959,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_deposit_withdraw_fees,
@@ -974,7 +974,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 0.1,
       market_type: :spot,
       method: :get,
       name: :fetch_deposits,
@@ -992,7 +992,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 30,
       default_params: %{
         "incomeType" => "FUNDING_FEE",
         "symbol" => "BTCUSDT"
@@ -1012,7 +1012,7 @@
     %{
       api_section: "fapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_funding_intervals,
@@ -1026,7 +1026,7 @@
     %{
       api_section: "fapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "symbol" => "BTCUSDT"
       },
@@ -1043,7 +1043,7 @@
     %{
       api_section: "fapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "symbol" => "BTCUSDT"
       },
@@ -1062,7 +1062,7 @@
     %{
       api_section: "fapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_funding_rates,
@@ -1076,7 +1076,7 @@
     %{
       api_section: "eapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "symbol" => "BTC-250103-100000-C"
       },
@@ -1093,7 +1093,7 @@
     %{
       api_section: "fapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "interval" => "1m",
         "limit" => 500,
@@ -1118,7 +1118,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 0.1,
       default_params: %{
         "0" => "B",
         "1" => "T",
@@ -1140,7 +1140,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_l2_order_book,
@@ -1155,7 +1155,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 0.4,
       market_type: :spot,
       method: :get,
       name: :fetch_last_prices,
@@ -1169,7 +1169,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 30,
       market_type: :spot,
       method: :get,
       name: :fetch_ledger,
@@ -1185,7 +1185,7 @@
     %{
       api_section: "eapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_ledger_entry,
@@ -1203,7 +1203,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_leverage_tiers,
@@ -1217,7 +1217,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_leverages,
@@ -1233,7 +1233,7 @@
       api_section: "fapiData",
       auth: false,
       base_url: "https://fapi.binance.com/futures/data",
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "period" => "1d",
         "symbol" => "BTCUSDT"
@@ -1256,7 +1256,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "symbol" => "BTCUSDT"
       },
@@ -1276,7 +1276,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "symbol" => "BTCUSDT"
       },
@@ -1294,7 +1294,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       market_type: :swap,
       method: :get,
       name: :fetch_margin_modes,
@@ -1309,7 +1309,7 @@
     %{
       api_section: "fapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "interval" => "1m",
         "limit" => 500,
@@ -1333,7 +1333,7 @@
     %{
       api_section: "fapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "symbol" => "BTCUSDT"
       },
@@ -1350,7 +1350,7 @@
     %{
       api_section: "fapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_mark_prices,
@@ -1364,7 +1364,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 4,
       market_type: :spot,
       method: :get,
       name: :fetch_markets,
@@ -1377,7 +1377,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 20,
       default_params: %{
         "autoCloseType" => "LIQUIDATION",
         "symbol" => "BTCUSDT"
@@ -1398,7 +1398,7 @@
     %{
       api_section: "eapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "symbol" => "BTC-250103-100000-C"
       },
@@ -1413,7 +1413,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       market_type: :spot,
       method: :get,
       name: :fetch_my_trades,
@@ -1429,7 +1429,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 0.4,
       market_type: :spot,
       method: :get,
       name: :fetch_ohlcv,
@@ -1449,7 +1449,7 @@
     %{
       api_section: "fapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "symbol" => "BTCUSDT"
       },
@@ -1467,7 +1467,7 @@
       api_section: "fapiData",
       auth: false,
       base_url: "https://fapi.binance.com/futures/data",
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "period" => "5m",
         "symbol" => "BTCUSDT"
@@ -1490,7 +1490,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "symbol" => "BTCUSDT"
       },
@@ -1507,7 +1507,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 1.2,
       market_type: :spot,
       method: :get,
       name: :fetch_open_orders,
@@ -1523,7 +1523,7 @@
     %{
       api_section: "eapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "symbol" => "BTC-250103-100000-C"
       },
@@ -1540,7 +1540,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 0.8,
       market_type: :spot,
       method: :get,
       name: :fetch_order,
@@ -1557,7 +1557,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_order_book,
@@ -1572,7 +1572,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       market_type: :spot,
       method: :get,
       name: :fetch_order_trades,
@@ -1591,7 +1591,7 @@
     %{
       api_section: "private",
       auth: true,
-      cost: 1.0,
+      cost: 4,
       market_type: :spot,
       method: :get,
       name: :fetch_orders,
@@ -1607,7 +1607,7 @@
     %{
       api_section: "eapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 5,
       default_params: %{
         "symbol" => "BTC-250103-100000-C"
       },
@@ -1624,7 +1624,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 30,
       market_type: :swap,
       method: :get,
       name: :fetch_position_mode,
@@ -1638,7 +1638,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :swap,
       method: :get,
       name: :fetch_positions,
@@ -1652,7 +1652,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_positions_risk,
@@ -1666,7 +1666,7 @@
     %{
       api_section: "fapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "interval" => "1m",
         "limit" => 500,
@@ -1690,7 +1690,7 @@
     %{
       api_section: "eapiPublic",
       auth: false,
-      cost: 1.0,
+      cost: 3,
       default_params: %{
         "underlying" => "BTCUSD"
       },
@@ -1706,7 +1706,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 0.1,
       market_type: :spot,
       method: :get,
       name: :fetch_status,
@@ -1718,7 +1718,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 0.4,
       market_type: :spot,
       method: :get,
       name: :fetch_ticker,
@@ -1732,7 +1732,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "symbols" => "[\"BTCUSDT\"]"
       },
@@ -1749,7 +1749,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 0.2,
       market_type: :spot,
       method: :get,
       name: :fetch_time,
@@ -1762,7 +1762,7 @@
     %{
       api_section: "public",
       auth: false,
-      cost: 1.0,
+      cost: 0.4,
       default_params: %{
         "endTime" => "<generated>"
       },
@@ -1784,7 +1784,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 0.1,
       market_type: :spot,
       method: :get,
       name: :fetch_trading_fee,
@@ -1799,7 +1799,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 0.1,
       market_type: :spot,
       method: :get,
       name: :fetch_trading_fees,
@@ -1812,7 +1812,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 1,
       market_type: :spot,
       method: :get,
       name: :fetch_transaction_fees,
@@ -1827,7 +1827,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 0.1,
       default_params: %{
         "type" => "MAIN_UMFUTURE"
       },
@@ -1848,7 +1848,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 2,
       market_type: :spot,
       method: :get,
       name: :fetch_withdrawals,
@@ -1867,7 +1867,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 20.001,
       default_params: %{
         "isIsolated" => "FALSE",
         "type" => "REPAY"
@@ -1889,7 +1889,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 20.001,
       default_params: %{
         "isIsolated" => "TRUE",
         "type" => "REPAY"
@@ -1911,7 +1911,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "symbol" => "BTCUSDT"
       },
@@ -1929,7 +1929,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "symbol" => "BTCUSDT"
       },
@@ -1949,7 +1949,7 @@
     %{
       api_section: "fapiPrivate",
       auth: true,
-      cost: 1.0,
+      cost: 1,
       default_params: %{
         "dualSidePosition" => "true"
       },
@@ -1968,7 +1968,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 6.0003,
       default_params: %{
         "type" => "MAIN_UMFUTURE"
       },
@@ -1991,7 +1991,7 @@
       api_section: "sapi",
       auth: true,
       base_url: "https://api.binance.com/sapi/v1",
-      cost: 1.0,
+      cost: 4.0002,
       market_type: :spot,
       method: :post,
       name: :withdraw,

@@ -4,6 +4,29 @@ Completed roadmap tasks. For upcoming work, see [ROADMAP.md](ROADMAP.md).
 
 ---
 
+## v0.2.0 — Trading Modules Removed (Breaking)
+
+**Breaking:** `CCXT.Trading.*` modules (Funding, Greeks, Risk, Basis, Sizing,
+Volatility, Options, Portfolio, PowerLaw, and helpers) have been removed.
+These trading analytics have been extracted to a separate library.
+
+ccxt_client is now a focused exchange-access library — HTTP, WebSocket,
+signing, symbol normalization, and types only.
+
+No changes to exchange API functionality.
+
+---
+
+## Spec Cost Sync + Test Improvement (2026-02-20)
+
+**What was done:**
+- **Spec cost/weight sync:** Updated rate limit costs across all 10 Tier 1 exchange specs (binance, bitmex, bybit, coinbaseexchange, deribit, gate, htx, kraken, kucoin, okx) from upstream CCXT
+- **Test improvement:** `test_since_value/2` in `PublicEndpointsTest` now derives `since` requirements from endpoint spec metadata (`required_params`, `param_mappings`, path patterns) instead of hardcoding exchange IDs — resolves inline TODO
+
+**Verified:** 3380 tests, 0 code failures (15 failures + 178 invalid all credential-related)
+
+---
+
 ## ccxt_ex Sync (2026-02-20)
 
 **What was synced:**

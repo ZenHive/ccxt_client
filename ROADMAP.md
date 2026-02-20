@@ -4,7 +4,7 @@
 
 **Parent project:** Extraction and generation happen in [ccxt_ex](../ccxt_ex/ROADMAP.md). Fixes flow downstream via `mix ccxt.sync --output --force`.
 
-**Trading features:** Analytics, orderflow, execution, and other trading features are being extracted to **quantex** (`../quantex`). See [TRADING_BACKLOG.md](TRADING_BACKLOG.md) for the full inventory (~77 tasks, ~85 already-built functions).
+**Trading features:** Analytics, orderflow, execution, and other trading features were extracted to **quantex** (`../quantex`). See [TRADING_BACKLOG.md](TRADING_BACKLOG.md) for the full inventory (~77 tasks, ~85 already-built functions).
 
 **Completed work:** See [CHANGELOG.md](CHANGELOG.md) for finished tasks.
 
@@ -12,7 +12,7 @@
 
 ## 🎯 Current Focus
 
-**Quantex Extraction** — Extract trading modules to standalone `quantex` library.
+**Health & DX** — Post-extraction improvements. ccxt_client is now a focused exchange-access library.
 
 > **Philosophy reminder:** ccxt_client owns exchange access DX. If it helps the user talk to exchanges (not analyze trades), it belongs here. Trading analytics belong in quantex.
 
@@ -20,19 +20,20 @@
 
 | Task | Description | Notes |
 |------|-------------|-------|
-| ccxt_ex Sync | Synced upstream fixes + adapter refactor | 3 bugs resolved, response_transformers, auth_required flags, adapter decomposition |
-| Feature #2: Symbol Precision Metadata | `CCXT.MarketPrecision` module | `from_market/2`, `from_markets/2`, `tradingview_price_format/1`, 3 precision modes |
-| WS Reconnection Tests | Reconnect config + subscription restoration tests | 15 behavioral tests, auth expiry scheduling |
-| Auth Expiry Scheduling | Deribit WS token auto-refresh at 80% TTL | Manually ported to preserved adapter file |
-| Quantex Task 1: Create project | `mix new quantex --sup`, standard deps, CLAUDE.md | Tidewave on 4002, ccxt_client test dep |
-| Quantex Task 2: Move source + tests | 13 source files, 17 test files → quantex | Struct→map decoupling, 355 tests passing |
+| Quantex Task 4: Update ccxt_client docs | Removed trading sections from CLAUDE.md, updated roadmap/backlog | quantex is private — no public references |
+| Quantex Task 5: Prep v0.2.0 | Deleted trading files, bumped to v0.2.0 | Breaking: `CCXT.Trading.*` removed |
+| Quantex Task 1-3 | Created quantex, moved 13 source + 17 test files, renamed namespace | Struct→map decoupling, 355 tests passing |
+| ccxt_ex Sync | Synced upstream fixes + adapter refactor | 3 bugs resolved, response_transformers, auth_required flags |
+| Feature #2: Symbol Precision Metadata | `CCXT.MarketPrecision` module | `from_market/2`, `from_markets/2`, 3 precision modes |
+| Feature #1: WS Reconnection Docs | llms.txt section 12, README WS guide | 15 behavioral tests, auth expiry scheduling |
 
 ### 📋 Current Tasks
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Feature #1: WS Reconnection Docs | ✅ | Complete — llms.txt section 12, README WS guide, 15 behavioral tests |
-| Extract Trading Modules to quantex | 🔄 | Tasks 1-3 complete, Task 4-5 pending — see Extraction section below |
+| `Health.latency/1` | ⬜ | [D:1/B:7 → 7.0] — Finch telemetry wrapper |
+| `Health.ping/1` | ⬜ | [D:2/B:8 → 4.0] — Exchange alive check |
+| Task 125: Order Sanity Checks | ⬜ | [D:4/B:8 → 2.0] — Pre-submit validation |
 
 ### Quick Commands
 
@@ -47,7 +48,7 @@ mix dialyzer.json --quiet                          # Type checking
 
 ## ~~Pending Sync from ccxt_ex~~ ✅ Synced 2026-02-20
 
-All 3 bugs synced and verified. See [BUGS.md](BUGS.md) for details. Also included: adapter structural refactor, response_transformers on ~12 Deribit endpoints, `auth_required` flags on all private WS channel templates, updated symbol format samples.
+All 3 bugs synced and verified. See [BUGS.md](BUGS.md) for details. Also included: adapter structural refactor, response_transformers on ~12 Deribit endpoints, `auth_required` flags on all private WS channel templates, updated symbol format samples, rate limit cost/weight updates across all Tier 1 specs.
 
 ---
 
@@ -79,8 +80,8 @@ Before publishing v0.2.0, extract `CCXT.Trading.*` (13 source files, 17 test fil
 | 1. Create quantex project | ✅ | [D:3/B:9 → 3.0] 🎯 | Standard deps + sobelow, tidewave on 4002, git initialized |
 | 2. Move source + tests | ✅ | [D:2/B:9 → 4.5] 🎯 | 13 source, 17 tests, struct→map decoupling, 355 tests passing |
 | 3. Rename CCXT.Trading → Quantex | ✅ | [D:2/B:7 → 3.5] 🎯 | Decided: `Quantex.*`, plain maps, no ccxt_client dep |
-| 4. Update ccxt_client docs | ⬜ | [D:2/B:7 → 3.5] 🎯 | README, CLAUDE.md, llms.txt, TRADING_BACKLOG.md |
-| 5. Publish v0.2.0 | ⬜ | [D:2/B:8 → 4.0] 🎯 | Clean exchange-access library |
+| 4. Update ccxt_client docs | ✅ | [D:2/B:7 → 3.5] 🎯 | CLAUDE.md, ROADMAP.md, TRADING_BACKLOG.md updated |
+| 5. Prep v0.2.0 | ✅ | [D:2/B:8 → 4.0] 🎯 | Trading files removed, version bumped to 0.2.0 |
 
 ### Task details
 
@@ -90,9 +91,9 @@ Before publishing v0.2.0, extract `CCXT.Trading.*` (13 source files, 17 test fil
 
 **3. Rename CCXT.Trading → Quantex.** ✅ Decided — namespace is `Quantex.*`, inputs are plain maps, no ccxt_client runtime dependency.
 
-**4. Update ccxt_client docs.** Remove Trading Modules section from ccxt_client README, CLAUDE.md, and llms.txt. Update TRADING_BACKLOG.md header to reference quantex as the new home. Add a note in ccxt_client README pointing users to quantex for trading analytics.
+**4. Update ccxt_client docs.** ✅ Removed Trading Modules section from CLAUDE.md. Updated TRADING_BACKLOG.md header to past tense referencing quantex. No README changes needed (no trading refs).
 
-**5. Publish v0.2.0.** After extraction, ccxt_client is a clean exchange-access library. Remove `lib/ccxt/trading/` and `test/ccxt/trading/` directories. Verify `mix test.json --quiet` passes, `mix dialyzer.json --quiet` is clean. Tag v0.2.0.
+**5. Prep v0.2.0.** ✅ Removed `lib/ccxt/trading/` and `test/ccxt/trading/` directories. Bumped version to 0.2.0. Verified clean compile, tests, and dialyzer.
 
 ---
 

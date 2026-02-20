@@ -64,6 +64,8 @@ defmodule CCXT.Exchanges.PublicEndpointsTest do
     default: "BTC/USDT"
   }
 
+  @one_hour_ms 3_600_000
+
   # Public methods to test (from CCXT unified API)
   @public_methods [
     :fetch_ticker,
@@ -204,7 +206,7 @@ defmodule CCXT.Exchanges.PublicEndpointsTest do
         if Code.ensure_loaded?(module) do
           if has_capability?(module, :fetch_trades) do
             symbol = test_symbol(exchange_id)
-            since = test_since_value(exchange_id)
+            since = test_since_value(module, :fetch_trades)
             opts = exchange_specific_opts(exchange_id, :fetch_trades)
 
             result = call_exchange(module, :fetch_trades, [symbol, since, 10, opts])
@@ -280,19 +282,28 @@ defmodule CCXT.Exchanges.PublicEndpointsTest do
     end
   end
 
-  # Test values for required params (e.g., since for _and_time endpoints)
-  # Returns nil for exchanges where the param is optional
-  #
-  # TODO: Derive this from the endpoint's `required_params` field in the spec
-  # instead of hardcoding exchange IDs. The extractor now detects required params
-  # and stores them in the endpoint map. Tests should read from the spec.
-  defp test_since_value(exchange_id) do
-    case exchange_id do
-      # Deribit's fetch_trades uses _and_time endpoint which requires since
-      :deribit -> System.os_time(:millisecond) - 3_600_000
-      # Krakenfutures history endpoint requires since
-      :krakenfutures -> System.os_time(:millisecond) - 3_600_000
-      _ -> nil
+  # Derives test `since` value from the endpoint spec.
+  # Provides since (1 hour ago) when:
+  #   1. "since" is in required_params (definitive), OR
+  #   2. "since" is mapped AND the path indicates time-based filtering
+  #      (e.g., deribit's "_and_time" endpoints)
+  @doc false
+  defp test_since_value(module, endpoint_name) do
+    spec = module.__ccxt_spec__()
+    endpoint = Enum.find(spec.endpoints, &(&1.name == endpoint_name))
+
+    if endpoint do
+      required = Map.get(endpoint, :required_params, [])
+      mappings = Map.get(endpoint, :param_mappings, %{})
+      path = Map.get(endpoint, :path, "")
+
+      needs_since =
+        "since" in required or
+          (Map.has_key?(mappings, "since") and String.contains?(path, "time"))
+
+      if needs_since do
+        System.os_time(:millisecond) - @one_hour_ms
+      end
     end
   end
 
