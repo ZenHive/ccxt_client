@@ -4,7 +4,7 @@
 
 **Parent project:** Extraction and generation happen in [ccxt_ex](../ccxt_ex/ROADMAP.md). Fixes flow downstream via `mix ccxt.sync --output --force`.
 
-**Trading features:** Analytics, orderflow, execution, and other trading features were extracted to **quantex** (`../quantex`). See [TRADING_BACKLOG.md](TRADING_BACKLOG.md) for the full inventory (~77 tasks, ~85 already-built functions).
+**Trading features:** Analytics, orderflow, execution, and other trading features were extracted to **quantex** (`../quantex`). See [quantex/ROADMAP.md](../quantex/ROADMAP.md) for the full inventory (~77 tasks, ~85 already-built functions).
 
 **Completed work:** See [CHANGELOG.md](CHANGELOG.md) for finished tasks.
 
@@ -54,7 +54,7 @@ All 3 bugs synced and verified. See [BUGS.md](BUGS.md) for details. Also include
 
 ## Extraction: Remove Trading Modules → quantex
 
-Before publishing v0.2.0, extract `CCXT.Trading.*` (13 source files, 17 test files, ~85 functions) to **quantex** — a standalone trading analytics library. See [TRADING_BACKLOG.md](TRADING_BACKLOG.md) for the full feature inventory.
+Before publishing v0.2.0, extract `CCXT.Trading.*` (13 source files, 17 test files, ~85 functions) to **quantex** — a standalone trading analytics library. See [quantex/ROADMAP.md](../quantex/ROADMAP.md) for the full feature inventory.
 
 ### Decisions
 
@@ -80,7 +80,7 @@ Before publishing v0.2.0, extract `CCXT.Trading.*` (13 source files, 17 test fil
 | 1. Create quantex project | ✅ | [D:3/B:9 → 3.0] 🎯 | Standard deps + sobelow, tidewave on 4002, git initialized |
 | 2. Move source + tests | ✅ | [D:2/B:9 → 4.5] 🎯 | 13 source, 17 tests, struct→map decoupling, 355 tests passing |
 | 3. Rename CCXT.Trading → Quantex | ✅ | [D:2/B:7 → 3.5] 🎯 | Decided: `Quantex.*`, plain maps, no ccxt_client dep |
-| 4. Update ccxt_client docs | ✅ | [D:2/B:7 → 3.5] 🎯 | CLAUDE.md, ROADMAP.md, TRADING_BACKLOG.md updated |
+| 4. Update ccxt_client docs | ✅ | [D:2/B:7 → 3.5] 🎯 | CLAUDE.md, ROADMAP.md updated |
 | 5. Prep v0.2.0 | ✅ | [D:2/B:8 → 4.0] 🎯 | Trading files removed, version bumped to 0.2.0 |
 
 ### Task details
@@ -91,7 +91,7 @@ Before publishing v0.2.0, extract `CCXT.Trading.*` (13 source files, 17 test fil
 
 **3. Rename CCXT.Trading → Quantex.** ✅ Decided — namespace is `Quantex.*`, inputs are plain maps, no ccxt_client runtime dependency.
 
-**4. Update ccxt_client docs.** ✅ Removed Trading Modules section from CLAUDE.md. Updated TRADING_BACKLOG.md header to past tense referencing quantex. No README changes needed (no trading refs).
+**4. Update ccxt_client docs.** ✅ Removed Trading Modules section from CLAUDE.md. No README changes needed (no trading refs).
 
 **5. Prep v0.2.0.** ✅ Removed `lib/ccxt/trading/` and `test/ccxt/trading/` directories. Bumped version to 0.2.0. Verified clean compile, tests, and dialyzer.
 
@@ -358,4 +358,4 @@ When completing a task:
 
 **Cross-repo coordination:** Tasks requiring generator/spec changes are tracked in [ccxt_ex/ROADMAP.md](../ccxt_ex/ROADMAP.md). Consumer-facing work stays here. When a task spans both repos, use the same task ID/title in both files.
 
-**Trading features:** Analytics, orderflow, execution, and other trading tasks are tracked in [TRADING_BACKLOG.md](TRADING_BACKLOG.md). When quantex extraction is complete, that file moves to `../quantex`.
+**Trading features:** Analytics, orderflow, execution, and other trading tasks are tracked in [quantex/ROADMAP.md](../quantex/ROADMAP.md).
