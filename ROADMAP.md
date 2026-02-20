@@ -29,7 +29,7 @@
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Feature #1: WS Reconnection Docs | 🔄 | Remaining: README reconnection guide only (llms.txt ✅) |
+| Feature #1: WS Reconnection Docs | ✅ | Complete — llms.txt section 12, README WS guide, 15 behavioral tests |
 | Extract Trading Modules | ⬜ | Move `CCXT.Trading.*` to separate project — see Extraction section |
 
 ### Quick Commands
@@ -69,7 +69,7 @@ Consumer-facing documentation and metadata enrichment.
 
 | Task | Status | Score | Notes |
 |------|--------|-------|-------|
-| Feature #1: WS Reconnection Docs | 🔄 | [D:5/B:9 → 1.8] 🚀 | README guide remaining (llms.txt ✅, tests ✅) |
+| Feature #1: WS Reconnection Docs | ✅ | [D:5/B:9 → 1.8] 🚀 | Complete — see CHANGELOG.md |
 | Feature #2: Symbol Precision Metadata | ✅ | [D:4/B:8 → 2.0] 🎯 | `CCXT.MarketPrecision` — see CHANGELOG.md |
 
 ### Feature #1: WS Reconnection Docs
@@ -82,10 +82,11 @@ Success criteria:
 - [x] WS helper/client tests explicitly validate reconnect configuration and restoration behavior
 - [x] Adapter tests cover generated reconnection-related contract surface
 - [x] `llms.txt` has a dedicated reconnection section with client vs adapter decision rules (section 12, line 325)
-- [ ] `README.md` contains a short reconnection guide and points to `llms.txt`
+- [x] `README.md` contains a short reconnection guide and points to `llms.txt`
 - [x] If tests expose generator/spec defects, create a `ccxt_ex` follow-up item with repro details
 
 Progress notes:
+- 2026-02-20: README WebSocket Streaming section added. All 5 success criteria met. Feature complete.
 - 2026-02-19: Auth expiry scheduling manually ported to ccxt_client adapter (preserved file).
 - 2026-02-13: Reconnection tests backported to ccxt_ex and verified via `--output --force` rebuild.
 

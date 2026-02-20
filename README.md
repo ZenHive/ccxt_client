@@ -47,6 +47,51 @@ credentials = CCXT.Credentials.new(api_key: "...", secret: "...")
 {:ok, balance} = CCXT.Binance.fetch_balance(credentials)
 ```
 
+## WebSocket Streaming
+
+Stream real-time market data over WebSocket connections.
+
+### Basic connection (Client)
+
+```elixir
+spec = CCXT.Bybit.__ccxt_spec__()
+{:ok, client} = CCXT.WS.Client.connect(spec, [:public, :spot])
+
+{:ok, sub} = CCXT.Bybit.WS.watch_ticker_subscription("BTC/USDT")
+:ok = CCXT.WS.Client.subscribe(client, sub)
+
+receive do
+  {:websocket_message, data} -> Jason.decode!(data)
+end
+```
+
+### Managed connections (Adapter)
+
+For long-running or authenticated streams, use the adapter — a GenServer that handles
+reconnection, subscription restoration, and auth state automatically:
+
+```elixir
+{:ok, adapter} = CCXT.Bybit.WS.Adapter.start_link(
+  url_path: [:public, :spot],
+  handler: fn msg -> IO.inspect(msg, label: "ws") end
+)
+
+{:ok, sub} = CCXT.Bybit.WS.watch_ticker_subscription("BTC/USDT")
+:ok = CCXT.Bybit.WS.Adapter.subscribe(adapter, sub)
+```
+
+The adapter handles automatically:
+- **Reconnection** with exponential backoff (5s base, 60s cap, 10 max attempts)
+- **Subscription restoration** — all active subscriptions are re-sent after reconnect
+- **Auth re-authentication** — up to 3 retries with exponential backoff
+- **Auth state tracking** — `:unauthenticated` → `:authenticated` → `:expired` (auto re-auth)
+
+The `CCXT.WS.Client` is stateless and does not reconnect or restore subscriptions — use it
+for short-lived connections where you manage lifecycle yourself.
+
+For the full Client vs Adapter decision guide and detailed reconnection behavior,
+see `llms.txt` section 12 (WebSocket Architecture).
+
 ## Configuration
 
 Configure the client via application config (:ccxt_client).
