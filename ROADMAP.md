@@ -24,13 +24,15 @@
 | Feature #2: Symbol Precision Metadata | `CCXT.MarketPrecision` module | `from_market/2`, `from_markets/2`, `tradingview_price_format/1`, 3 precision modes |
 | WS Reconnection Tests | Reconnect config + subscription restoration tests | 15 behavioral tests, auth expiry scheduling |
 | Auth Expiry Scheduling | Deribit WS token auto-refresh at 80% TTL | Manually ported to preserved adapter file |
+| Quantex Task 1: Create project | `mix new quantex --sup`, standard deps, CLAUDE.md | Tidewave on 4002, ccxt_client test dep |
+| Quantex Task 2: Move source + tests | 13 source files, 17 test files → quantex | Struct→map decoupling, 355 tests passing |
 
 ### 📋 Current Tasks
 
 | Task | Status | Notes |
 |------|--------|-------|
 | Feature #1: WS Reconnection Docs | ✅ | Complete — llms.txt section 12, README WS guide, 15 behavioral tests |
-| Extract Trading Modules to quantex | ⬜ | Move `CCXT.Trading.*` to `../quantex` — see Extraction section below |
+| Extract Trading Modules to quantex | 🔄 | Tasks 1-3 complete, Task 4-5 pending — see Extraction section below |
 
 ### Quick Commands
 
@@ -74,8 +76,8 @@ Before publishing v0.2.0, extract `CCXT.Trading.*` (13 source files, 17 test fil
 
 | Task | Status | Score | Notes |
 |------|--------|-------|-------|
-| 1. Create quantex project | ⬜ | [D:3/B:9 → 3.0] 🎯 | `mix new quantex --sup` at `../quantex` |
-| 2. Move source + tests | ⬜ | [D:2/B:9 → 4.5] 🎯 | 13 source files, 17 test files |
+| 1. Create quantex project | ✅ | [D:3/B:9 → 3.0] 🎯 | Standard deps + sobelow, tidewave on 4002, git initialized |
+| 2. Move source + tests | ✅ | [D:2/B:9 → 4.5] 🎯 | 13 source, 17 tests, struct→map decoupling, 355 tests passing |
 | 3. Rename CCXT.Trading → Quantex | ✅ | [D:2/B:7 → 3.5] 🎯 | Decided: `Quantex.*`, plain maps, no ccxt_client dep |
 | 4. Update ccxt_client docs | ⬜ | [D:2/B:7 → 3.5] 🎯 | README, CLAUDE.md, llms.txt, TRADING_BACKLOG.md |
 | 5. Publish v0.2.0 | ⬜ | [D:2/B:8 → 4.0] 🎯 | Clean exchange-access library |
