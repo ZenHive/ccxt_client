@@ -20,6 +20,9 @@
 
 | Task | Description | Notes |
 |------|-------------|-------|
+| v0.2.1: Full exchange sync | 107 exchanges from CCXT v4.5.39 (433 files), 5 new WS methods | Published on hex.pm |
+| Version ref fixes | README.md + llms.txt `~> 0.1` → `~> 0.2` | Caught post-v0.2.0 |
+| Move TRADING_BACKLOG.md | Moved to quantex as ROADMAP.md | ccxt_client no longer tracks trading features |
 | Quantex Task 4: Update ccxt_client docs | Removed trading sections from CLAUDE.md, updated roadmap/backlog | quantex is private — no public references |
 | Quantex Task 5: Prep v0.2.0 | Deleted trading files, bumped to v0.2.0 | Breaking: `CCXT.Trading.*` removed |
 | Quantex Task 1-3 | Created quantex, moved 13 source + 17 test files, renamed namespace | Struct→map decoupling, 355 tests passing |

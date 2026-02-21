@@ -112,6 +112,21 @@ mix ccxt.sync --all --output ../ccxt_client --force      # All exchanges
 
 Do not manually edit generated exchange modules or spec files — changes will be overwritten on next sync.
 
+### Local Dev vs Publishing
+
+**Locally**, only tier1/tier2 exchanges (10) are extracted for faster compilation. **Before publishing** a new version to hex.pm, always re-extract all exchanges:
+
+```bash
+# From ccxt_ex directory — do this BEFORE `mix hex.publish`:
+mix ccxt.sync --all --output ../ccxt_client --force
+```
+
+After publishing, re-extract tier1/tier2 only to restore fast local compilation:
+
+```bash
+mix ccxt.sync --tier1 --output ../ccxt_client --force
+```
+
 ## Rebuild Safety
 
 The `--output --force` sync from ccxt_ex regenerates exchange modules and spec files:

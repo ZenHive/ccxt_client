@@ -1229,9 +1229,9 @@
   name: "BitMEX",
   ohlcv_timestamp_resolution: :unknown,
   options: %{
-    "api-expires": 5,
-    fetch_o_h_l_c_v_open_timestamp: true,
-    networks: %{
+    "api-expires" => 5,
+    :fetch_o_h_l_c_v_open_timestamp => true,
+    :networks => %{
       "ADA" => "ada",
       "AVAXC" => "avax",
       "BEP20" => "bsc",
@@ -1243,7 +1243,7 @@
       "TRC20" => "tron",
       "XTZ" => "xtz"
     },
-    old_precision: false
+    :old_precision => false
   },
   order_mappings: %{
     side_format: :capitalize,

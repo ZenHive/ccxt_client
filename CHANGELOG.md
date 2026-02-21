@@ -4,6 +4,20 @@ Completed roadmap tasks. For upcoming work, see [ROADMAP.md](ROADMAP.md).
 
 ---
 
+## v0.2.1 — Full Exchange Sync (2026-02-21)
+
+**107 exchanges** now bundled (up from 10 tier1/tier2). Synced from CCXT v4.5.39.
+
+- Full exchange sync: 97 new exchange modules, specs, and test files (433 files total)
+- New WS methods: `watch_position_for_symbols`, `watch_private_multiple`, `watch_public`, `watch_multiple`, `watch_public_multiple`
+- Updated extractor data: symbol formats, emulated methods, error codes, parse methods
+- Fixed version references in README.md and llms.txt (`~> 0.1` → `~> 0.2`)
+- Moved `TRADING_BACKLOG.md` to quantex as `ROADMAP.md`
+
+**Verified:** 6650 tests, 3852 passed, 0 code failures (all failures credential-related)
+
+---
+
 ## v0.2.0 — Trading Modules Removed (Breaking)
 
 **Breaking:** `CCXT.Trading.*` modules (Funding, Greeks, Risk, Basis, Sizing,
