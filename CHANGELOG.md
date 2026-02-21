@@ -4,6 +4,22 @@ Completed roadmap tasks. For upcoming work, see [ROADMAP.md](ROADMAP.md).
 
 ---
 
+## Task 224: Normalization — boolean_derivation, safe_fn, info injection (2026-02-21)
+
+**What was done:**
+- **MappingCompiler: `boolean_derivation` category** — Compiles P1 `boolean_derivation` entries to `{:bool_enum, true_value, false_value}` tagged tuple coercion (34 occurrences across exchanges, e.g., Binance `side` from `"m"` boolean)
+- **MappingCompiler: `safe_fn` override** — `resolved_safe_accessor` entries with `safe_fn` field now override schema-derived coercion (e.g., Bybit `side` → `:string_lower`, `timestamp` → `:integer`)
+- **ResponseParser: `{:bool_enum, tv, fv}` coercion** — New `apply_coercion/3` clause with dedicated `find_boolean/2` that correctly handles `false` as a found value (unlike `Safe.value` which treats `false` as falsy)
+- **ResponseCoercer: info injection** — `coerce_single/3` injects `"info" => data` before parsing so `from_map`'s `:raw`/`:info` field gets populated. Doesn't overwrite existing `"info"` or `:info` keys
+- **Helpers: capitalized side normalization** — Added `"Buy"`, `"Sell"`, `"Long"`, `"Short"` clauses to `normalize_side/1`
+- **Typespecs** — Widened instruction type across 7 locations to accept tagged tuple coercion
+
+**ccxt_ex:** Linked to Tasks 221-223 (P1 analysis improvements)
+
+**Verified:** 2645 tests, 0 failures (398 excluded)
+
+---
+
 ## v0.2.1 — Full Exchange Sync (2026-02-21)
 
 **107 exchanges** now bundled (up from 10 tier1/tier2). Synced from CCXT v4.5.39.

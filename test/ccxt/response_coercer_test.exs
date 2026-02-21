@@ -5,6 +5,7 @@ defmodule CCXT.ResponseCoercerTest do
   use ExUnit.Case, async: true
 
   alias CCXT.ResponseCoercer
+  alias CCXT.ResponseParser.MappingCompiler
   alias CCXT.Types.Account
   alias CCXT.Types.Balance
   alias CCXT.Types.BorrowInterest
@@ -1222,6 +1223,117 @@ defmodule CCXT.ResponseCoercerTest do
       assert is_list(result)
       assert [%{"symbol" => "BTC/USDT"}] = result
       refute match?([%MarketInterface{}], result)
+    end
+  end
+
+  describe "info injection" do
+    test "normalized trade has raw field populated" do
+      data = %{
+        "id" => "trade123",
+        "symbol" => "BTC/USDT",
+        "side" => "buy",
+        "price" => 50_000.0,
+        "amount" => 0.1
+      }
+
+      result = ResponseCoercer.coerce(data, :trade, [])
+
+      assert %Trade{} = result
+      assert is_map(result.raw)
+      assert result.raw["price"] == 50_000.0
+    end
+
+    test "info injection does not overwrite existing string info key" do
+      data = %{
+        "id" => "trade123",
+        "symbol" => "BTC/USDT",
+        "info" => %{"custom" => "data"}
+      }
+
+      result = ResponseCoercer.coerce(data, :trade, [])
+
+      assert %Trade{} = result
+      assert result.raw == %{"custom" => "data"}
+    end
+
+    test "info injection does not overwrite existing atom info key" do
+      data = %{
+        "id" => "trade123",
+        "symbol" => "BTC/USDT",
+        info: %{"atom_info" => true}
+      }
+
+      result = ResponseCoercer.coerce(data, :trade, [])
+
+      assert %Trade{} = result
+      assert result.raw == %{"atom_info" => true}
+    end
+  end
+
+  describe "fixture-based regressions" do
+    @analysis MappingCompiler.load_analysis()
+
+    test "Binance trade: boolean side + raw injection" do
+      binance_mapping =
+        MappingCompiler.compile_mapping("binance", "parseTrade", @analysis)
+
+      raw = %{
+        "p" => "67000.50",
+        "q" => "0.001",
+        "m" => true,
+        "T" => 1_704_067_200_000,
+        "t" => 12_345
+      }
+
+      result = ResponseCoercer.coerce(raw, :trade, [], binance_mapping)
+
+      assert %Trade{} = result
+      assert result.side == :sell
+      assert is_map(result.raw)
+      assert result.raw["p"] == "67000.50"
+    end
+
+    test "Binance trade: false boolean produces buy side" do
+      binance_mapping =
+        MappingCompiler.compile_mapping("binance", "parseTrade", @analysis)
+
+      raw = %{"p" => "67000.50", "q" => "0.001", "m" => false, "T" => 1_704_067_200_000}
+
+      result = ResponseCoercer.coerce(raw, :trade, [], binance_mapping)
+
+      assert %Trade{} = result
+      assert result.side == :buy
+    end
+
+    test "Bybit trade: string_lower side + resolved timestamp" do
+      bybit_mapping =
+        MappingCompiler.compile_mapping("bybit", "parseTrade", @analysis)
+
+      raw = %{
+        "side" => "Sell",
+        "price" => "67717.9",
+        "size" => "0.00129",
+        "time" => "1704067200000"
+      }
+
+      result = ResponseCoercer.coerce(raw, :trade, [], bybit_mapping)
+
+      assert %Trade{} = result
+      assert result.side == :sell
+      assert is_map(result.raw)
+      assert result.raw["side"] == "Sell"
+    end
+
+    test "Bybit trade: timestamp coerced to integer" do
+      bybit_mapping =
+        MappingCompiler.compile_mapping("bybit", "parseTrade", @analysis)
+
+      raw = %{"side" => "Buy", "price" => "67717.9", "time" => "1704067200000"}
+
+      result = ResponseCoercer.coerce(raw, :trade, [], bybit_mapping)
+
+      assert %Trade{} = result
+      assert result.timestamp == 1_704_067_200_000
     end
   end
 

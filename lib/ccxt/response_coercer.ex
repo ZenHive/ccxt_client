@@ -226,7 +226,7 @@ defmodule CCXT.ResponseCoercer do
       %{"symbol" => "BTC/USDT", "last" => 50000.0}
 
   """
-  @spec coerce(term(), response_type(), keyword(), [{atom(), atom(), [String.t()]}] | nil) :: term()
+  @spec coerce(term(), response_type(), keyword(), [CCXT.ResponseParser.instruction()] | nil) :: term()
   def coerce(data, type, opts, parser_mapping \\ nil)
 
   def coerce(data, nil, _opts, _parser_mapping), do: data
@@ -241,7 +241,7 @@ defmodule CCXT.ResponseCoercer do
 
   # Internal typed coercion after raw check
   @doc false
-  @spec coerce_typed(term(), response_type(), [{atom(), atom(), [String.t()]}] | nil) :: term()
+  @spec coerce_typed(term(), response_type(), [CCXT.ResponseParser.instruction()] | nil) :: term()
   defp coerce_typed(data, type, parser_mapping) when type in @list_types and is_list(data) do
     singular = singularize(type)
     Enum.map(data, &coerce_single(&1, singular, parser_mapping))
@@ -308,21 +308,34 @@ defmodule CCXT.ResponseCoercer do
 
   @doc false
   # Coerces a single map to its corresponding struct.
-  # First applies ResponseParser to convert exchange-specific keys to unified keys,
+  # First injects "info" key (raw data) so from_map/1 can populate the raw field,
+  # then applies ResponseParser to convert exchange-specific keys to unified keys,
   # then calls from_map/1 on the type module.
-  @spec coerce_single(map(), atom(), [{atom(), atom(), [String.t()]}] | nil) :: struct() | map()
+  @spec coerce_single(map(), atom(), [CCXT.ResponseParser.instruction()] | nil) :: struct() | map()
   defp coerce_single(data, type, parser_mapping) when is_map(data) do
     case Map.get(@type_modules, type) do
       nil ->
         data
 
       module when not is_nil(module) ->
-        parsed = CCXT.ResponseParser.parse_single(data, parser_mapping)
+        enriched = maybe_inject_info(data)
+        parsed = CCXT.ResponseParser.parse_single(enriched, parser_mapping)
         module.from_map(parsed)
     end
   end
 
   defp coerce_single(data, _type, _parser_mapping), do: data
+
+  @doc false
+  # Injects "info" => data so from_map's get_camel_value(map, :raw, :info) finds original data.
+  # Skips if "info" or :info already exists to avoid overwriting explicit info fields.
+  defp maybe_inject_info(data) do
+    if Map.has_key?(data, "info") or Map.has_key?(data, :info) do
+      data
+    else
+      Map.put(data, "info", data)
+    end
+  end
 
   # Maps plural response types to their singular form for struct/parser lookup.
   @singularizations %{

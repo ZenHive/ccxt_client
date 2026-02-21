@@ -154,4 +154,47 @@ defmodule CCXT.ResponseParserTest do
       refute Map.has_key?(result, "foo_unified")
     end
   end
+
+  describe "bool_enum coercion" do
+    test "maps true to true_value" do
+      data = %{"m" => true}
+      instructions = [{:side, {:bool_enum, "sell", "buy"}, ["m"]}]
+      result = ResponseParser.parse_single(data, instructions)
+
+      assert result["side"] == "sell"
+    end
+
+    test "maps false to false_value" do
+      data = %{"m" => false}
+      instructions = [{:side, {:bool_enum, "sell", "buy"}, ["m"]}]
+      result = ResponseParser.parse_single(data, instructions)
+
+      assert result["side"] == "buy"
+    end
+
+    test "returns nil when source key is missing" do
+      data = %{"other" => "value"}
+      instructions = [{:side, {:bool_enum, "sell", "buy"}, ["m"]}]
+      result = ResponseParser.parse_single(data, instructions)
+
+      refute Map.has_key?(result, "side")
+    end
+
+    test "returns nil for non-boolean values" do
+      data = %{"m" => "true"}
+      instructions = [{:side, {:bool_enum, "sell", "buy"}, ["m"]}]
+      result = ResponseParser.parse_single(data, instructions)
+
+      # String "true" is not boolean true — should not match
+      refute Map.has_key?(result, "side")
+    end
+
+    test "tries multi-key fallback" do
+      data = %{"isBuyerMaker" => true}
+      instructions = [{:side, {:bool_enum, "sell", "buy"}, ["m", "isBuyerMaker"]}]
+      result = ResponseParser.parse_single(data, instructions)
+
+      assert result["side"] == "sell"
+    end
+  end
 end

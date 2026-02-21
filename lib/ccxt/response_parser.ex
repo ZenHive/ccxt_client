@@ -29,7 +29,8 @@ defmodule CCXT.ResponseParser do
 
   alias CCXT.Safe
 
-  @type instruction :: {atom(), atom(), [String.t()]}
+  @type coercion :: atom() | {:bool_enum, String.t(), String.t()}
+  @type instruction :: {atom(), coercion(), [String.t()]}
 
   # Schema modules whose fields need snake_case -> camelCase key mapping
   @parser_schemas [
@@ -116,7 +117,7 @@ defmodule CCXT.ResponseParser do
 
   # Applies the coercion function from CCXT.Safe based on the coercion atom.
   @doc false
-  @spec apply_coercion(map(), atom(), [String.t()] | String.t()) :: any()
+  @spec apply_coercion(map(), coercion(), [String.t()] | String.t()) :: any()
   defp apply_coercion(data, :number, keys), do: Safe.number(data, keys)
   defp apply_coercion(data, :integer, keys), do: Safe.integer(data, keys)
   defp apply_coercion(data, :string, keys), do: Safe.string(data, keys)
@@ -124,7 +125,29 @@ defmodule CCXT.ResponseParser do
   defp apply_coercion(data, :bool, keys), do: Safe.bool(data, keys)
   defp apply_coercion(data, :timestamp, keys), do: Safe.timestamp(data, keys)
   defp apply_coercion(data, :value, keys), do: Safe.value(data, keys)
+
+  defp apply_coercion(data, {:bool_enum, true_value, false_value}, keys) do
+    case find_boolean(data, keys) do
+      true -> true_value
+      false -> false_value
+      _ -> nil
+    end
+  end
+
   defp apply_coercion(_data, _coercion, _keys), do: nil
+
+  @doc false
+  # Finds a boolean value trying keys in order. Unlike Safe.prop with lists,
+  # this correctly handles `false` as a found value (not falsy/missing).
+  @spec find_boolean(map(), [String.t()]) :: boolean() | nil
+  defp find_boolean(_data, []), do: nil
+
+  defp find_boolean(data, [key | rest]) do
+    case Map.get(data, key) do
+      val when is_boolean(val) -> val
+      _ -> find_boolean(data, rest)
+    end
+  end
 
   @doc false
   # Converts a struct field atom to the string key that from_map/1 expects.

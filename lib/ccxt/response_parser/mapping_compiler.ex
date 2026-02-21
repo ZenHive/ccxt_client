@@ -61,11 +61,17 @@ defmodule CCXT.ResponseParser.MappingCompiler do
     "parseLastPrice" => {CCXT.Types.Schema.LastPrice, :last_price},
     "parseLongShortRatio" => {CCXT.Types.Schema.LongShortRatio, :long_short_ratio},
     "parseLeverageTiers" => {CCXT.Types.Schema.LeverageTier, :leverage_tier},
-    "parseBalance" => {CCXT.Types.Schema.Balances, :balance}
+    "parseBalance" => {CCXT.Types.Schema.Balances, :balance},
+    "parseOrderBook" => {CCXT.Types.Schema.OrderBook, :order_book}
   }
 
   # Categories that produce instructions (the field maps to raw exchange data)
-  @generatable_categories MapSet.new(["safe_accessor", "resolved_safe_accessor", "variable_ref"])
+  @generatable_categories MapSet.new([
+                            "safe_accessor",
+                            "resolved_safe_accessor",
+                            "variable_ref",
+                            "boolean_derivation"
+                          ])
 
   @doc """
   Compiles a mapping for a specific exchange and parse method.
@@ -86,7 +92,8 @@ defmodule CCXT.ResponseParser.MappingCompiler do
       {:ask, :number, ["askPrice"]}
 
   """
-  @spec compile_mapping(String.t(), String.t(), map()) :: [{atom(), atom(), [String.t()]}] | nil
+  @spec compile_mapping(String.t(), String.t(), map()) ::
+          [{atom(), atom() | {:bool_enum, String.t(), String.t()}, [String.t()]}] | nil
   def compile_mapping(exchange_id, parse_method, analysis) do
     with {:ok, {schema_module, _type_atom}} <- Map.fetch(@method_schemas, parse_method),
          exchange_fields when is_map(exchange_fields) <-
@@ -163,13 +170,18 @@ defmodule CCXT.ResponseParser.MappingCompiler do
   # Returns nil for categories we can't generate (computed, iso8601, etc.)
   @doc false
   @spec compile_field(String.t(), map(), %{String.t() => atom()}) ::
-          {atom(), atom(), [String.t()]} | nil
+          {atom(), atom() | {:bool_enum, String.t(), String.t()}, [String.t()]} | nil
+  defp compile_field(unified_key, %{"category" => "boolean_derivation"} = mapping, field_type_map) do
+    compile_boolean_derivation(unified_key, mapping, field_type_map)
+  end
+
   defp compile_field(unified_key, %{"category" => category} = mapping, field_type_map) do
     if MapSet.member?(@generatable_categories, category) do
       with coercion when not is_nil(coercion) <- Map.get(field_type_map, unified_key),
            field_atom when is_atom(field_atom) <- unified_key_to_field_atom(unified_key),
            source_keys when source_keys != [] <- extract_source_keys(category, mapping) do
-        {field_atom, coercion, source_keys}
+        final_coercion = safe_fn_coercion_override(mapping["safe_fn"], coercion)
+        {field_atom, final_coercion, source_keys}
       else
         _ -> nil
       end
@@ -177,6 +189,35 @@ defmodule CCXT.ResponseParser.MappingCompiler do
   end
 
   defp compile_field(_unified_key, _mapping, _field_type_map), do: nil
+
+  @doc false
+  # Compiles a boolean_derivation field: maps true/false boolean to enum values.
+  # Skips if source_keys is empty (unresolvable for some exchanges).
+  defp compile_boolean_derivation(unified_key, mapping, _field_type_map) do
+    source_keys = Map.get(mapping, "source_keys", [])
+    true_value = Map.get(mapping, "true_value")
+    false_value = Map.get(mapping, "false_value")
+
+    if source_keys != [] and not is_nil(true_value) and not is_nil(false_value) do
+      case unified_key_to_field_atom(unified_key) do
+        field_atom when is_atom(field_atom) ->
+          {field_atom, {:bool_enum, true_value, false_value}, source_keys}
+
+        _ ->
+          nil
+      end
+    end
+  end
+
+  @doc false
+  # Overrides schema-derived coercion using the safe_fn from P1 analysis.
+  # E.g., safeStringLower → :string_lower, safeIntegerN → :integer
+  defp safe_fn_coercion_override(nil, schema_coercion), do: schema_coercion
+  defp safe_fn_coercion_override("safeStringLower" <> _, _schema), do: :string_lower
+  defp safe_fn_coercion_override("safeStringUpper" <> _, _schema), do: :string_upper
+  defp safe_fn_coercion_override("safeInteger" <> _, _schema), do: :integer
+  defp safe_fn_coercion_override("safeTimestamp" <> _, _schema), do: :timestamp
+  defp safe_fn_coercion_override(_safe_fn, schema_coercion), do: schema_coercion
 
   # Extracts source keys from the mapping based on category
   @doc false

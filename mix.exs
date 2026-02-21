@@ -111,7 +111,7 @@ defmodule CcxtClient.MixProject do
   defp aliases do
     [
       tidewave: [
-        "run --no-halt -e 'Agent.start(fn -> Bandit.start_link(plug: Tidewave, port: 4001) end)'"
+        "run --no-halt -e 'Agent.start(fn -> Bandit.start_link(plug: Tidewave, port: 4003) end)'"
       ]
     ]
   end

@@ -20,6 +20,7 @@
 
 | Task | Description | Notes |
 |------|-------------|-------|
+| Task 224: Normalization | `boolean_derivation` + `safe_fn` override + info injection + capitalized sides | Linked to ccxt_ex Tasks 221-223 |
 | v0.2.1: Full exchange sync | 107 exchanges from CCXT v4.5.39 (433 files), 5 new WS methods | Published on hex.pm |
 | Version ref fixes | README.md + llms.txt `~> 0.1` → `~> 0.2` | Caught post-v0.2.0 |
 | Move TRADING_BACKLOG.md | Moved to quantex as ROADMAP.md | ccxt_client no longer tracks trading features |

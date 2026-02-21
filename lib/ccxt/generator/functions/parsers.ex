@@ -81,7 +81,8 @@ defmodule CCXT.Generator.Functions.Parsers do
     {"parseLastPrice", :ccxt_parser_last_price, :last_price},
     {"parseLongShortRatio", :ccxt_parser_long_short_ratio, :long_short_ratio},
     {"parseLeverageTiers", :ccxt_parser_leverage_tier, :leverage_tier},
-    {"parseBalance", :ccxt_parser_balance, :balance}
+    {"parseBalance", :ccxt_parser_balance, :balance},
+    {"parseOrderBook", :ccxt_parser_order_book, :order_book}
   ]
 
   @doc """
@@ -124,7 +125,7 @@ defmodule CCXT.Generator.Functions.Parsers do
     introspection_ast =
       quote do
         @doc "Returns available response parser mappings for this exchange"
-        @spec __ccxt_parsers__() :: %{atom() => [{atom(), atom(), [String.t()]}]}
+        @spec __ccxt_parsers__() :: %{atom() => [CCXT.ResponseParser.instruction()]}
         def __ccxt_parsers__, do: unquote(escaped_parsers)
       end
 

@@ -12,10 +12,10 @@ defmodule CCXT.ResponseParser.MappingCompilerTest do
       assert is_list(instructions)
       assert instructions != []
 
-      # Each instruction is a 3-tuple
+      # Each instruction is a 3-tuple with atom or tagged tuple coercion
       Enum.each(instructions, fn {field, coercion, source_keys} ->
         assert is_atom(field)
-        assert is_atom(coercion)
+        assert is_atom(coercion) or match?({:bool_enum, _, _}, coercion)
         assert is_list(source_keys)
         assert Enum.all?(source_keys, &is_binary/1)
       end)
@@ -105,6 +105,70 @@ defmodule CCXT.ResponseParser.MappingCompilerTest do
       # Bybit maps realized_pnl in parsePosition
       realized_pnl = Enum.find(instructions, fn {field, _, _} -> field == :realized_pnl end)
       assert realized_pnl
+    end
+
+    test "compiles parseOrderBook mappings for exchanges with custom keys" do
+      instructions = MappingCompiler.compile_mapping("bybit", "parseOrderBook", @analysis)
+
+      assert is_list(instructions)
+      assert instructions != []
+      assert {:bids, :value, ["b"]} in instructions
+      assert {:asks, :value, ["a"]} in instructions
+    end
+
+    test "compiles boolean_derivation to tagged tuple for Binance trade.side" do
+      instructions = MappingCompiler.compile_mapping("binance", "parseTrade", @analysis)
+
+      side = Enum.find(instructions, fn {field, _, _} -> field == :side end)
+      assert side
+      assert {:side, {:bool_enum, "sell", "buy"}, ["m", "isBuyerMaker"]} = side
+    end
+
+    test "boolean_derivation with empty source_keys is skipped" do
+      custom_analysis = %{
+        "methods" => %{
+          "parseTrade" => %{
+            "exchange_mappings" => %{
+              "test_exchange" => %{
+                "side" => %{
+                  "category" => "boolean_derivation",
+                  "source_keys" => [],
+                  "true_value" => "sell",
+                  "false_value" => "buy"
+                },
+                "price" => %{"category" => "safe_accessor", "fields" => ["p"]}
+              }
+            }
+          }
+        }
+      }
+
+      instructions = MappingCompiler.compile_mapping("test_exchange", "parseTrade", custom_analysis)
+
+      # side should be skipped (empty source_keys), price should compile
+      side = Enum.find(instructions, fn {field, _, _} -> field == :side end)
+      assert side == nil
+
+      price = Enum.find(instructions, fn {field, _, _} -> field == :price end)
+      assert price
+    end
+
+    test "safe_fn overrides coercion for Bybit trade.side to string_lower" do
+      instructions = MappingCompiler.compile_mapping("bybit", "parseTrade", @analysis)
+
+      side = Enum.find(instructions, fn {field, _, _} -> field == :side end)
+      assert side
+      {_, coercion, _} = side
+      assert coercion == :string_lower
+    end
+
+    test "safe_fn overrides coercion for Bybit trade.timestamp to integer" do
+      instructions = MappingCompiler.compile_mapping("bybit", "parseTrade", @analysis)
+
+      timestamp = Enum.find(instructions, fn {field, _, _} -> field == :timestamp end)
+      assert timestamp
+      {_, coercion, _} = timestamp
+      assert coercion == :integer
     end
 
     test "skips unknown unified keys instead of creating new atoms" do

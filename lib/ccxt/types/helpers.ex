@@ -52,6 +52,10 @@ defmodule CCXT.Types.Helpers do
   def normalize_side("sell"), do: :sell
   def normalize_side("long"), do: :long
   def normalize_side("short"), do: :short
+  def normalize_side("Buy"), do: :buy
+  def normalize_side("Sell"), do: :sell
+  def normalize_side("Long"), do: :long
+  def normalize_side("Short"), do: :short
   def normalize_side(_other), do: nil
 
   @doc """

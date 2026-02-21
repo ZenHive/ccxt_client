@@ -11,37 +11,15 @@ Use this file for requested enhancements only.
 
 ## Open Requests
 
-### 1) WebSocket Reconnection Hardening and Documentation
+### ~~1) WebSocket Reconnection Hardening and Documentation~~ ✅ Complete
 
-Status: In Progress (auth expiry scheduling ported 2026-02-19)
-Score: [D:5/B:9 -> Priority:1.8] (High ROI)  
+Status: ✅ Complete (2026-02-20) — See [CHANGELOG.md](CHANGELOG.md)
+Score: [D:5/B:9 -> Priority:1.8] (High ROI)
 Area: WebSocket (`CCXT.WS.Client`, `CCXT.<Exchange>.WS.Adapter`, docs)
 
-Prompt:
-Document and harden WebSocket reconnection behavior for both public and authenticated flows. Clarify when to use `CCXT.WS.Client` vs adapter processes, and verify reconnect-related contracts with deterministic tests.
+All success criteria met. llms.txt section 12, README WS guide, 15 behavioral tests, auth expiry scheduling.
 
-Success criteria:
-- [ ] `llms.txt` has a dedicated reconnection section with client vs adapter decision rules.
-- [ ] `README.md` contains a short reconnection guide and points to `llms.txt`.
-- [x] WS helper/client tests explicitly validate reconnect configuration and restoration behavior.
-- [x] Adapter tests cover generated reconnection-related contract surface.
-- [ ] If tests expose generator/spec defects, create a `ccxt_ex` follow-up item with repro details.
-
-Progress notes:
-- 2026-02-19: Auth expiry scheduling manually ported to ccxt_client adapter (preserved file).
-  `mark_auth_success/3`, `re_auth_success/3`, `schedule_auth_expiry/2` wired with `CCXT.WS.Auth.Expiry`.
-  Fixes Deribit WS auth token expiry — tokens now auto-refresh at 80% TTL.
-- 2026-02-13: Reconnection tests backported to ccxt_ex and verified via `--output --force` rebuild.
-  Tests cover: `restore_subscriptions` config, `reconnect_on_error` flags, mixed channel types,
-  adapter AST reconnection handlers (`@reconnect_delay_ms`, `schedule_reconnect`, `handle_info(:reconnect, ...)`).
-
-ccxt_ex escalation trigger:
-- If reconnect behavior fails due generated spec/template mismatch, create a follow-up task in `ccxt_ex` with:
-  - failing test name
-  - expected vs actual behavior
-  - suspected generator/spec area
-
-**ccxt_ex:** Tracked as Task 171 (WS Auth State Tracking + Reconnection Docs) [D:5/B:8 -> 1.6]
+**ccxt_ex:** Tracked as Task 171 (WS Auth State Tracking + Reconnection Docs)
 
 ### 2) Normalized Symbol Precision/Tick Metadata for Streaming Consumers
 
