@@ -22,15 +22,30 @@ defmodule CCXT.Types.OrderBook do
 
   use CCXT.Types.Schema.OrderBook
 
+  alias CCXT.Safe
+
   @spec from_map(map()) :: t()
   def from_map(map) when is_map(map) do
     book = super(map)
-    bids = book.bids || []
-    asks = book.asks || []
-    raw = book.raw || map
+    bids = coerce_levels(book.bids)
+    asks = coerce_levels(book.asks)
+    raw = book.raw || Map.get(map, "info") || Map.get(map, :info) || map
 
     %{book | bids: bids, asks: asks, raw: raw}
   end
+
+  @doc false
+  # Converts string price/amount values to numbers in bid/ask level pairs.
+  defp coerce_levels(nil), do: []
+
+  defp coerce_levels(levels) when is_list(levels) do
+    Enum.map(levels, fn
+      [price, amount] -> [Safe.to_number(price), Safe.to_number(amount)]
+      other -> other
+    end)
+  end
+
+  defp coerce_levels(_), do: []
 
   @spec best_bid(t()) :: number() | nil
   def best_bid(%__MODULE__{bids: [[price | _] | _]}), do: price

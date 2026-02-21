@@ -302,7 +302,7 @@ defmodule CCXT.WS.NormalizerTest do
   # -- OrderBook preservation + contract compliance --------------------------
 
   describe "normalize/3 :watch_order_book preservation" do
-    test "bids/asks arrays preserved through normalization" do
+    test "bids/asks arrays coerced to floats through normalization" do
       payload = %{
         "symbol" => "BTC/USDT",
         "bids" => [["42000", "1.5"], ["41999", "2.0"]],
@@ -313,8 +313,8 @@ defmodule CCXT.WS.NormalizerTest do
       assert {:ok, %OrderBook{} = book} =
                Normalizer.normalize(:watch_order_book, payload, FakeExchange)
 
-      assert book.bids == payload["bids"]
-      assert book.asks == payload["asks"]
+      assert book.bids == [[42_000.0, 1.5], [41_999.0, 2.0]]
+      assert book.asks == [[42_001.0, 0.5], [42_002.0, 1.0]]
     end
 
     test "empty bids/asks (delta update) normalizes without error" do

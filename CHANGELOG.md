@@ -4,6 +4,27 @@ Completed roadmap tasks. For upcoming work, see [ROADMAP.md](ROADMAP.md).
 
 ---
 
+## Fix: OrderBook levels return strings instead of floats (2026-02-21)
+
+**What was done:**
+- **Level coercion** — `OrderBook.from_map/1` now coerces string bid/ask level values to floats via `Safe.to_number/1`. Previously, `fetch_order_book(normalize: true)` returned `[["67795.8", "1.636265"]]` instead of `[[67795.8, 1.636265]]`. Root cause: MappingCompiler's `type_to_coercion/1` fell through to `:value` (passthrough) for `[[number() | nil]]` schema type.
+- **Raw field fix** — `book.raw` now uses precedence chain `raw || info || map` instead of always falling back to the enriched parsed map. Preserves original exchange payload.
+- **Test update** — WS normalizer test updated to assert coerced floats instead of raw strings.
+
+**Related to:** Task 225 (Normalization QA Sweep) — proactive fix before sweep
+
+---
+
+## Pipeline default for deps + maybe_coerce warning (2026-02-21)
+
+**What was done:**
+- **Pipeline default hardcoded** — `CCXT.Pipeline` module provides single source of truth for default pipeline config. Both REST (`CCXT.Generator`) and WS (`CCXT.WS.Generator`) generators use `CCXT.Pipeline.default()` as fallback instead of `[]`. Fixes normalization not working when ccxt_client is compiled as a path dependency (dep config files not loaded by parent app).
+- **maybe_coerce warning** — `maybe_coerce/5` nil-coercer path now logs actionable warning with `response_type` when `normalize: true` (the default) is active but no coercer is configured.
+
+**Verified:** 2649 tests, 0 failures (398 excluded)
+
+---
+
 ## Task 224: Normalization — boolean_derivation, safe_fn, info injection (2026-02-21)
 
 **What was done:**
