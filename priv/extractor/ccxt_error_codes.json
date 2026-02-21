@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "ccxt_version": "4.5.38",
-  "generated_at": "2026-02-18T10:29:32.870Z",
+  "ccxt_version": "4.5.39",
+  "generated_at": "2026-02-21T01:10:59.163Z",
   "exchange_count": 110,
   "entry_count": 6137,
   "error_codes": {

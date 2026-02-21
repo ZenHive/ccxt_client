@@ -5043,14 +5043,14 @@
   symbol_format: nil,
   symbol_formats: %{
     future: %{
-      base: "XRP",
-      base_id: "XRP",
+      base: "ORDI",
+      base_id: "ORDI",
       case: :upper,
       contract: true,
-      contract_size: 10,
-      expiry: 1772179200000,
-      expiry_datetime: "2026-02-27T08:00:00.000Z",
-      id: "XRP_USDT_20260227",
+      contract_size: 0.1,
+      expiry: 1772784000000,
+      expiry_datetime: "2026-03-06T08:00:00.000Z",
+      id: "ORDI_USDT_20260306",
       inverse: false,
       limits: %{
         "amount" => %{
@@ -5059,26 +5059,26 @@
         },
         "cost" => %{},
         "leverage" => %{
-          "max" => 50,
+          "max" => 20,
           "min" => 1
         },
         "price" => %{
-          "max" => 2.1186,
-          "min" => 0.7062
+          "max" => 3.9435,
+          "min" => 1.3145
         }
       },
       linear: true,
       maker: 0.0002,
       precision: %{
         "amount" => 1,
-        "price" => 0.0001
+        "price" => 0.001
       },
       quote: "USDT",
       quote_id: "USDT",
       separator: "_",
       settle: "USDT",
       settle_id: "usdt",
-      symbol: "XRP/USDT:USDT-260227",
+      symbol: "ORDI/USDT:USDT-260306",
       taker: 0.0005
     },
     option: %{
@@ -5087,9 +5087,9 @@
       case: :upper,
       contract: true,
       contract_size: 1,
-      expiry: 1771660800000,
-      expiry_datetime: "2026-02-21T08:00:00.000Z",
-      id: "BTC_USDT-20260221-75000-P",
+      expiry: 1771833600000,
+      expiry_datetime: "2026-02-23T08:00:00.000Z",
+      id: "BTC_USDT-20260223-73000-P",
       inverse: false,
       limits: %{
         "amount" => %{
@@ -5099,8 +5099,8 @@
         "cost" => %{},
         "leverage" => %{},
         "price" => %{
-          "max" => 9418.96,
-          "min" => 6961.84
+          "max" => 5914.45,
+          "min" => 4371.55
         }
       },
       linear: true,
@@ -5114,7 +5114,7 @@
       separator: "-",
       settle: "USDT",
       settle_id: "USDT",
-      symbol: "BTC/USDT:USDT-260221-75000-P",
+      symbol: "BTC/USDT:USDT-260223-73000-P",
       taker: 0.0003
     },
     precision_mode: 4,
@@ -5180,8 +5180,8 @@
           "min" => 1
         },
         "price" => %{
-          "max" => 159.9462,
-          "min" => 153.6738
+          "max" => 157.9776,
+          "min" => 151.7824
         }
       },
       linear: true,

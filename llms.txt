@@ -13,7 +13,7 @@ Important current behavior:
 # mix.exs
 defp deps do
   [
-    {:ccxt_client, "~> 0.2"}
+    {:ccxt_client, "~> 0.1"}
   ]
 end
 ```

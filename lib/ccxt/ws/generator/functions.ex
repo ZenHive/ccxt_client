@@ -49,6 +49,7 @@ defmodule CCXT.WS.Generator.Functions do
     watch_balance watch_orders watch_my_trades watch_positions
     watch_orders_for_symbols watch_my_trades_for_symbols
     watch_my_liquidations watch_my_liquidations_for_symbols
+    watch_position_for_symbols watch_private_multiple
   )a
 
   # Parameter specifications for each watch method
@@ -57,6 +58,7 @@ defmodule CCXT.WS.Generator.Functions do
     watch_balance: {[], ""},
     watch_heartbeat: {[], ""},
     watch_private: {[], ""},
+    watch_public: {[], ""},
     watch_ticker: {[:symbol], "symbol"},
     watch_tickers: {[:symbols], "symbols"},
     watch_order_book: {[:symbol, :limit], "symbol, limit"},
@@ -70,6 +72,7 @@ defmodule CCXT.WS.Generator.Functions do
     watch_orders_for_symbols: {[:symbols], "symbols"},
     watch_my_trades: {[:symbol], "symbol"},
     watch_my_trades_for_symbols: {[:symbols], "symbols"},
+    watch_position_for_symbols: {[:symbols], "symbols"},
     watch_positions: {[:symbols], "symbols"},
     watch_bids_asks: {[:symbols], "symbols"},
     watch_liquidations: {[:symbol], "symbol"},
@@ -80,7 +83,10 @@ defmodule CCXT.WS.Generator.Functions do
     watch_funding_rates: {[:symbols], "symbols"},
     watch_mark_price: {[:symbol], "symbol"},
     watch_mark_prices: {[:symbols], "symbols"},
-    watch_topics: {[:symbol], "symbol"}
+    watch_topics: {[:symbol], "symbol"},
+    watch_multiple: {[], ""},
+    watch_private_multiple: {[], ""},
+    watch_public_multiple: {[], ""}
   }
 
   @doc """

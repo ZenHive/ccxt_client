@@ -7,7 +7,7 @@ generated from [ccxt_ex](https://github.com/ZenHive/ccxt_ex).
 
 **This is an early release (v0.x).** Here's what works and what needs testing:
 
-- **Public endpoints** (tickers, orderbooks, trades) work across all 110+ exchanges
+- **Public endpoints** (tickers, orderbooks, trades) work across all 107 bundled exchanges
 - **All exchanges** compile and pass unit tests with mocked HTTP responses
 - **7 signing patterns** are implemented, covering 95%+ of exchanges
 - **Authenticated endpoints** (trading, balances) have been verified with real API

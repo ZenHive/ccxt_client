@@ -3451,7 +3451,6 @@
       watch_orders_for_symbols: nil,
       watch_position: nil,
       watch_positions: nil,
-      watch_postions: true,
       watch_status: nil,
       watch_ticker: true,
       watch_tickers: true,

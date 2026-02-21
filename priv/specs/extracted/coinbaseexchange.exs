@@ -1907,15 +1907,15 @@
       "price" => %{}
     },
     sample_precision: %{
-      "amount" => 1,
+      "amount" => 0.01,
       "price" => 1.0e-5
     },
     spot: %{
-      base: "VARA",
-      base_id: "VARA",
+      base: "W",
+      base_id: "W",
       case: :upper,
       contract: false,
-      id: "VARA-USD",
+      id: "W-USD",
       limits: %{
         "amount" => %{},
         "cost" => %{
@@ -1926,13 +1926,13 @@
       },
       maker: 0.004,
       precision: %{
-        "amount" => 1,
+        "amount" => 0.01,
         "price" => 1.0e-5
       },
       quote: "USD",
       quote_id: "USD",
       separator: "-",
-      symbol: "VARA/USD",
+      symbol: "W/USD",
       taker: 0.006
     }
   },

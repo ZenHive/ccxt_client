@@ -9558,9 +9558,9 @@
       case: :upper,
       contract: true,
       contract_size: 100,
-      expiry: 1771574400000,
-      expiry_datetime: "2026-02-20T08:00:00.000Z",
-      id: "BTC-USD-260220",
+      expiry: 1772179200000,
+      expiry_datetime: "2026-02-27T08:00:00.000Z",
+      id: "BTC-USD-260227",
       inverse: true,
       limits: %{
         "amount" => %{
@@ -9584,7 +9584,7 @@
       separator: "-",
       settle: "BTC",
       settle_id: "BTC",
-      symbol: "BTC/USD:BTC-260220",
+      symbol: "BTC/USD:BTC-260227",
       taker: 0.0005
     },
     option: %{
@@ -9593,9 +9593,9 @@
       case: :upper,
       contract: true,
       contract_size: 1,
-      expiry: 1771488000000,
-      expiry_datetime: "2026-02-19T08:00:00.000Z",
-      id: "BTC-USD-260219-60000-C",
+      expiry: 1771660800000,
+      expiry_datetime: "2026-02-21T08:00:00.000Z",
+      id: "BTC-USD-260221-58000-C",
       inverse: true,
       limits: %{
         "amount" => %{
@@ -9619,7 +9619,7 @@
       separator: "-",
       settle: "BTC",
       settle_id: "BTC",
-      symbol: "BTC/USD:BTC-260219-60000-C",
+      symbol: "BTC/USD:BTC-260221-58000-C",
       taker: 0.0015
     },
     precision_mode: 4,

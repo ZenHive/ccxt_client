@@ -4890,9 +4890,9 @@
       case: :upper,
       contract: true,
       contract_size: 0.001,
-      expiry: 1771574400000,
-      expiry_datetime: "2026-02-20T08:00:00.000Z",
-      id: "BTC-USDT-260220",
+      expiry: 1772179200000,
+      expiry_datetime: "2026-02-27T08:00:00.000Z",
+      id: "BTC-USDT-260227",
       inverse: false,
       limits: %{
         "amount" => %{
@@ -4917,13 +4917,13 @@
       separator: "-",
       settle: "USDT",
       settle_id: "usdt",
-      symbol: "BTC/USDT:USDT-260220",
+      symbol: "BTC/USDT:USDT-260227",
       taker: 0.0005
     },
     precision_mode: 4,
     sample_limits: %{
       "amount" => %{
-        "max" => 2857142,
+        "max" => 29411764,
         "min" => 0.1
       },
       "cost" => %{
@@ -4933,17 +4933,17 @@
     },
     sample_precision: %{
       "amount" => 0.0001,
-      "price" => 0.0001
+      "price" => 1.0e-5
     },
     spot: %{
-      base: "LAYER",
-      base_id: "layer",
+      base: "USTC",
+      base_id: "ustc",
       case: :lower,
       contract: false,
-      id: "layerusdt",
+      id: "ustcusdt",
       limits: %{
         "amount" => %{
-          "max" => 2857142,
+          "max" => 29411764,
           "min" => 0.1
         },
         "cost" => %{
@@ -4960,12 +4960,12 @@
       precision: %{
         "amount" => 0.0001,
         "cost" => 1.0e-8,
-        "price" => 0.0001
+        "price" => 1.0e-5
       },
       quote: "USDT",
       quote_id: "usdt",
       separator: "",
-      symbol: "LAYER/USDT",
+      symbol: "USTC/USDT",
       taker: 0.002
     },
     swap: %{

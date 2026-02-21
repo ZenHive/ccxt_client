@@ -3940,37 +3940,37 @@
   symbol_format: nil,
   symbol_formats: %{
     future: %{
-      base: "BTC",
-      base_id: "BTC",
+      base: "BTCDVOL",
+      base_id: "BTCDVOL",
       case: :upper,
       contract: true,
-      contract_size: 10,
-      expiry: 1771574400000,
-      expiry_datetime: "2026-02-20T08:00:00.000Z",
-      id: "BTC-20FEB26",
-      inverse: true,
+      contract_size: 0.1,
+      expiry: 1772006400000,
+      expiry_datetime: "2026-02-25T08:00:00.000Z",
+      id: "BTCDVOL_USDC-25FEB26",
+      inverse: false,
       limits: %{
         "amount" => %{
-          "min" => 10
+          "min" => 0.1
         },
         "cost" => %{},
         "leverage" => %{},
         "price" => %{
-          "min" => 2.5
+          "min" => 0.1
         }
       },
-      linear: false,
-      maker: -0.0001,
+      linear: true,
+      maker: 0,
       precision: %{
-        "amount" => 10,
-        "price" => 2.5
+        "amount" => 0.1,
+        "price" => 0.1
       },
-      quote: "USD",
-      quote_id: "USD",
+      quote: "USDC",
+      quote_id: "USDC",
       separator: "-",
-      settle: "BTC",
-      settle_id: "BTC",
-      symbol: "BTC/USD:BTC-260220",
+      settle: "USDC",
+      settle_id: "USDC",
+      symbol: "BTCDVOL/USDC:USDC-260225",
       taker: 0.0005
     },
     option: %{
@@ -3978,9 +3978,9 @@
       base_id: "AVAX",
       contract: true,
       contract_size: 100,
-      expiry: 1771488000000,
-      expiry_datetime: "2026-02-19T08:00:00.000Z",
-      id: "AVAX_USDC-19FEB26-7d4-C",
+      expiry: 1771660800000,
+      expiry_datetime: "2026-02-21T08:00:00.000Z",
+      id: "AVAX_USDC-21FEB26-7d2-C",
       inverse: false,
       limits: %{
         "amount" => %{
@@ -4003,7 +4003,7 @@
       separator: "-",
       settle: "USDC",
       settle_id: "USDC",
-      symbol: "AVAX/USDC:USDC-260219-7.4-C",
+      symbol: "AVAX/USDC:USDC-260221-7.2-C",
       taker: 0.0003
     },
     precision_mode: 4,
