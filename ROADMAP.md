@@ -20,6 +20,7 @@
 
 | Task | Description | Notes |
 |------|-------------|-------|
+| Phase 5: CCXT.Health module | `ping/1`, `latency/1`, `all/1`, `status/2` — bundled health checks | 4 tasks complete |
 | Fix: OrderBook string→float | `from_map/1` coerces bid/ask levels, raw field uses info precedence | Related to Task 225 |
 | Pipeline default for deps | `CCXT.Pipeline` shared default, `maybe_coerce` warning, fixes dep compilation | Normalization now works as path dep |
 | Task 224: Normalization | `boolean_derivation` + `safe_fn` override + info injection + capitalized sides | Linked to ccxt_ex Tasks 221-223 |
@@ -37,8 +38,6 @@
 
 | Task | Status | Notes |
 |------|--------|-------|
-| `Health.latency/1` | ⬜ | [D:1/B:7 → 7.0] — Finch telemetry wrapper |
-| `Health.ping/1` | ⬜ | [D:2/B:8 → 4.0] — Exchange alive check |
 | Task 125: Order Sanity Checks | ⬜ | [D:4/B:8 → 2.0] — Pre-submit validation |
 | Task 225: Normalization QA Sweep | ⬜ | [D:5/B:10 → 2.0] — Proactive audit to catch raw/passthrough regressions |
 
@@ -286,16 +285,19 @@ These tasks expand the normalization pipeline built during the ccxt_ex split. Lo
 
 ---
 
-## Phase 5: Health & Monitoring
+## Phase 5: Health & Monitoring ✅
 
 Exchange health checks and latency monitoring. One-shot stateless checks, not dashboards.
 
+> 4 tasks complete. See [CHANGELOG.md](CHANGELOG.md#phase-5-health--monitoring) for details.
+> Built: `CCXT.Health` module — `ping/1`, `latency/1`, `all/1`, `status/2`
+
 | Task | Status | Score | Notes |
 |------|--------|-------|-------|
-| `Health.latency/1` | ⬜ | [D:1/B:7 → 7.0] 🎯 | Finch telemetry wrapper for latency |
-| `Health.ping/1` | ⬜ | [D:2/B:8 → 4.0] 🎯 | Exchange alive check |
-| `Health.all/1` | ⬜ | [D:3/B:8 → 2.67] 🎯 | Bulk health check across exchanges |
-| `Health.status/2` | ⬜ | [D:3/B:7 → 2.33] 🎯 | Composite status with degradation |
+| `Health.latency/1` | ✅ | [D:1/B:7 → 7.0] 🎯 | Wall-clock round-trip measurement |
+| `Health.ping/1` | ✅ | [D:2/B:8 → 4.0] 🎯 | Exchange alive check via fetch_time |
+| `Health.all/1` | ✅ | [D:3/B:8 → 2.67] 🎯 | Concurrent bulk health check |
+| `Health.status/2` | ✅ | [D:3/B:7 → 2.33] 🎯 | Composite snapshot with circuit breaker |
 
 ---
 
@@ -351,14 +353,14 @@ Production reliability improvements.
 
 | # | Item | Score | Phase |
 |---|------|-------|-------|
-| 1 | `Health.latency/1` | [D:1/B:7 → 7.0] 🎯 | 5 |
-| 2 | `Health.ping/1` | [D:2/B:8 → 4.0] 🎯 | 5 |
+| 1 | ~~`Health.latency/1`~~ | ~~[D:1/B:7 → 7.0] 🎯~~ | ~~5~~ ✅ |
+| 2 | ~~`Health.ping/1`~~ | ~~[D:2/B:8 → 4.0] 🎯~~ | ~~5~~ ✅ |
 | 3 | One-liner setup docs | [D:2/B:6 → 3.0] 🎯 | 7 |
-| 4 | `Health.all/1` | [D:3/B:8 → 2.67] 🎯 | 5 |
+| 4 | ~~`Health.all/1`~~ | ~~[D:3/B:8 → 2.67] 🎯~~ | ~~5~~ ✅ |
 | 5 | `Instrument` struct | [D:3/B:8 → 2.67] 🎯 | 6 |
 | 6 | Custom spec loading | [D:3/B:8 → 2.67] 🎯 | 8 |
 | 7 | `Policy` (retry/backoff) | [D:3/B:8 → 2.67] 🎯 | 9 |
-| 8 | `Health.status/2` | [D:3/B:7 → 2.33] 🎯 | 5 |
+| 8 | ~~`Health.status/2`~~ | ~~[D:3/B:7 → 2.33] 🎯~~ | ~~5~~ ✅ |
 | 9 | `WS.Debug.capture_subscription/3` | [D:3/B:7 → 2.33] 🎯 | 7 |
 | 10 | Task 125: Order Sanity Checks | [D:4/B:8 → 2.0] 🎯 | 2 |
 | 11 | `Snapshot.capture/2` | [D:3/B:6 → 2.0] 🎯 | 7 |

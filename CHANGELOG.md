@@ -4,6 +4,27 @@ Completed roadmap tasks. For upcoming work, see [ROADMAP.md](ROADMAP.md).
 
 ---
 
+## Phase 5: Health & Monitoring
+
+### CCXT.Health Module
+**Completed** | `Health.latency/1` [D:1/B:7 → 7.0], `Health.ping/1` [D:2/B:8 → 4.0], `Health.all/1` [D:3/B:8 → 2.67], `Health.status/2` [D:3/B:7 → 2.33]
+
+**What was done:**
+- `CCXT.Health` module at `lib/ccxt/health.ex` — stateless, one-shot exchange health checks
+- `ping/1` — checks exchange reachability via `fetch_time/1`, returns `:ok` or `{:error, Error.t()}`
+- `latency/1` — wall-clock round-trip measurement in milliseconds (float), wraps `fetch_time/1` with `System.monotonic_time()`
+- `all/1` — concurrent bulk health check via `Task.async_stream/3` with `on_timeout: :kill_task`, returns `%{exchange => :ok | {:error, term()}}`
+- `status/2` — composite snapshot combining reachability, latency, and `CircuitBreaker.status/1`
+- Private `resolve_module/1` validates exchange atom → module with `__ccxt_spec__/0` check
+- 11 tests (6 unit, 5 integration) covering error paths, concurrency, and real exchange calls
+
+**Design decisions:**
+- Wall-clock measurement around `fetch_time` (not Finch telemetry) — simpler, gives total round-trip including signing and rate-limit wait
+- No struct for status result — plain map keeps the API simple and extensible
+- `resolve_module/1` checks `__ccxt_spec__/0` export to distinguish real exchange modules from other `CCXT.*` modules
+
+---
+
 ## Fix: OrderBook levels return strings instead of floats (2026-02-21)
 
 **What was done:**
