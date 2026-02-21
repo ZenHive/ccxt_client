@@ -8,6 +8,8 @@ defmodule CCXT.Generator.Helpers do
   alias CCXT.HTTP.Client
   alias CCXT.ResponseTransformer
 
+  require Logger
+
   @doc """
   Applies endpoint-level parameter name mappings.
 
@@ -238,7 +240,14 @@ defmodule CCXT.Generator.Helpers do
   # Applies coercion when a coercer module is configured, otherwise wraps raw result.
   @spec maybe_coerce(term(), term(), term(), keyword(), module() | nil) ::
           {:ok, term()} | {:error, CCXT.Error.t()}
-  defp maybe_coerce(transformed, _response_type, _parser_mapping, _user_opts, nil) do
+  defp maybe_coerce(transformed, response_type, _parser_mapping, user_opts, nil) do
+    if Keyword.get(user_opts, :normalize, true) do
+      Logger.warning(
+        "normalize: true but no coercer configured for response_type=#{inspect(response_type)}. " <>
+          "Returning raw data. Check pipeline config or pass normalize: false."
+      )
+    end
+
     {:ok, transformed}
   end
 

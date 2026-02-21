@@ -155,7 +155,7 @@ defmodule CCXT.Generator do
     # Uses get_env because compile_env can only be called in module body.
     app = Mix.Project.config()[:app]
     configured = Application.get_env(app, :exchanges, :all)
-    pipeline = Application.get_env(app, :pipeline, [])
+    pipeline = Application.get_env(app, :pipeline, CCXT.Pipeline.default())
 
     # Check if this exchange is enabled before loading the spec
     if exchange_enabled?(spec_id, configured) do

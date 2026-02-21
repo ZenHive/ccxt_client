@@ -402,6 +402,53 @@ defmodule CCXT.Generator.HelpersTest do
                )
     end
 
+    test "without coercer + normalize default (true) — logs warning", %{stub_name: stub_name} do
+      Req.Test.stub(stub_name, fn conn ->
+        Req.Test.json(conn, %{"price" => "50000"})
+      end)
+
+      log =
+        ExUnit.CaptureLog.capture_log(fn ->
+          assert {:ok, %{"price" => "50000"}} =
+                   Helpers.execute_request(
+                     @test_spec,
+                     :get,
+                     "/ticker",
+                     [plug: {Req.Test, stub_name}],
+                     nil,
+                     :ticker,
+                     nil,
+                     []
+                   )
+        end)
+
+      assert log =~ "normalize: true but no coercer configured"
+      assert log =~ "response_type=:ticker"
+    end
+
+    test "without coercer + normalize: false — does not log warning", %{stub_name: stub_name} do
+      Req.Test.stub(stub_name, fn conn ->
+        Req.Test.json(conn, %{"price" => "50000"})
+      end)
+
+      log =
+        ExUnit.CaptureLog.capture_log(fn ->
+          assert {:ok, %{"price" => "50000"}} =
+                   Helpers.execute_request(
+                     @test_spec,
+                     :get,
+                     "/ticker",
+                     [plug: {Req.Test, stub_name}],
+                     nil,
+                     :ticker,
+                     nil,
+                     normalize: false
+                   )
+        end)
+
+      assert log == ""
+    end
+
     test "HTTP error propagates without coercer involvement", %{stub_name: stub_name} do
       Req.Test.stub(stub_name, fn conn ->
         conn
