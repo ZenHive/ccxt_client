@@ -165,7 +165,6 @@
       auth: true,
       cost: 1,
       default_params: %{
-        "product_id" => "BTCUSDT",
         "triggerDirection" => "below",
         "type" => "limit"
       },
@@ -192,7 +191,6 @@
       auth: true,
       cost: 1,
       default_params: %{
-        "product_id" => "BTCUSDT",
         "triggerDirection" => "below",
         "type" => "market"
       },
@@ -218,7 +216,6 @@
       auth: true,
       cost: 1,
       default_params: %{
-        "product_id" => "BTCUSDT",
         "triggerDirection" => "below"
       },
       market_type: :swap,
@@ -1911,14 +1908,14 @@
     },
     sample_precision: %{
       "amount" => 0.01,
-      "price" => 1.0e-5
+      "price" => 0.0001
     },
     spot: %{
-      base: "W",
-      base_id: "W",
+      base: "WAXL",
+      base_id: "WAXL",
       case: :upper,
       contract: false,
-      id: "W-USD",
+      id: "WAXL-USD",
       limits: %{
         "amount" => %{},
         "cost" => %{
@@ -1930,12 +1927,12 @@
       maker: 0.004,
       precision: %{
         "amount" => 0.01,
-        "price" => 1.0e-5
+        "price" => 0.0001
       },
       quote: "USD",
       quote_id: "USD",
       separator: "-",
-      symbol: "W/USD",
+      symbol: "WAXL/USD",
       taker: 0.006
     }
   },

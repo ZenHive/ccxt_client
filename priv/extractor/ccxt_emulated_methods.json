@@ -1,6 +1,6 @@
 {
   "ccxt_version": "4.5.39",
-  "extracted_at": "2026-02-21T01:10:59.409Z",
+  "extracted_at": "2026-02-22T03:03:10.963Z",
   "exchange_count": 52,
   "method_count": 110,
   "counts": {
@@ -444,7 +444,7 @@
         ],
         "defined_in": "exchange",
         "source_path": "ts/src/bitmex.ts",
-        "source_line": 1396,
+        "source_line": 1397,
         "source": "async fetchDepositsWithdrawals (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}"
       },
       {

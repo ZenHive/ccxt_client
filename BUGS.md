@@ -1,6 +1,6 @@
 # Known Bugs (ccxt_client)
 
-Last verified: February 20, 2026.
+Last verified: February 22, 2026.
 
 No known bugs. All previously tracked issues have been resolved and synced.
 

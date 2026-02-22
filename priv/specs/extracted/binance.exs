@@ -172,8 +172,7 @@
       default_params: %{
         "orderidlist" => [
           "test-order-id"
-        ],
-        "symbol" => "BTCUSDT"
+        ]
       },
       market_type: :spot,
       method: :delete,
@@ -506,7 +505,6 @@
         "newClientOrderId" => "<generated>",
         "newOrderRespType" => "RESULT",
         "reduceOnly" => true,
-        "symbol" => "BTCUSDT",
         "timeInForce" => "GTC"
       },
       market_type: :swap,
@@ -994,8 +992,7 @@
       auth: true,
       cost: 30,
       default_params: %{
-        "incomeType" => "FUNDING_FEE",
-        "symbol" => "BTCUSDT"
+        "incomeType" => "FUNDING_FEE"
       },
       market_type: :swap,
       method: :get,
@@ -1027,9 +1024,6 @@
       api_section: "fapiPublic",
       auth: false,
       cost: 1,
-      default_params: %{
-        "symbol" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_funding_rate,
@@ -1044,9 +1038,6 @@
       api_section: "fapiPublic",
       auth: false,
       cost: 1,
-      default_params: %{
-        "symbol" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_funding_rate_history,
@@ -1077,9 +1068,6 @@
       api_section: "eapiPublic",
       auth: false,
       cost: 5,
-      default_params: %{
-        "symbol" => "BTC-250103-100000-C"
-      },
       market_type: :option,
       method: :get,
       name: :fetch_greeks,
@@ -1096,8 +1084,7 @@
       cost: 1,
       default_params: %{
         "interval" => "1m",
-        "limit" => 500,
-        "pair" => "BTCUSDT"
+        "limit" => 500
       },
       market_type: :swap,
       method: :get,
@@ -1236,8 +1223,7 @@
       base_url: "https://fapi.binance.com/futures/data",
       cost: 1,
       default_params: %{
-        "period" => "1d",
-        "symbol" => "BTCUSDT"
+        "period" => "1d"
       },
       market_type: :swap,
       method: :get,
@@ -1258,9 +1244,6 @@
       api_section: "fapiPrivate",
       auth: true,
       cost: 1,
-      default_params: %{
-        "symbol" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_margin_adjustment_history,
@@ -1278,9 +1261,6 @@
       api_section: "fapiPrivate",
       auth: true,
       cost: 5,
-      default_params: %{
-        "symbol" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_margin_mode,
@@ -1313,8 +1293,7 @@
       cost: 1,
       default_params: %{
         "interval" => "1m",
-        "limit" => 500,
-        "symbol" => "BTCUSDT"
+        "limit" => 500
       },
       market_type: :swap,
       method: :get,
@@ -1335,9 +1314,6 @@
       api_section: "fapiPublic",
       auth: false,
       cost: 1,
-      default_params: %{
-        "symbol" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_mark_price,
@@ -1380,8 +1356,7 @@
       auth: true,
       cost: 20,
       default_params: %{
-        "autoCloseType" => "LIQUIDATION",
-        "symbol" => "BTCUSDT"
+        "autoCloseType" => "LIQUIDATION"
       },
       market_type: :swap,
       method: :get,
@@ -1451,9 +1426,6 @@
       api_section: "fapiPublic",
       auth: false,
       cost: 1,
-      default_params: %{
-        "symbol" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_open_interest,
@@ -1470,8 +1442,7 @@
       base_url: "https://fapi.binance.com/futures/data",
       cost: 1,
       default_params: %{
-        "period" => "5m",
-        "symbol" => "BTCUSDT"
+        "period" => "5m"
       },
       market_type: :swap,
       method: :get,
@@ -1525,9 +1496,6 @@
       api_section: "eapiPublic",
       auth: false,
       cost: 5,
-      default_params: %{
-        "symbol" => "BTC-250103-100000-C"
-      },
       market_type: :option,
       method: :get,
       name: :fetch_option,
@@ -1609,9 +1577,6 @@
       api_section: "eapiPrivate",
       auth: true,
       cost: 5,
-      default_params: %{
-        "symbol" => "BTC-250103-100000-C"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_position,
@@ -1670,8 +1635,7 @@
       cost: 1,
       default_params: %{
         "interval" => "1m",
-        "limit" => 500,
-        "symbol" => "BTCUSDT"
+        "limit" => 500
       },
       market_type: :swap,
       method: :get,
@@ -1913,9 +1877,6 @@
       api_section: "fapiPrivate",
       auth: true,
       cost: 1,
-      default_params: %{
-        "symbol" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :post,
       name: :set_leverage,
@@ -1931,9 +1892,6 @@
       api_section: "fapiPrivate",
       auth: true,
       cost: 1,
-      default_params: %{
-        "symbol" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :post,
       name: :set_margin_mode,
@@ -8304,7 +8262,7 @@
         },
         "leverage" => %{},
         "market" => %{
-          "max" => 1744.59119208,
+          "max" => 2243.67784166,
           "min" => 0
         },
         "price" => %{

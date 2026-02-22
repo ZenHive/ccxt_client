@@ -288,7 +288,6 @@
       cost: 0,
       default_params: %{
         "ordertype" => "limit",
-        "pair" => "BTCUSDT",
         "triggerDirection" => "below"
       },
       market_type: :swap,
@@ -317,7 +316,6 @@
       cost: 0,
       default_params: %{
         "ordertype" => "market",
-        "pair" => "BTCUSDT",
         "triggerDirection" => "below"
       },
       market_type: :swap,
@@ -344,7 +342,6 @@
       auth: true,
       cost: 0,
       default_params: %{
-        "pair" => "BTCUSDT",
         "triggerDirection" => "below"
       },
       market_type: :swap,
@@ -375,7 +372,6 @@
       cost: 0,
       default_params: %{
         "ordertype" => "trailing-stop-limit",
-        "pair" => "BTCUSDT",
         "trigger" => "last"
       },
       market_type: :swap,
@@ -405,7 +401,6 @@
       cost: 0,
       default_params: %{
         "ordertype" => "trailing-stop-limit",
-        "pair" => "BTCUSDT",
         "trigger" => "last"
       },
       market_type: :swap,

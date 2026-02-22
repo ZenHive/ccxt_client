@@ -366,7 +366,6 @@
       cost: 1,
       default_params: %{
         "clOrdId" => "<generated>",
-        "instId" => "BTCUSDT",
         "ordType" => "trigger",
         "tag" => "e847386590ce4dBC",
         "tdMode" => "cross",
@@ -398,7 +397,6 @@
       cost: 1,
       default_params: %{
         "clOrdId" => "<generated>",
-        "instId" => "BTCUSDT",
         "ordType" => "conditional",
         "slTriggerPxType" => "last",
         "tag" => "e847386590ce4dBC",
@@ -432,7 +430,6 @@
       cost: 1,
       default_params: %{
         "clOrdId" => "<generated>",
-        "instId" => "BTCUSDT",
         "ordType" => "trigger",
         "orderPx" => "-1",
         "tag" => "e847386590ce4dBC",
@@ -463,7 +460,6 @@
       cost: 1,
       default_params: %{
         "clOrdId" => "<generated>",
-        "instId" => "BTCUSDT",
         "ordType" => "trigger",
         "tag" => "e847386590ce4dBC",
         "tdMode" => "cross",
@@ -496,7 +492,6 @@
       cost: 1,
       default_params: %{
         "clOrdId" => "<generated>",
-        "instId" => "BTCUSDT",
         "ordType" => "conditional",
         "tag" => "e847386590ce4dBC",
         "tdMode" => "cross",
@@ -531,7 +526,6 @@
       default_params: %{
         "callbackRatio" => "0.01",
         "clOrdId" => "<generated>",
-        "instId" => "BTCUSDT",
         "ordType" => "move_order_stop",
         "tag" => "e847386590ce4dBC",
         "tdMode" => "cross"
@@ -563,7 +557,6 @@
       cost: 1,
       default_params: %{
         "clOrdId" => "<generated>",
-        "instId" => "BTCUSDT",
         "ordType" => "trigger",
         "tag" => "e847386590ce4dBC",
         "tdMode" => "cross",
@@ -983,9 +976,6 @@
       api_section: "public",
       auth: false,
       cost: 2,
-      default_params: %{
-        "instId" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_funding_interval,
@@ -1003,9 +993,6 @@
       api_section: "public",
       auth: false,
       cost: 2,
-      default_params: %{
-        "instId" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_funding_rate,
@@ -1023,9 +1010,6 @@
       api_section: "public",
       auth: false,
       cost: 2,
-      default_params: %{
-        "instId" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_funding_rate_history,
@@ -1149,7 +1133,6 @@
       auth: true,
       cost: 1,
       default_params: %{
-        "instId" => "BTCUSDT",
         "mgnMode" => "cross"
       },
       market_type: :swap,
@@ -1169,9 +1152,6 @@
       api_section: "public",
       auth: false,
       cost: 4,
-      default_params: %{
-        "instId" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_long_short_ratio_history,
@@ -1216,7 +1196,6 @@
       cost: 1,
       default_params: %{
         "bar" => "1m",
-        "instId" => "BTCUSDT",
         "limit" => 100
       },
       market_type: :swap,
@@ -1240,9 +1219,6 @@
       api_section: "public",
       auth: false,
       cost: 2,
-      default_params: %{
-        "instId" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_mark_price,
@@ -1342,7 +1318,6 @@
       auth: false,
       cost: 1,
       default_params: %{
-        "instId" => "BTCUSDT",
         "instType" => "SWAP"
       },
       market_type: :swap,
@@ -1423,9 +1398,6 @@
       api_section: "public",
       auth: false,
       cost: 1,
-      default_params: %{
-        "instId" => "BTC-250103-100000-C"
-      },
       market_type: :option,
       method: :get,
       name: :fetch_option,
@@ -1525,7 +1497,6 @@
       auth: true,
       cost: 2,
       default_params: %{
-        "instId" => "BTCUSDT",
         "instType" => "SWAP"
       },
       market_type: :swap,
@@ -1563,9 +1534,6 @@
       api_section: "private",
       auth: true,
       cost: 2,
-      default_params: %{
-        "instId" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_positions_for_symbol,
@@ -1836,7 +1804,6 @@
       auth: true,
       cost: 1,
       default_params: %{
-        "instId" => "BTCUSDT",
         "mgnMode" => "cross"
       },
       market_type: :swap,
@@ -1859,7 +1826,6 @@
       auth: true,
       cost: 1,
       default_params: %{
-        "instId" => "BTCUSDT",
         "lever" => 10
       },
       market_type: :swap,
@@ -9623,9 +9589,9 @@
       case: :upper,
       contract: true,
       contract_size: 1,
-      expiry: 1771660800000,
-      expiry_datetime: "2026-02-21T08:00:00.000Z",
-      id: "BTC-USD-260221-58000-C",
+      expiry: 1771747200000,
+      expiry_datetime: "2026-02-22T08:00:00.000Z",
+      id: "BTC-USD-260222-58000-C",
       inverse: true,
       limits: %{
         "amount" => %{
@@ -9649,7 +9615,7 @@
       separator: "-",
       settle: "BTC",
       settle_id: "BTC",
-      symbol: "BTC/USD:BTC-260221-58000-C",
+      symbol: "BTC/USD:BTC-260222-58000-C",
       taker: 0.0015
     },
     precision_mode: 4,

@@ -328,8 +328,7 @@
       auth: true,
       cost: 2.5,
       default_params: %{
-        "category" => "linear",
-        "symbol" => "BTCUSDT"
+        "category" => "linear"
       },
       market_type: :swap,
       method: :post,
@@ -410,8 +409,7 @@
       cost: 2.5,
       default_params: %{
         "category" => "linear",
-        "reduceOnly" => true,
-        "symbol" => "BTCUSDT"
+        "reduceOnly" => true
       },
       market_type: :swap,
       method: :post,
@@ -438,7 +436,6 @@
       default_params: %{
         "category" => "linear",
         "orderType" => "Limit",
-        "symbol" => "BTCUSDT",
         "triggerDirection" => 2
       },
       market_type: :swap,
@@ -465,7 +462,6 @@
       default_params: %{
         "category" => "linear",
         "reduceOnly" => true,
-        "symbol" => "BTCUSDT",
         "triggerDirection" => "below"
       },
       market_type: :swap,
@@ -495,7 +491,6 @@
       default_params: %{
         "category" => "linear",
         "orderType" => "Market",
-        "symbol" => "BTCUSDT",
         "triggerDirection" => 2
       },
       market_type: :swap,
@@ -520,7 +515,6 @@
       cost: 2.5,
       default_params: %{
         "category" => "linear",
-        "symbol" => "BTCUSDT",
         "triggerDirection" => 2
       },
       market_type: :swap,
@@ -549,7 +543,6 @@
       default_params: %{
         "category" => "linear",
         "reduceOnly" => true,
-        "symbol" => "BTCUSDT",
         "triggerDirection" => "above"
       },
       market_type: :swap,
@@ -577,8 +570,7 @@
       auth: true,
       cost: 5,
       default_params: %{
-        "category" => "linear",
-        "symbol" => "BTCUSDT"
+        "category" => "linear"
       },
       market_type: :swap,
       method: :post,
@@ -606,7 +598,6 @@
       cost: 2.5,
       default_params: %{
         "category" => "linear",
-        "symbol" => "BTCUSDT",
         "triggerDirection" => 2
       },
       market_type: :swap,
@@ -979,8 +970,7 @@
       default_params: %{
         "category" => "linear",
         "execType" => "Funding",
-        "size" => 100,
-        "symbol" => "BTCUSDT"
+        "size" => 100
       },
       market_type: :swap,
       method: :get,
@@ -1002,8 +992,7 @@
       default_params: %{
         "category" => "linear",
         "limit" => 200,
-        "settleCoin" => "USDT",
-        "symbol" => "BTCUSDT"
+        "settleCoin" => "USDT"
       },
       market_type: :swap,
       method: :get,
@@ -1043,8 +1032,7 @@
       auth: false,
       cost: 5,
       default_params: %{
-        "category" => "option",
-        "symbol" => "BTC-250103-100000-C"
+        "category" => "option"
       },
       market_type: :option,
       method: :get,
@@ -1064,8 +1052,7 @@
       default_params: %{
         "category" => "linear",
         "interval" => "1",
-        "limit" => 200,
-        "symbol" => "BTCUSDT"
+        "limit" => 200
       },
       market_type: :swap,
       method: :get,
@@ -1130,8 +1117,7 @@
       auth: true,
       cost: 5,
       default_params: %{
-        "category" => "linear",
-        "symbol" => "BTCUSDT"
+        "category" => "linear"
       },
       market_type: :swap,
       method: :get,
@@ -1168,8 +1154,7 @@
       cost: 5,
       default_params: %{
         "category" => "linear",
-        "period" => "1d",
-        "symbol" => "BTCUSDT"
+        "period" => "1d"
       },
       market_type: :swap,
       method: :get,
@@ -1194,8 +1179,7 @@
       default_params: %{
         "category" => "linear",
         "interval" => "1",
-        "limit" => 200,
-        "symbol" => "BTCUSDT"
+        "limit" => 200
       },
       market_type: :swap,
       method: :get,
@@ -1218,8 +1202,7 @@
       auth: false,
       cost: 5,
       default_params: %{
-        "category" => "linear",
-        "symbol" => "BTCUSDT"
+        "category" => "linear"
       },
       market_type: :swap,
       method: :get,
@@ -1254,8 +1237,7 @@
       cost: 5,
       default_params: %{
         "category" => "linear",
-        "execType" => "BustTrade",
-        "symbol" => "BTCUSDT"
+        "execType" => "BustTrade"
       },
       market_type: :swap,
       method: :get,
@@ -1340,8 +1322,7 @@
       default_params: %{
         "category" => "linear",
         "intervalTime" => "1h",
-        "settleCoin" => "USDT",
-        "symbol" => "BTCUSDT"
+        "settleCoin" => "USDT"
       },
       market_type: :swap,
       method: :get,
@@ -1361,8 +1342,7 @@
       default_params: %{
         "category" => "linear",
         "intervalTime" => "1h",
-        "settleCoin" => "USDT",
-        "symbol" => "BTCUSDT"
+        "settleCoin" => "USDT"
       },
       market_type: :swap,
       method: :get,
@@ -1422,8 +1402,7 @@
       auth: false,
       cost: 5,
       default_params: %{
-        "category" => "option",
-        "symbol" => "BTC-250103-100000-C"
+        "category" => "option"
       },
       market_type: :option,
       method: :get,
@@ -1526,8 +1505,7 @@
       cost: 5,
       default_params: %{
         "category" => "linear",
-        "settleCoin" => "USDT",
-        "symbol" => "BTCUSDT"
+        "settleCoin" => "USDT"
       },
       market_type: :swap,
       method: :get,
@@ -1589,8 +1567,7 @@
       default_params: %{
         "category" => "linear",
         "interval" => "1",
-        "limit" => 200,
-        "symbol" => "BTCUSDT"
+        "limit" => 200
       },
       market_type: :swap,
       method: :get,
@@ -1804,8 +1781,7 @@
       auth: true,
       cost: 5,
       default_params: %{
-        "category" => "linear",
-        "symbol" => "BTCUSDT"
+        "category" => "linear"
       },
       market_type: :swap,
       method: :post,
@@ -1844,8 +1820,7 @@
       cost: 5,
       default_params: %{
         "category" => "linear",
-        "mode" => 3,
-        "symbol" => "BTCUSDT"
+        "mode" => 3
       },
       market_type: :swap,
       method: :post,

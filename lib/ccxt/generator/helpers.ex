@@ -11,6 +11,36 @@ defmodule CCXT.Generator.Helpers do
   require Logger
 
   @doc """
+  Strips default_params entries that would be overridden by non-nil function args.
+
+  Default_params (string keys) can collide with function args (atom keys) when both
+  map to the same target key via param_mappings. This function removes such defaults
+  before the merge chain, so function args and opts[:params] maintain correct precedence.
+
+  ## Examples
+
+      iex> CCXT.Generator.Helpers.strip_overridden_defaults(%{"instrument_name" => "BTC-DEFAULT"}, %{symbol: "BTC/USD"}, %{"symbol" => "instrument_name"})
+      %{}
+
+      iex> CCXT.Generator.Helpers.strip_overridden_defaults(%{"interval" => "1m"}, %{symbol: "BTC/USD"}, %{})
+      %{"interval" => "1m"}
+  """
+  @spec strip_overridden_defaults(map(), map(), map()) :: map()
+  def strip_overridden_defaults(defaults, _args, _mappings) when map_size(defaults) == 0, do: defaults
+
+  def strip_overridden_defaults(defaults, args, mappings) do
+    overridden_targets =
+      args
+      |> Enum.reject(fn {_k, v} -> is_nil(v) end)
+      |> MapSet.new(fn {k, _v} ->
+        string_key = Atom.to_string(k)
+        Map.get(mappings, string_key, string_key)
+      end)
+
+    Map.reject(defaults, fn {k, _v} -> MapSet.member?(overridden_targets, k) end)
+  end
+
+  @doc """
   Applies endpoint-level parameter name mappings.
 
   Transforms unified param names (e.g., :timeframe) to exchange-specific names

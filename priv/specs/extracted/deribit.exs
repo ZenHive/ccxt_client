@@ -160,7 +160,6 @@
       auth: true,
       cost: 4,
       default_params: %{
-        "instrument_name" => "BTCUSDT",
         "reduce_only" => true
       },
       market_type: :swap,
@@ -185,7 +184,6 @@
       auth: true,
       cost: 4,
       default_params: %{
-        "instrument_name" => "BTCUSDT",
         "triggerDirection" => "below",
         "type" => "limit"
       },
@@ -212,7 +210,6 @@
       auth: true,
       cost: 4,
       default_params: %{
-        "instrument_name" => "BTCUSDT",
         "triggerDirection" => "below",
         "type" => "market"
       },
@@ -238,7 +235,6 @@
       auth: true,
       cost: 4,
       default_params: %{
-        "instrument_name" => "BTCUSDT",
         "triggerDirection" => "below"
       },
       market_type: :swap,
@@ -265,7 +261,6 @@
       auth: true,
       cost: 4,
       default_params: %{
-        "instrument_name" => "BTCUSDT",
         "trigger" => "last_price",
         "type" => "trailing_stop"
       },
@@ -429,7 +424,6 @@
       cost: 1,
       default_params: %{
         "end_timestamp" => "<generated>",
-        "instrument_name" => "BTCUSDT",
         "start_timestamp" => "<generated>"
       },
       market_type: :swap,
@@ -450,8 +444,7 @@
       auth: false,
       cost: 1,
       default_params: %{
-        "end_timestamp" => "<generated>",
-        "instrument_name" => "BTCUSDT"
+        "end_timestamp" => "<generated>"
       },
       market_type: :swap,
       method: :get,
@@ -473,9 +466,6 @@
       api_section: "public",
       auth: false,
       cost: 1,
-      default_params: %{
-        "instrument_name" => "BTC-250103-100000-C"
-      },
       market_type: :option,
       method: :get,
       name: :fetch_greeks,
@@ -512,7 +502,6 @@
       auth: false,
       cost: 1,
       default_params: %{
-        "instrument_name" => "BTCUSDT",
         "type" => "bankruptcy"
       },
       market_type: :swap,
@@ -548,7 +537,6 @@
       auth: true,
       cost: 1,
       default_params: %{
-        "instrument_name" => "BTCUSDT",
         "type" => "bankruptcy"
       },
       market_type: :swap,
@@ -618,9 +606,6 @@
       api_section: "public",
       auth: false,
       cost: 1,
-      default_params: %{
-        "instrument_name" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_open_interest,
@@ -657,9 +642,6 @@
       api_section: "public",
       auth: false,
       cost: 1,
-      default_params: %{
-        "instrument_name" => "BTC-250103-100000-C"
-      },
       market_type: :option,
       method: :get,
       name: :fetch_option,
@@ -754,9 +736,6 @@
       api_section: "private",
       auth: true,
       cost: 1,
-      default_params: %{
-        "instrument_name" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_position,
@@ -3999,9 +3978,9 @@
       base_id: "AVAX",
       contract: true,
       contract_size: 100,
-      expiry: 1771660800000,
-      expiry_datetime: "2026-02-21T08:00:00.000Z",
-      id: "AVAX_USDC-21FEB26-7d2-C",
+      expiry: 1771747200000,
+      expiry_datetime: "2026-02-22T08:00:00.000Z",
+      id: "AVAX_USDC-22FEB26-7d4-C",
       inverse: false,
       limits: %{
         "amount" => %{
@@ -4024,7 +4003,7 @@
       separator: "-",
       settle: "USDC",
       settle_id: "USDC",
-      symbol: "AVAX/USDC:USDC-260221-7.2-C",
+      symbol: "AVAX/USDC:USDC-260222-7.4-C",
       taker: 0.0003
     },
     precision_mode: 4,

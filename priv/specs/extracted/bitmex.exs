@@ -211,7 +211,6 @@
       default_params: %{
         "orderQty" => 0,
         "reduceOnly" => true,
-        "symbol" => "BTCUSDT",
         "text" => "CCXT"
       },
       market_type: :swap,
@@ -237,7 +236,6 @@
       default_params: %{
         "ordType" => "LimitIfTouched",
         "orderQty" => 0,
-        "symbol" => "BTCUSDT",
         "text" => "CCXT"
       },
       market_type: :swap,
@@ -264,7 +262,6 @@
       default_params: %{
         "ordType" => "LimitIfTouched",
         "orderQty" => 0,
-        "symbol" => "BTCUSDT",
         "text" => "CCXT"
       },
       market_type: :swap,
@@ -385,8 +382,7 @@
       auth: false,
       cost: 5,
       default_params: %{
-        "reverse" => true,
-        "symbol" => "BTCUSDT"
+        "reverse" => true
       },
       market_type: :swap,
       method: :get,
@@ -465,9 +461,6 @@
       api_section: "public",
       auth: false,
       cost: 5,
-      default_params: %{
-        "symbol" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_liquidations,
@@ -669,9 +662,6 @@
       api_section: "private",
       auth: true,
       cost: 1,
-      default_params: %{
-        "symbol" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :post,
       name: :set_leverage,
@@ -688,8 +678,7 @@
       auth: true,
       cost: 1,
       default_params: %{
-        "enabled" => true,
-        "symbol" => "BTCUSDT"
+        "enabled" => true
       },
       market_type: :swap,
       method: :post,
@@ -1266,8 +1255,8 @@
       "examples" => [
         "[\n         {\n             \"account\":1455728,\n             \"currency\":\"XBt\",\n             \"riskLimit\":1000000000000,\n             \"prevState\":\"\",\n             \"state\":\"\",\n             \"action\":\"\",\n             \"amount\":263542,\n             \"pendingCredit\":0,\n             \"pendingDebit\":0,\n             \"confirmedDebit\":0,\n             \"prevRealisedPnl\":0,\n             \"prevUnrealisedPnl\":0,\n             \"grossComm\":0,\n             \"grossOpenCost\":0,\n             \"grossOpenPremium\":0,\n             \"grossExecCost\":0,\n             \"grossMarkValue\":0,\n             \"riskValue\":0,\n             \"taxableMargin\":0,\n             \"initMargin\":0,\n             \"maintMargin\":0,\n             \"sessionMargin\":0,\n             \"targetExcessMargin\":0,\n             \"varMargin\":0,\n             \"realisedPnl\":0,\n             \"unrealisedPnl\":0,\n             \"indicativeTax\":0,\n             \"unrealisedProfit\":0,\n             \"syntheticMargin\":null,\n             \"walletBalance\":263542,\n             \"marginBalance\":263542,\n             \"marginBalancePcnt\":1,\n             \"marginLeverage\":0,\n             \"marginUsedPcnt\":0,\n             \"excessMargin\":263542,\n             \"excessMarginPcnt\":1,\n             \"availableMargin\":263542,\n             \"withdrawableMargin\":263542,\n             \"timestamp\":\"2020-08-03T12:01:01.246Z\",\n             \"grossLastValue\":0,\n             \"commission\":null\n         }\n     ]"
       ],
-      "line_end" => 898,
-      "line_start" => 837,
+      "line_end" => 899,
+      "line_start" => 838,
       "mappings" => [],
       "name" => "parseBalance",
       "signature" => "parseBalance (response): Balances",
@@ -1278,8 +1267,8 @@
       "examples" => [
         "{\n        \"asset\": \"XBT\",\n        \"currency\": \"XBt\",\n        \"majorCurrency\": \"XBT\",\n        \"name\": \"Bitcoin\",\n        \"currencyType\": \"Crypto\",\n        \"scale\": \"8\",\n        \"enabled\": true,\n        \"isMarginCurrency\": true,\n        \"minDepositAmount\": \"10000\",\n        \"minWithdrawalAmount\": \"1000\",\n        \"maxWithdrawalAmount\": \"100000000000000\",\n        \"networks\": [\n            {\n                \"asset\": \"btc\",\n                \"tokenAddress\": '',\n                \"depositEnabled\": true,\n                \"withdrawalEnabled\": true,\n                \"withdrawalFee\": \"20000\",\n                \"minFee\": \"20000\",\n                \"maxFee\": \"10000000\"\n            }\n        ]\n    }"
       ],
-      "line_end" => 2943,
-      "line_start" => 2881,
+      "line_end" => 2944,
+      "line_start" => 2882,
       "mappings" => [
         %{
           "comment" => nil,
@@ -1319,8 +1308,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 2697,
-      "line_start" => 2672,
+      "line_end" => 2698,
+      "line_start" => 2673,
       "mappings" => [
         %{
           "comment" => nil,
@@ -1422,8 +1411,8 @@
       "examples" => [
         "{\n        \"timestamp\": \"2016-05-07T12:00:00.000Z\",\n        \"symbol\": \"ETHXBT\",\n        \"fundingInterval\": \"2000-01-02T00:00:00.000Z\",\n        \"fundingRate\": 0.0010890000000000001,\n        \"fundingRateDaily\": 0.0010890000000000001\n    }"
       ],
-      "line_end" => 2783,
-      "line_start" => 2764,
+      "line_end" => 2784,
+      "line_start" => 2765,
       "mappings" => [
         %{
           "comment" => nil,
@@ -1461,8 +1450,8 @@
         "{\n         \"transactID\": \"69573da3-7744-5467-3207-89fd6efe7a47\",\n         \"account\":  24321,\n         \"currency\": \"XBt\",\n         \"transactType\": \"Withdrawal\", // \"AffiliatePayout\", \"Transfer\", \"Deposit\", \"RealisedPNL\", ...\n         \"amount\":  -1000000,\n         \"fee\":  300000,\n         \"transactStatus\": \"Completed\", // \"Canceled\", ...\n         \"address\": \"1Ex4fkF4NhQaQdRWNoYpqiPbDBbq18Kdd9\",\n         \"tx\": \"3BMEX91ZhhKoWtsH9QRb5dNXnmnGpiEetA\",\n         \"text\": \"\",\n         \"transactTime\": \"2017-03-21T20:05:14.388Z\",\n         \"walletBalance\":  0, // balance after\n         \"marginBalance\":  null,\n         \"timestamp\": \"2017-03-22T13:09:23.514Z\"\n     }",
         "{\n         \"transactID\":\"00000000-0000-0000-0000-000000000000\",\n         \"account\":121210,\n         \"currency\":\"XBt\",\n         \"transactType\":\"UnrealisedPNL\",\n         \"amount\":-5508,\n         \"fee\":0,\n         \"transactStatus\":\"Pending\",\n         \"address\":\"XBTUSD\",\n         \"tx\":\"\",\n         \"text\":\"\",\n         \"transactTime\":null,  # ←---------------------------- null\n         \"walletBalance\":139198767,\n         \"marginBalance\":139193259,\n         \"timestamp\":null  # ←---------------------------- null\n     }"
       ],
-      "line_end" => 1330,
-      "line_start" => 1232,
+      "line_end" => 1331,
+      "line_start" => 1233,
       "mappings" => [
         %{
           "comment" => nil,
@@ -1547,8 +1536,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 1230,
-      "line_start" => 1219,
+      "line_end" => 1231,
+      "line_start" => 1220,
       "mappings" => [],
       "name" => "parseLedgerEntryType",
       "signature" => "parseLedgerEntryType (type)",
@@ -1557,8 +1546,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 2330,
-      "line_start" => 2321,
+      "line_end" => 2331,
+      "line_start" => 2322,
       "mappings" => [
         %{
           "comment" => nil,
@@ -1595,8 +1584,8 @@
       "examples" => [
         "{\n         \"orderID\": \"string\",\n         \"symbol\": \"string\",\n         \"side\": \"string\",\n         \"price\": 0,\n         \"leavesQty\": 0\n     }"
       ],
-      "line_end" => 3071,
-      "line_start" => 3048,
+      "line_end" => 3138,
+      "line_start" => 3115,
       "mappings" => [
         %{
           "comment" => nil,
@@ -1656,8 +1645,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 835,
-      "line_start" => 707,
+      "line_end" => 836,
+      "line_start" => 708,
       "mappings" => [
         %{
           "comment" => nil,
@@ -1854,8 +1843,8 @@
       "examples" => [
         "{\n         \"timestamp\":\"2015-09-25T13:38:00.000Z\",\n         \"symbol\":\"XBTUSD\",\n         \"open\":237.45,\n         \"high\":237.45,\n         \"low\":237.45,\n         \"close\":237.45,\n         \"trades\":0,\n         \"volume\":0,\n         \"vwap\":null,\n         \"lastSize\":null,\n         \"turnover\":0,\n         \"homeNotional\":0,\n         \"foreignNotional\":0\n     }"
       ],
-      "line_end" => 1615,
-      "line_start" => 1586,
+      "line_end" => 1616,
+      "line_start" => 1587,
       "mappings" => [],
       "name" => "parseOHLCV",
       "signature" => "parseOHLCV (ohlcv, market: Market = undefined): OHLCV",
@@ -1864,10 +1853,53 @@
     %{
       "comment" => nil,
       "examples" => [
+        "{\n        currency: 'XBt',\n        openInterest: '0',\n        openValue: '323890820079',\n        rootSymbol: 'Total',\n        turnover24h: '447088001322',\n        volume24h: '0'\n    }"
+      ],
+      "line_end" => 3054,
+      "line_start" => 3021,
+      "mappings" => [
+        %{
+          "comment" => nil,
+          "key" => "info",
+          "value" => "interest"
+        },
+        %{
+          "comment" => nil,
+          "key" => "symbol",
+          "value" => "symbol"
+        },
+        %{
+          "comment" => nil,
+          "key" => "baseVolume",
+          "value" => "openInterest"
+        },
+        %{
+          "comment" => nil,
+          "key" => "openInterestValue",
+          "value" => "openValue"
+        },
+        %{
+          "comment" => nil,
+          "key" => "timestamp",
+          "value" => "undefined"
+        },
+        %{
+          "comment" => nil,
+          "key" => "datetime",
+          "value" => "undefined"
+        }
+      ],
+      "name" => "parseOpenInterest",
+      "signature" => "parseOpenInterest (interest, market: Market = undefined)",
+      "source" => "parseOpenInterest (interest, market: Market = undefined) {\n        //\n        // fetchOpenInterest\n        //\n        //    {\n        //        currency: 'XBt',\n        //        openInterest: '0',\n        //        openValue: '323890820079',\n        //        rootSymbol: 'Total',\n        //        turnover24h: '447088001322',\n        //        volume24h: '0'\n        //    }\n        //\n        const quoteId = this.safeString (interest, 'currency');\n        const baseId = this.safeString (interest, 'rootSymbol');\n        const quoteSymbol = this.safeCurrencyCode (quoteId);\n        const baseSymbol = this.safeCurrencyCode (baseId);\n        let symbol = baseSymbol;\n        if (quoteSymbol !== undefined) {\n            symbol = baseSymbol + '/' + quoteSymbol + ':' + quoteSymbol;\n        }\n        const openInterest = this.safeNumber (interest, 'openInterest');\n        const openValue = this.safeNumber (interest, 'openValue');\n        return this.safeOpenInterest ({\n            'info': interest,\n            'symbol': symbol,\n            'baseVolume': openInterest,  // deprecated\n            'quoteVolume': openValue,  // deprecated\n            'openInterestAmount': openInterest,\n            'openInterestValue': openValue,\n            'timestamp': undefined,\n            'datetime': undefined,\n        }, market);\n    }"
+    },
+    %{
+      "comment" => nil,
+      "examples" => [
         "{\n         \"orderID\":\"56222c7a-9956-413a-82cf-99f4812c214b\",\n         \"clOrdID\":\"\",\n         \"clOrdLinkID\":\"\",\n         \"account\":1455728,\n         \"symbol\":\"XBTUSD\",\n         \"side\":\"Sell\",\n         \"simpleOrderQty\":null,\n         \"orderQty\":1,\n         \"price\":40000,\n         \"displayQty\":null,\n         \"stopPx\":null,\n         \"pegOffsetValue\":null,\n         \"pegPriceType\":\"\",\n         \"currency\":\"USD\",\n         \"settlCurrency\":\"XBt\",\n         \"ordType\":\"Limit\",\n         \"timeInForce\":\"GoodTillCancel\",\n         \"execInst\":\"\",\n         \"contingencyType\":\"\",\n         \"exDestination\":\"XBME\",\n         \"ordStatus\":\"New\",\n         \"triggered\":\"\",\n         \"workingIndicator\":true,\n         \"ordRejReason\":\"\",\n         \"simpleLeavesQty\":null,\n         \"leavesQty\":1,\n         \"simpleCumQty\":null,\n         \"cumQty\":0,\n         \"avgPx\":null,\n         \"multiLegReportingType\":\"SingleSecurity\",\n         \"text\":\"Submitted via API.\",\n         \"transactTime\":\"2021-01-02T21:38:49.246Z\",\n         \"timestamp\":\"2021-01-02T21:38:49.246Z\"\n     }"
       ],
-      "line_end" => 1934,
-      "line_start" => 1836,
+      "line_end" => 1935,
+      "line_start" => 1837,
       "mappings" => [
         %{
           "comment" => nil,
@@ -1987,8 +2019,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 1824,
-      "line_start" => 1808,
+      "line_end" => 1825,
+      "line_start" => 1809,
       "mappings" => [],
       "name" => "parseOrderStatus",
       "signature" => "parseOrderStatus (status: Str)",
@@ -1999,8 +2031,8 @@
       "examples" => [
         "{\n         \"account\": 9371654,\n         \"symbol\": \"ETHUSDT\",\n         \"currency\": \"USDt\",\n         \"underlying\": \"ETH\",\n         \"quoteCurrency\": \"USDT\",\n         \"commission\": 0.00075,\n         \"initMarginReq\": 0.3333333333333333,\n         \"maintMarginReq\": 0.01,\n         \"riskLimit\": 1000000000000,\n         \"leverage\": 3,\n         \"crossMargin\": false,\n         \"deleveragePercentile\": 1,\n         \"rebalancedPnl\": 0,\n         \"prevRealisedPnl\": 0,\n         \"prevUnrealisedPnl\": 0,\n         \"prevClosePrice\": 2053.738,\n         \"openingTimestamp\": \"2022-05-21T04:00:00.000Z\",\n         \"openingQty\": 0,\n         \"openingCost\": 0,\n         \"openingComm\": 0,\n         \"openOrderBuyQty\": 0,\n         \"openOrderBuyCost\": 0,\n         \"openOrderBuyPremium\": 0,\n         \"openOrderSellQty\": 0,\n         \"openOrderSellCost\": 0,\n         \"openOrderSellPremium\": 0,\n         \"execBuyQty\": 2000,\n         \"execBuyCost\": 39260000,\n         \"execSellQty\": 0,\n         \"execSellCost\": 0,\n         \"execQty\": 2000,\n         \"execCost\": 39260000,\n         \"execComm\": 26500,\n         \"currentTimestamp\": \"2022-05-21T04:35:16.397Z\",\n         \"currentQty\": 2000,\n         \"currentCost\": 39260000,\n         \"currentComm\": 26500,\n         \"realisedCost\": 0,\n         \"unrealisedCost\": 39260000,\n         \"grossOpenCost\": 0,\n         \"grossOpenPremium\": 0,\n         \"grossExecCost\": 39260000,\n         \"isOpen\": true,\n         \"markPrice\": 1964.195,\n         \"markValue\": 39283900,\n         \"riskValue\": 39283900,\n         \"homeNotional\": 0.02,\n         \"foreignNotional\": -39.2839,\n         \"posState\": \"\",\n         \"posCost\": 39260000,\n         \"posCost2\": 39260000,\n         \"posCross\": 0,\n         \"posInit\": 13086667,\n         \"posComm\": 39261,\n         \"posLoss\": 0,\n         \"posMargin\": 13125928,\n         \"posMaint\": 435787,\n         \"posAllowance\": 0,\n         \"taxableMargin\": 0,\n         \"initMargin\": 0,\n         \"maintMargin\": 13149828,\n         \"sessionMargin\": 0,\n         \"targetExcessMargin\": 0,\n         \"varMargin\": 0,\n         \"realisedGrossPnl\": 0,\n         \"realisedTax\": 0,\n         \"realisedPnl\": -26500,\n         \"unrealisedGrossPnl\": 23900,\n         \"longBankrupt\": 0,\n         \"shortBankrupt\": 0,\n         \"taxBase\": 0,\n         \"indicativeTaxRate\": null,\n         \"indicativeTax\": 0,\n         \"unrealisedTax\": 0,\n         \"unrealisedPnl\": 23900,\n         \"unrealisedPnlPcnt\": 0.0006,\n         \"unrealisedRoePcnt\": 0.0018,\n         \"simpleQty\": null,\n         \"simpleCost\": null,\n         \"simpleValue\": null,\n         \"simplePnl\": null,\n         \"simplePnlPcnt\": null,\n         \"avgCostPrice\": 1963,\n         \"avgEntryPrice\": 1963,\n         \"breakEvenPrice\": 1964.35,\n         \"marginCallPrice\": 1328.5,\n         \"liquidationPrice\": 1328.5,\n         \"bankruptPrice\": 1308.7,\n         \"timestamp\": \"2022-05-21T04:35:16.397Z\",\n         \"lastPrice\": 1964.195,\n         \"lastValue\": 39283900\n     }"
       ],
-      "line_end" => 2590,
-      "line_start" => 2445,
+      "line_end" => 2591,
+      "line_start" => 2446,
       "mappings" => [
         %{
           "comment" => nil,
@@ -2145,8 +2177,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 1584,
-      "line_start" => 1554,
+      "line_end" => 1585,
+      "line_start" => 1555,
       "mappings" => [
         %{
           "comment" => nil,
@@ -2261,8 +2293,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 1834,
-      "line_start" => 1826,
+      "line_end" => 1835,
+      "line_start" => 1827,
       "mappings" => [],
       "name" => "parseTimeInForce",
       "signature" => "parseTimeInForce (timeInForce: Str)",
@@ -2274,8 +2306,8 @@
         "{\n         \"timestamp\": \"2018-08-28T00:00:02.735Z\",\n         \"symbol\": \"XBTUSD\",\n         \"side\": \"Buy\",\n         \"size\": 2000,\n         \"price\": 6906.5,\n         \"tickDirection\": \"PlusTick\",\n         \"trdMatchID\": \"b9a42432-0a46-6a2f-5ecc-c32e9ca4baf8\",\n         \"grossValue\": 28958000,\n         \"homeNotional\": 0.28958,\n         \"foreignNotional\": 2000\n     }",
         "{\n         \"execID\": \"string\",\n         \"orderID\": \"string\",\n         \"clOrdID\": \"string\",\n         \"clOrdLinkID\": \"string\",\n         \"account\": 0,\n         \"symbol\": \"string\",\n         \"side\": \"string\",\n         \"lastQty\": 0,\n         \"lastPx\": 0,\n         \"underlyingLastPx\": 0,\n         \"lastMkt\": \"string\",\n         \"lastLiquidityInd\": \"string\",\n         \"simpleOrderQty\": 0,\n         \"orderQty\": 0,\n         \"price\": 0,\n         \"displayQty\": 0,\n         \"stopPx\": 0,\n         \"pegOffsetValue\": 0,\n         \"pegPriceType\": \"string\",\n         \"currency\": \"string\",\n         \"settlCurrency\": \"string\",\n         \"execType\": \"string\",\n         \"ordType\": \"string\",\n         \"timeInForce\": \"string\",\n         \"execInst\": \"string\",\n         \"contingencyType\": \"string\",\n         \"exDestination\": \"string\",\n         \"ordStatus\": \"string\",\n         \"triggered\": \"string\",\n         \"workingIndicator\": true,\n         \"ordRejReason\": \"string\",\n         \"simpleLeavesQty\": 0,\n         \"leavesQty\": 0,\n         \"simpleCumQty\": 0,\n         \"cumQty\": 0,\n         \"avgPx\": 0,\n         \"commission\": 0,\n         \"tradePublishIndicator\": \"string\",\n         \"multiLegReportingType\": \"string\",\n         \"text\": \"string\",\n         \"trdMatchID\": \"string\",\n         \"execCost\": 0,\n         \"execComm\": 0,\n         \"homeNotional\": 0,\n         \"foreignNotional\": 0,\n         \"transactTime\": \"2019-03-05T12:47:02.762Z\",\n         \"timestamp\": \"2019-03-05T12:47:02.762Z\"\n     }"
       ],
-      "line_end" => 1806,
-      "line_start" => 1695,
+      "line_end" => 1807,
+      "line_start" => 1696,
       "mappings" => [
         %{
           "comment" => nil,
@@ -2367,8 +2399,8 @@
       "examples" => [
         "{\n        \"transactID\": \"ffe699c2-95ee-4c13-91f9-0faf41daec25\",\n        \"account\": 123456,\n        \"currency\": \"XBt\",\n        \"network\":'', // \"tron\" for USDt, etc...\n        \"transactType\": \"Withdrawal\",\n        \"amount\": -100100000,\n        \"fee\": 100000,\n        \"transactStatus\": \"Completed\",\n        \"address\": \"385cR5DM96n1HvBDMzLHPYcw89fZAXULJP\",\n        \"tx\": \"3BMEXabcdefghijklmnopqrstuvwxyz123\",\n        \"text\": '',\n        \"transactTime\": \"2019-01-02T01:00:00.000Z\",\n        \"walletBalance\": 99900000, // this field might be inexistent\n        \"marginBalance\": None, // this field might be inexistent\n        \"timestamp\": \"2019-01-02T13:00:00.000Z\"\n    }"
       ],
-      "line_end" => 1504,
-      "line_start" => 1430,
+      "line_end" => 1505,
+      "line_start" => 1431,
       "mappings" => [
         %{
           "comment" => nil,
@@ -2488,8 +2520,8 @@
     %{
       "comment" => nil,
       "examples" => [],
-      "line_end" => 1428,
-      "line_start" => 1420,
+      "line_end" => 1429,
+      "line_start" => 1421,
       "mappings" => [],
       "name" => "parseTransactionStatus",
       "signature" => "parseTransactionStatus (status: Str)",

@@ -20,6 +20,8 @@
 
 | Task | Description | Notes |
 |------|-------------|-------|
+| ccxt_ex Sync (2026-02-22) | `strip_overridden_defaults`, symbol removed from default_params, updated extractor data | Param precedence fix for `param_mappings` |
+| Task 225: Normalization QA | 54 contract tests + 20 coverage tests across tier1 exchanges | No bugs found |
 | Phase 5: CCXT.Health module | `ping/1`, `latency/1`, `all/1`, `status/2` — bundled health checks | 4 tasks complete |
 | Fix: OrderBook string→float | `from_map/1` coerces bid/ask levels, raw field uses info precedence | Related to Task 225 |
 | Pipeline default for deps | `CCXT.Pipeline` shared default, `maybe_coerce` warning, fixes dep compilation | Normalization now works as path dep |
@@ -30,7 +32,7 @@
 | Quantex Task 4: Update ccxt_client docs | Removed trading sections from CLAUDE.md, updated roadmap/backlog | quantex is private — no public references |
 | Quantex Task 5: Prep v0.2.0 | Deleted trading files, bumped to v0.2.0 | Breaking: `CCXT.Trading.*` removed |
 | Quantex Task 1-3 | Created quantex, moved 13 source + 17 test files, renamed namespace | Struct→map decoupling, 355 tests passing |
-| ccxt_ex Sync | Synced upstream fixes + adapter refactor | 3 bugs resolved, response_transformers, auth_required flags |
+| ccxt_ex Sync (2026-02-20) | Synced upstream fixes + adapter refactor | 3 bugs resolved, response_transformers, auth_required flags |
 | Feature #2: Symbol Precision Metadata | `CCXT.MarketPrecision` module | `from_market/2`, `from_markets/2`, 3 precision modes |
 | Feature #1: WS Reconnection Docs | llms.txt section 12, README WS guide | 15 behavioral tests, auth expiry scheduling |
 
@@ -73,9 +75,11 @@ mix dialyzer.json --quiet                          # Type checking
 
 ---
 
-## ~~Pending Sync from ccxt_ex~~ ✅ Synced 2026-02-20
+## ~~Pending Sync from ccxt_ex~~ ✅ Latest Sync 2026-02-22
 
-All 3 bugs synced and verified. See [BUGS.md](BUGS.md) for details. Also included: adapter structural refactor, response_transformers on ~12 Deribit endpoints, `auth_required` flags on all private WS channel templates, updated symbol format samples, rate limit cost/weight updates across all Tier 1 specs.
+**2026-02-22:** Param precedence fix — `strip_overridden_defaults/3` prevents default_params from overriding function args when `param_mappings` renames keys. Symbol defaults removed from specs (now flow through `param_mappings`). Updated extractor data (parse methods, error codes, symbol formats, emulated methods).
+
+**2026-02-20:** All 3 bugs synced and verified. See [BUGS.md](BUGS.md) for details. Also included: adapter structural refactor, response_transformers on ~12 Deribit endpoints, `auth_required` flags on all private WS channel templates, updated symbol format samples, rate limit cost/weight updates across all Tier 1 specs.
 
 ---
 

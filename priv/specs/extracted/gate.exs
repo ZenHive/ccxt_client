@@ -5063,8 +5063,8 @@
           "min" => 1
         },
         "price" => %{
-          "max" => 3.9435,
-          "min" => 1.3145
+          "max" => 3.882,
+          "min" => 1.294
         }
       },
       linear: true,
@@ -5087,9 +5087,9 @@
       case: :upper,
       contract: true,
       contract_size: 1,
-      expiry: 1771833600000,
-      expiry_datetime: "2026-02-23T08:00:00.000Z",
-      id: "BTC_USDT-20260223-73000-P",
+      expiry: 1771920000000,
+      expiry_datetime: "2026-02-24T08:00:00.000Z",
+      id: "BTC_USDT-20260224-74000-P",
       inverse: false,
       limits: %{
         "amount" => %{
@@ -5099,8 +5099,8 @@
         "cost" => %{},
         "leverage" => %{},
         "price" => %{
-          "max" => 5914.45,
-          "min" => 4371.55
+          "max" => 6989.815,
+          "min" => 5166.385
         }
       },
       linear: true,
@@ -5114,7 +5114,7 @@
       separator: "-",
       settle: "USDT",
       settle_id: "USDT",
-      symbol: "BTC/USDT:USDT-260223-73000-P",
+      symbol: "BTC/USDT:USDT-260224-74000-P",
       taker: 0.0003
     },
     precision_mode: 4,
@@ -5180,8 +5180,8 @@
           "min" => 1
         },
         "price" => %{
-          "max" => 157.9776,
-          "min" => 151.7824
+          "max" => 157.998,
+          "min" => 151.802
         }
       },
       linear: true,

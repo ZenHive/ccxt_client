@@ -4,6 +4,17 @@ Completed roadmap tasks. For upcoming work, see [ROADMAP.md](ROADMAP.md).
 
 ---
 
+## ccxt_ex Sync (2026-02-22)
+
+**What was synced:**
+- **Param precedence fix:** New `strip_overridden_defaults/3` in `CCXT.Generator.Helpers` prevents `default_params` from overriding function args when `param_mappings` renames keys (e.g., `symbol` → `instId` on OKX). Called in generated endpoint functions before the merge chain.
+- **Symbol defaults removed from specs:** Hardcoded `"symbol"` entries removed from `default_params` across all 9 tier1 exchange specs (binance, bitmex, bybit, coinbaseexchange, deribit, gate, kraken, kucoin, okx). Symbol now flows exclusively through `param_mappings`.
+- **Updated extractor data:** `ccxt_parse_methods.json` (expanded parse method coverage), `ccxt_error_codes.json`, `ccxt_symbol_formats.json`, `ccxt_emulated_methods.json`
+
+**Verified:** 2947 passed, 0 code failures (15 failures + 178 invalid all credential-related)
+
+---
+
 ## Phase 5: Health & Monitoring
 
 ### CCXT.Health Module

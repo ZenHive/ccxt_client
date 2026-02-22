@@ -1,7 +1,7 @@
 {
   "version": 1,
   "ccxt_version": "4.5.39",
-  "generated_at": "2026-02-21T01:10:59.163Z",
+  "generated_at": "2026-02-22T03:05:36.772Z",
   "exchange_count": 110,
   "entry_count": 6137,
   "error_codes": {
@@ -19272,7 +19272,7 @@
         "code": "Invalid API Key.",
         "exception": "AuthenticationError",
         "comment": null,
-        "line": 243
+        "line": 244
       },
       {
         "path": [
@@ -19281,7 +19281,7 @@
         "code": "This key is disabled.",
         "exception": "PermissionDenied",
         "comment": null,
-        "line": 244
+        "line": 245
       },
       {
         "path": [
@@ -19290,7 +19290,7 @@
         "code": "Access Denied",
         "exception": "PermissionDenied",
         "comment": null,
-        "line": 245
+        "line": 246
       },
       {
         "path": [
@@ -19299,7 +19299,7 @@
         "code": "Duplicate clOrdID",
         "exception": "InvalidOrder",
         "comment": null,
-        "line": 246
+        "line": 247
       },
       {
         "path": [
@@ -19308,7 +19308,7 @@
         "code": "orderQty is invalid",
         "exception": "InvalidOrder",
         "comment": null,
-        "line": 247
+        "line": 248
       },
       {
         "path": [
@@ -19317,7 +19317,7 @@
         "code": "Invalid price",
         "exception": "InvalidOrder",
         "comment": null,
-        "line": 248
+        "line": 249
       },
       {
         "path": [
@@ -19326,7 +19326,7 @@
         "code": "Invalid stopPx for ordType",
         "exception": "InvalidOrder",
         "comment": null,
-        "line": 249
+        "line": 250
       },
       {
         "path": [
@@ -19335,7 +19335,7 @@
         "code": "Account is restricted",
         "exception": "PermissionDenied",
         "comment": "{\"error\":{\"message\":\"Account is restricted\",\"name\":\"HTTPError\"}}",
-        "line": 250
+        "line": 251
       },
       {
         "path": [
@@ -19344,7 +19344,7 @@
         "code": "Signature not valid",
         "exception": "AuthenticationError",
         "comment": null,
-        "line": 253
+        "line": 254
       },
       {
         "path": [
@@ -19353,7 +19353,7 @@
         "code": "overloaded",
         "exception": "ExchangeNotAvailable",
         "comment": null,
-        "line": 254
+        "line": 255
       },
       {
         "path": [
@@ -19362,7 +19362,7 @@
         "code": "Account has insufficient Available Balance",
         "exception": "InsufficientFunds",
         "comment": null,
-        "line": 255
+        "line": 256
       },
       {
         "path": [
@@ -19371,7 +19371,7 @@
         "code": "Service unavailable",
         "exception": "ExchangeNotAvailable",
         "comment": "{\"error\":{\"message\":\"Service unavailable\",\"name\":\"HTTPError\"}}",
-        "line": 256
+        "line": 257
       },
       {
         "path": [
@@ -19380,7 +19380,7 @@
         "code": "Server Error",
         "exception": "ExchangeError",
         "comment": "{\"error\":{\"message\":\"Server Error\",\"name\":\"HTTPError\"}}",
-        "line": 257
+        "line": 258
       },
       {
         "path": [
@@ -19389,7 +19389,7 @@
         "code": "Unable to cancel order due to existing state",
         "exception": "InvalidOrder",
         "comment": null,
-        "line": 258
+        "line": 259
       },
       {
         "path": [
@@ -19398,7 +19398,7 @@
         "code": "We require all new traders to verify",
         "exception": "PermissionDenied",
         "comment": "{\"message\":\"We require all new traders to verify their identity before their first deposit. Please visit bitmex.com/verify to complete the process.\",\"name\":\"HTTPError\"}",
-        "line": 259
+        "line": 260
       }
     ],
     "bitopro": [

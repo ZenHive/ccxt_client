@@ -286,7 +286,6 @@
       cost: 2,
       default_params: %{
         "clientOid" => "<generated>",
-        "symbol" => "BTCUSDT",
         "triggerDirection" => "below",
         "type" => "limit"
       },
@@ -314,7 +313,6 @@
       cost: 2,
       default_params: %{
         "clientOid" => "<generated>",
-        "symbol" => "BTCUSDT",
         "triggerDirection" => "below",
         "type" => "market"
       },
@@ -341,7 +339,6 @@
       cost: 2,
       default_params: %{
         "clientOid" => "<generated>",
-        "symbol" => "BTCUSDT",
         "triggerDirection" => "below"
       },
       market_type: :swap,
@@ -369,7 +366,6 @@
       cost: 2,
       default_params: %{
         "clientOid" => "<generated>",
-        "symbol" => "BTCUSDT",
         "triggerDirection" => "below"
       },
       market_type: :swap,
@@ -621,9 +617,6 @@
       api_section: "uta",
       auth: false,
       cost: 2,
-      default_params: %{
-        "symbol" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_funding_rate,
@@ -640,8 +633,7 @@
       auth: false,
       cost: 5,
       default_params: %{
-        "endAt" => "<generated>",
-        "symbol" => "BTCUSDT"
+        "endAt" => "<generated>"
       },
       market_type: :swap,
       method: :get,
@@ -695,9 +687,6 @@
       api_section: "public",
       auth: false,
       cost: 3,
-      default_params: %{
-        "symbol" => "BTCUSDT"
-      },
       market_type: :swap,
       method: :get,
       name: :fetch_mark_price,

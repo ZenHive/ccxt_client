@@ -208,8 +208,15 @@ defmodule CCXT.Generator.Functions.Endpoints do
       @doc unquote(doc)
       def unquote(name)(unquote_splicing(args)) do
         # Build params: defaults → function args → extra opts params
+        # Strip defaults that collide with non-nil function args (via param_mappings)
+        # to preserve correct precedence: defaults < function_args < opts[:params]
+        # credo:disable-for-next-line Credo.Check.Design.AliasUsage
         params =
           unquote(default_params_ast)
+          |> CCXT.Generator.Helpers.strip_overridden_defaults(
+            unquote(param_map),
+            unquote(param_mappings_ast)
+          )
           |> Map.merge(unquote(param_map))
           |> Map.merge(Map.new(Keyword.get(unquote(opts_var), :params, [])))
 
