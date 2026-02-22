@@ -166,7 +166,9 @@
       market_type: :swap,
       method: :get,
       name: :create_reduce_only_order,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instrument_name"
+      },
       params: [
         :symbol,
         :type,
@@ -191,6 +193,7 @@
       method: :get,
       name: :create_stop_limit_order,
       param_mappings: %{
+        "symbol" => "instrument_name",
         "triggerPrice" => "stopPrice"
       },
       params: [
@@ -217,6 +220,7 @@
       method: :get,
       name: :create_stop_market_order,
       param_mappings: %{
+        "symbol" => "instrument_name",
         "triggerPrice" => "stopPrice"
       },
       params: [
@@ -241,6 +245,7 @@
       method: :get,
       name: :create_stop_order,
       param_mappings: %{
+        "symbol" => "instrument_name",
         "triggerPrice" => "stopPrice"
       },
       params: [
@@ -268,6 +273,7 @@
       method: :get,
       name: :create_trailing_amount_order,
       param_mappings: %{
+        "symbol" => "instrument_name",
         "trailingAmount" => "trigger_offset"
       },
       params: [
@@ -429,7 +435,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_funding_rate,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instrument_name"
+      },
       params: [
         :symbol
       ],
@@ -449,7 +457,8 @@
       method: :get,
       name: :fetch_funding_rate_history,
       param_mappings: %{
-        "since" => "start_timestamp"
+        "since" => "start_timestamp",
+        "symbol" => "instrument_name"
       },
       params: [
         :symbol,
@@ -470,7 +479,9 @@
       market_type: :option,
       method: :get,
       name: :fetch_greeks,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instrument_name"
+      },
       params: [
         :symbol
       ],
@@ -507,7 +518,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_liquidations,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instrument_name"
+      },
       params: [
         :symbol,
         :since,
@@ -541,7 +554,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_my_liquidations,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instrument_name"
+      },
       params: [
         :symbol,
         :since,
@@ -609,7 +624,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_open_interest,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instrument_name"
+      },
       params: [
         :symbol
       ],
@@ -646,7 +663,9 @@
       market_type: :option,
       method: :get,
       name: :fetch_option,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instrument_name"
+      },
       params: [
         :symbol
       ],
@@ -741,7 +760,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_position,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instrument_name"
+      },
       params: [
         :symbol
       ],

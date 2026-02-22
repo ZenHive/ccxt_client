@@ -297,6 +297,7 @@
       param_mappings: %{
         "amount" => "volume",
         "side" => "type",
+        "symbol" => "pair",
         "triggerPrice" => "stopPrice"
       },
       params: [
@@ -325,6 +326,7 @@
       param_mappings: %{
         "amount" => "volume",
         "side" => "type",
+        "symbol" => "pair",
         "triggerPrice" => "stopPrice"
       },
       params: [
@@ -351,6 +353,7 @@
       param_mappings: %{
         "amount" => "volume",
         "side" => "type",
+        "symbol" => "pair",
         "triggerPrice" => "stopPrice",
         "type" => "ordertype"
       },
@@ -380,7 +383,8 @@
       name: :create_trailing_amount_order,
       param_mappings: %{
         "amount" => "volume",
-        "side" => "type"
+        "side" => "type",
+        "symbol" => "pair"
       },
       params: [
         :symbol,
@@ -409,7 +413,8 @@
       name: :create_trailing_percent_order,
       param_mappings: %{
         "amount" => "volume",
-        "side" => "type"
+        "side" => "type",
+        "symbol" => "pair"
       },
       params: [
         :symbol,

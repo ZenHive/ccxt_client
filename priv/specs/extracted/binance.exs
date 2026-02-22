@@ -1103,6 +1103,7 @@
       method: :get,
       name: :fetch_index_ohlcv,
       param_mappings: %{
+        "symbol" => "pair",
         "timeframe" => "interval"
       },
       params: [
@@ -5260,6 +5261,7 @@
     "marginMode" => "marginType",
     "since" => "startTime",
     "stopLossPrice" => "stopPrice",
+    "symbol" => "pair",
     "takeProfitPrice" => "stopPrice",
     "timeframe" => "interval",
     "toCode" => "toAsset",

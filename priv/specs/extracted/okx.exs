@@ -378,6 +378,7 @@
       param_mappings: %{
         "amount" => "sz",
         "price" => "orderPx",
+        "symbol" => "instId",
         "triggerPrice" => "triggerPx"
       },
       params: [
@@ -410,7 +411,8 @@
       param_mappings: %{
         "amount" => "sz",
         "price" => "slOrdPx",
-        "stopLossPrice" => "slTriggerPx"
+        "stopLossPrice" => "slTriggerPx",
+        "symbol" => "instId"
       },
       params: [
         :symbol,
@@ -442,6 +444,7 @@
       name: :create_stop_market_order,
       param_mappings: %{
         "amount" => "sz",
+        "symbol" => "instId",
         "triggerPrice" => "triggerPx"
       },
       params: [
@@ -472,6 +475,7 @@
       param_mappings: %{
         "amount" => "sz",
         "price" => "orderPx",
+        "symbol" => "instId",
         "triggerPrice" => "triggerPx"
       },
       params: [
@@ -505,6 +509,7 @@
       param_mappings: %{
         "amount" => "sz",
         "price" => "tpOrdPx",
+        "symbol" => "instId",
         "takeProfitPrice" => "tpTriggerPx"
       },
       params: [
@@ -536,7 +541,8 @@
       name: :create_trailing_percent_order,
       param_mappings: %{
         "amount" => "sz",
-        "price" => "px"
+        "price" => "px",
+        "symbol" => "instId"
       },
       params: [
         :symbol,
@@ -569,6 +575,7 @@
       param_mappings: %{
         "amount" => "sz",
         "price" => "orderPx",
+        "symbol" => "instId",
         "triggerPrice" => "triggerPx"
       },
       params: [
@@ -982,7 +989,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_funding_interval,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instId"
+      },
       params: [
         :symbol
       ],
@@ -1000,7 +1009,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_funding_rate,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instId"
+      },
       params: [
         :symbol
       ],
@@ -1018,7 +1029,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_funding_rate_history,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instId"
+      },
       params: [
         :symbol,
         :since,
@@ -1142,7 +1155,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_leverage,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instId"
+      },
       params: [
         :symbol
       ],
@@ -1160,7 +1175,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_long_short_ratio_history,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instId"
+      },
       params: [
         :symbol,
         :timeframe,
@@ -1206,6 +1223,7 @@
       method: :get,
       name: :fetch_mark_ohlcv,
       param_mappings: %{
+        "symbol" => "instId",
         "timeframe" => "bar"
       },
       params: [
@@ -1228,7 +1246,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_mark_price,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instId"
+      },
       params: [
         :symbol
       ],
@@ -1328,7 +1348,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_open_interest,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instId"
+      },
       params: [
         :symbol
       ],
@@ -1407,7 +1429,9 @@
       market_type: :option,
       method: :get,
       name: :fetch_option,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instId"
+      },
       params: [
         :symbol
       ],
@@ -1507,7 +1531,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_position,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instId"
+      },
       params: [
         :symbol
       ],
@@ -1543,7 +1569,9 @@
       market_type: :swap,
       method: :get,
       name: :fetch_positions_for_symbol,
-      param_mappings: %{},
+      param_mappings: %{
+        "symbol" => "instId"
+      },
       params: [
         :symbol
       ],
@@ -1815,7 +1843,8 @@
       method: :post,
       name: :set_leverage,
       param_mappings: %{
-        "leverage" => "lever"
+        "leverage" => "lever",
+        "symbol" => "instId"
       },
       params: [
         :leverage,
@@ -1837,7 +1866,8 @@
       method: :post,
       name: :set_margin_mode,
       param_mappings: %{
-        "marginMode" => "mgnMode"
+        "marginMode" => "mgnMode",
+        "symbol" => "instId"
       },
       params: [
         :marginMode,

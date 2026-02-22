@@ -157,7 +157,13 @@ defmodule CCXT.WS.Generator do
       # Read pipeline config for conditional normalization/validation generation.
       # Uses get_env because compile_env can only be called in module body.
       app = Mix.Project.config()[:app]
-      pipeline = Application.get_env(app, :pipeline, CCXT.Pipeline.default())
+
+      pipeline_default =
+        if Code.ensure_loaded?(CCXT.Pipeline) and function_exported?(CCXT.Pipeline, :default, 0),
+          do: apply(CCXT.Pipeline, :default, []),
+          else: []
+
+      pipeline = Application.get_env(app, :pipeline, pipeline_default)
 
       adapter_ast = Adapter.generate_adapter(__CALLER__.module, rest_module, ws_config, spec_id, pipeline)
 

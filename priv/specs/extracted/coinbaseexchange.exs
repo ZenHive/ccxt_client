@@ -174,6 +174,7 @@
       name: :create_stop_limit_order,
       param_mappings: %{
         "amount" => "size",
+        "symbol" => "product_id",
         "triggerPrice" => "stop_price"
       },
       params: [
@@ -200,6 +201,7 @@
       name: :create_stop_market_order,
       param_mappings: %{
         "amount" => "size",
+        "symbol" => "product_id",
         "triggerPrice" => "stop_price"
       },
       params: [
@@ -224,6 +226,7 @@
       name: :create_stop_order,
       param_mappings: %{
         "amount" => "size",
+        "symbol" => "product_id",
         "triggerPrice" => "stop_price"
       },
       params: [

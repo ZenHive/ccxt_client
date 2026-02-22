@@ -90,6 +90,13 @@ defmodule CCXT.Types.HelpersTest do
       assert Helpers.normalize_side("short") == :short
     end
 
+    test "normalizes capitalized string values (Bybit-style)" do
+      assert Helpers.normalize_side("Buy") == :buy
+      assert Helpers.normalize_side("Sell") == :sell
+      assert Helpers.normalize_side("Long") == :long
+      assert Helpers.normalize_side("Short") == :short
+    end
+
     test "returns nil for unknown values" do
       assert Helpers.normalize_side(:unknown) == nil
       assert Helpers.normalize_side("other") == nil
