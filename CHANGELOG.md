@@ -25,6 +25,26 @@ Completed roadmap tasks. For upcoming work, see [ROADMAP.md](ROADMAP.md).
 
 ---
 
+## Task 225: Normalization QA Sweep (2026-02-22)
+
+**Completed** | [D:5/B:10 → Priority:2.0]
+
+**What was done:**
+- **Normalization contract tests** (`test/ccxt/normalization_contract_test.exs`) — 54 tests covering 5 tier1 exchanges × 3 endpoints (ticker, trade, order) + 2 order book tests (Bybit with parser mapping, baseline without)
+- **Parser coverage tests** (`test/ccxt/parser_coverage_test.exs`) — 20 tests: tier1 hard assertions, cross-validation (method_schemas ⊆ type_modules), coverage inventory, known exceptions
+- **Contract assertions**: numeric fields are `number() | nil` (never strings), enum fields (`side`, `status`, `taker_or_maker`) are atoms (never strings/booleans), `timestamp` is `integer() | nil`, `raw` is always a map
+- **List-shape contracts**: `:trades` and `:orders` coerce lists of raw maps to `[%Trade{}]` and `[%Order{}]`
+- **Exchange-specific coercion tests**: Binance bool→side, Bybit isMaker→taker_or_maker, Deribit liquidity→taker_or_maker, string_lower normalization, string timestamp→integer
+- **Known exceptions documented**: `:order_book` (unified keys), `:balance` (nested maps)
+
+**Triage result:** No bugs found — pipeline works correctly for all tier1 exchanges.
+
+**Coverage snapshot:** Binance/Bybit 76.7%, OKX/Gate 63.3%, Htx 53.3%, Deribit 43.3%, Kucoin 40%, Bitmex 36.7%, Kraken 26.7%, Coinbase 20%
+
+**Run with:** `mix test.json --quiet --only normalization` and `mix test.json --quiet test/ccxt/parser_coverage_test.exs`
+
+---
+
 ## Fix: OrderBook levels return strings instead of floats (2026-02-21)
 
 **What was done:**

@@ -39,7 +39,7 @@
 | Task | Status | Notes |
 |------|--------|-------|
 | Task 125: Order Sanity Checks | ⬜ | [D:4/B:8 → 2.0] — Pre-submit validation |
-| Task 225: Normalization QA Sweep | ⬜ | [D:5/B:10 → 2.0] — Proactive audit to catch raw/passthrough regressions |
+| Task 225: Normalization QA Sweep | ✅ | [D:5/B:10 → 2.0] — 54 contract tests + 20 coverage tests |
 
 ### Task 225: Normalization QA Sweep
 
@@ -48,22 +48,19 @@
 Audit normalization quality across high-use endpoints and major exchanges so regressions are found in ccxt_client before consumers report them.
 
 Success criteria:
-- [ ] Add fixture-based normalization contract tests for `fetch_ticker`, `fetch_trades`, `fetch_order_book`, and `fetch_orders`
+- [x] Add fixture-based normalization contract tests for `fetch_ticker`, `fetch_trades`, `fetch_order_book`, and `fetch_orders`
 - [x] Verify numeric coercion for nested structures (order book levels — fixed, fee/cost fields, timestamps)
-- [ ] Verify enum normalization for `side`, `taker_or_maker`, and status fields
+- [x] Verify enum normalization for `side`, `taker_or_maker`, and status fields
 - [x] Verify `raw` field always points to original exchange payload (OrderBook fixed — info precedence chain)
-- [ ] Add parser coverage check that flags supported response types missing from `__ccxt_parsers__/0`
-- [ ] Document known non-normalizable categories (if any) as explicit exceptions with tests
+- [x] Add parser coverage check that flags supported response types missing from `__ccxt_parsers__/0`
+- [x] Document known non-normalizable categories (if any) as explicit exceptions with tests
 
 Parallelizable execution tasks:
-- [ ] Task 225a `[P]`: Build endpoint fixture matrix for Tier 1 exchanges [D:3/B:8 → Priority:2.67] 🎯
-      Create a reusable fixture matrix that maps exchange + endpoint + expected normalized field contracts.
-- [ ] Task 225b `[P]`: Add normalization contract tests (REST) [D:4/B:9 → Priority:2.25] 🎯
-      Add focused tests that assert type/shape invariants on normalized structs for each fixture.
-- [ ] Task 225c `[P]`: Add parser coverage/assertion tooling [D:3/B:7 → Priority:2.33] 🎯
-      Add a test helper that compares inferred response types vs available parser mappings and reports gaps.
-- [ ] Task 225d: Triage + patch highest-impact normalization gaps [D:5/B:9 → Priority:1.8] 🚀
-      Fix top-priority mismatches found by the sweep and add regression tests per bug.
+- [x] Task 225a `[P]`: Build endpoint fixture matrix for Tier 1 exchanges [D:3/B:8 → Priority:2.67] 🎯
+- [x] Task 225b `[P]`: Add normalization contract tests (REST) [D:4/B:9 → Priority:2.25] 🎯
+- [x] Task 225c `[P]`: Add parser coverage/assertion tooling [D:3/B:7 → Priority:2.33] 🎯
+- [x] Task 225d: Triage + patch highest-impact normalization gaps [D:5/B:9 → Priority:1.8] 🚀
+      No bugs found — all 54 contract tests pass across 5 tier1 exchanges × 4 endpoints. Known exceptions documented: `:order_book` (unified keys), `:balance` (nested maps).
 
 ### Quick Commands
 
